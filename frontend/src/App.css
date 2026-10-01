@@ -11,8 +11,13 @@ body,
   min-height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .splash-page {
@@ -28,9 +33,9 @@ body {
 
   background: linear-gradient(
     135deg,
-    #ffffff 0%,
-    #eef6ff 45%,
-    #2563eb 100%
+    #fefce8 0%,
+    #dcfce7 45%,
+    #059669 100%
   );
 }
 
@@ -43,7 +48,8 @@ body {
   font-weight: 800;
   letter-spacing: clamp(1px, 1vw, 8px);
 
-  color: #2563eb;
+  color: #047857;
+  text-shadow: 0 4px 20px rgba(254, 240, 138, 0.6);
 }
 
 .logo-letter {
