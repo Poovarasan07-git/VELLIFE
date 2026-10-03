@@ -193,57 +193,55 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
   const progressStats = calculateProgress();
 
   return (
-    <div className="velfire-roadmap-container">
-      {/* --- TOP INPUT & CONFIGURATION PANEL --- */}
-      <div className="roadmap-input-panel">
-        <div className="roadmap-panel-header">
-          <div className="panel-title-area">
-            <h3>
-              <span>⚡</span> VELFIRE Real-Time AI Roadmap Generator
-            </h3>
-            <p>
-              Type <strong>ANY course, tech stack, or career goal</strong> to generate an instant, production-aligned roadmap.
-            </p>
+    <div className="velfire-roadmap-root">
+      <div className="roadmap-ambient-glow" />
+
+      {/* --- 1. SEARCH & COMMAND CONSOLE --- */}
+      <div className="roadmap-command-console">
+        <div className="console-top-row">
+          <div className="console-branding">
+            <div className="console-beacon">⚡</div>
+            <div className="console-title-group">
+              <h3>VELFIRE AI Roadmap Architect</h3>
+              <p>Type any course, tech stack, or career goal to synthesize a real-time production roadmap</p>
+            </div>
           </div>
 
           {onSwitchToCourse && (
-            <button
-              type="button"
-              className="btn-switch-course-link"
-              onClick={onSwitchToCourse}
-            >
-              🎓 Switch to VELFIRE Courses →
-            </button>
+            <div className="console-actions-right">
+              <button
+                type="button"
+                className="btn-switch-courses"
+                onClick={onSwitchToCourse}
+              >
+                🎓 Switch to VELFIRE Courses →
+              </button>
+            </div>
           )}
         </div>
 
-        {/* Real-time search bar */}
+        {/* Master Command Input */}
         <form
-          className="roadmap-search-bar"
+          className="console-search-form"
           onSubmit={(e) => {
             e.preventDefault();
             handleGenerateRoadmap();
           }}
         >
-          <div className="search-input-wrapper">
-            <span className="search-icon-left">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </span>
+          <div className="console-input-frame">
+            <span className="console-prompt-glyph">&gt;_</span>
             <input
               type="text"
-              className="course-search-input"
+              className="console-input"
               value={courseInput}
               onChange={(e) => setCourseInput(e.target.value)}
-              placeholder="Type any course (e.g. Flutter Mobile Dev, DevOps, Python Data Science, Full Stack, Solidity Web3...)"
+              placeholder="Search or type any course (e.g. Flutter Mobile Dev, DevOps, Python Data Science, Full Stack, Solidity Web3...)"
             />
           </div>
 
           <button
             type="submit"
-            className="btn-generate-main"
+            className="btn-synthesize-ai"
             disabled={loading}
           >
             {loading ? (
@@ -252,20 +250,20 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
               </>
             ) : (
               <>
-                <span>🚀</span> Generate Real-Time Roadmap
+                <span>🚀</span> Generate Dynamic Roadmap
               </>
             )}
           </button>
         </form>
 
         {/* Quick Suggestion Pills */}
-        <div className="suggestion-pills-row">
-          <span className="suggestion-label">Quick Suggestions:</span>
+        <div className="console-chips-section">
+          <span className="chips-label">Quick Architect:</span>
           {QUICK_SUGGESTIONS.map((s, idx) => (
             <button
               key={idx}
               type="button"
-              className={`suggestion-chip ${courseInput.toLowerCase() === s.query.toLowerCase() ? "active" : ""}`}
+              className={`quick-tech-chip ${courseInput.toLowerCase() === s.query.toLowerCase() ? "active" : ""}`}
               onClick={() => {
                 setCourseInput(s.query);
                 handleGenerateRoadmap(s.query);
@@ -276,23 +274,25 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
           ))}
         </div>
 
-        {/* Secondary Config Options */}
-        <div className="config-options-row">
-          <div className="config-select-group">
+        {/* Secondary Config Grid */}
+        <div className="console-config-grid">
+          <div className="config-box">
             <label>Target Skill Level</label>
             <select
+              className="config-select"
               value={skillLevel}
               onChange={(e) => setSkillLevel(e.target.value)}
             >
-              <option value="Beginner">Beginner (Foundations & Syntax)</option>
-              <option value="Intermediate">Intermediate (Core Skills & APIs)</option>
-              <option value="Advanced">Advanced (Production Systems & Scale)</option>
+              <option value="Beginner">Beginner (Foundations &amp; Syntax)</option>
+              <option value="Intermediate">Intermediate (Core Skills &amp; APIs)</option>
+              <option value="Advanced">Advanced (Production Scale &amp; Cloud)</option>
             </select>
           </div>
 
-          <div className="config-select-group">
+          <div className="config-box">
             <label>Target Timeframe</label>
             <select
+              className="config-select"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
             >
@@ -302,43 +302,45 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
             </select>
           </div>
 
-          <div className="config-select-group">
+          <div className="config-box">
             <label>Career Goal</label>
             <select
+              className="config-select"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
             >
               <option value="Job Placement & Mastery">High-Paying Job Placement</option>
               <option value="SaaS & Product Building">Build Production SaaS / Products</option>
-              <option value="Freelancing & Consulting">Freelancing & Client Delivery</option>
+              <option value="Freelancing & Consulting">Freelancing &amp; Client Delivery</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* --- REAL-TIME GENERATION ANIMATED LOADING STATE --- */}
+      {/* --- 2. REAL-TIME AI SYNTHESIZER LOADER --- */}
       {loading && (
-        <div className="roadmap-loading-state">
-          <div className="loading-spinner-ring" />
+        <div className="roadmap-synthesizing-loader">
+          <div className="synthesizer-beacon-ring" />
           <h4>Synthesizing Real-Time Roadmap for "{courseInput}"...</h4>
-          <p>Analyzing industry benchmarks, required toolstacks, and milestone project deliverables.</p>
+          <p>Analyzing industry benchmarks, engineering toolchains, and milestone production project deliverables.</p>
         </div>
       )}
 
-      {/* --- ROADMAP RESULT DISPLAY --- */}
+      {/* --- 3. ROADMAP CANVAS --- */}
       {!loading && roadmapData && (
-        <div className="roadmap-result-panel">
-          {/* Header Banner Card */}
-          <div className="roadmap-hero-card">
-            <div className="hero-top-meta">
-              <span className="ai-verified-tag">
-                <span>●</span> Real-Time AI Verified Architecture
+        <div className="roadmap-canvas">
+          {/* Header Hero Showcase Card */}
+          <div className="roadmap-hero-banner">
+            <div className="banner-status-row">
+              <span className="live-beacon-chip">
+                <span className="live-beacon-dot" />
+                Live AI Architecture // Verified
               </span>
 
-              <div className="hero-actions-row">
+              <div className="banner-controls-group">
                 <button
                   type="button"
-                  className="btn-action-icon"
+                  className="btn-banner-action"
                   onClick={handleCopyRoadmap}
                   title="Copy full roadmap as Markdown"
                 >
@@ -346,158 +348,168 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
                 </button>
                 <button
                   type="button"
-                  className={`btn-action-icon ${savedRoadmaps.some((r) => r.course === roadmapData.course) ? "saved" : ""}`}
+                  className={`btn-banner-action ${savedRoadmaps.some((r) => r.course === roadmapData.course) ? "saved" : ""}`}
                   onClick={handleSaveRoadmap}
                   title="Save this roadmap to your profile"
                 >
-                  💾 Save to Profile
+                  💾 Save to Vault
                 </button>
               </div>
             </div>
 
-            <h2 className="roadmap-main-title">{roadmapData.course}</h2>
-            <p className="roadmap-tagline">{roadmapData.tagline}</p>
-            <p className="roadmap-overview-p">{roadmapData.overview}</p>
+            <h2 className="roadmap-headline">{roadmapData.course}</h2>
+            <div className="roadmap-lead-tagline">{roadmapData.tagline}</div>
+            <p className="roadmap-summary-p">{roadmapData.overview}</p>
 
-            <div className="roadmap-badge-pills">
-              <span className="meta-pill difficulty">🎯 {roadmapData.difficulty}</span>
-              <span className="meta-pill duration">📅 {roadmapData.duration}</span>
-              <span className="meta-pill hours">⚡ {roadmapData.estimated_hours} ({roadmapData.weekly_hours})</span>
+            <div className="banner-pills-row">
+              <span className="badge-capsule level">🎯 {roadmapData.difficulty}</span>
+              <span className="badge-capsule duration">📅 {roadmapData.duration}</span>
+              <span className="badge-capsule hours">⚡ {roadmapData.estimated_hours} ({roadmapData.weekly_hours})</span>
             </div>
           </div>
 
-          {/* Interactive Progress Tracking Card */}
-          <div className="roadmap-progress-card">
-            <div className="progress-header">
-              <span className="progress-label">Milestone Progress Tracker</span>
-              <span className="progress-value">
-                {progressStats.completed} / {progressStats.total} Topics Completed ({progressStats.pct}%)
+          {/* Interactive Progress HUD (Mastery Metric) */}
+          <div className="mastery-hud-card">
+            <div className="hud-header">
+              <span className="hud-title">Interactive Roadmap Mastery Progress</span>
+              <span className="hud-counter">
+                {progressStats.completed} / {progressStats.total} Modules Completed ({progressStats.pct}%)
               </span>
             </div>
-            <div className="progress-bar-track">
+            <div className="hud-track">
               <div
-                className="progress-bar-fill"
+                className="hud-fill"
                 style={{ width: `${progressStats.pct}%` }}
               />
             </div>
           </div>
 
-          {/* Stack & Prerequisites Grid */}
-          <div className="roadmap-intel-grid">
-            <div className="intel-card">
-              <h4>
+          {/* Prerequisites & Tech Stack Dual Matrix */}
+          <div className="matrix-dual-grid">
+            <div className="matrix-card">
+              <div className="matrix-card-title">
                 <span>📋</span> Recommended Prerequisites
-              </h4>
-              <ul className="prereq-list">
+              </div>
+              <ul className="prereqs-checklist">
                 {roadmapData.prerequisites?.map((prereq, pIdx) => (
-                  <li key={pIdx} className="prereq-item">
-                    <span className="check">✓</span>
+                  <li key={pIdx} className="prereq-row">
+                    <span className="prereq-check-icon">✓</span>
                     <span>{prereq}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="intel-card">
-              <h4>
+            <div className="matrix-card">
+              <div className="matrix-card-title">
                 <span>🛠️</span> Core Production Tech Stack
-              </h4>
-              <div className="tech-chips-flow">
+              </div>
+              <div className="tech-capsules-cloud">
                 {roadmapData.tech_stack?.map((tech, tIdx) => (
-                  <div key={tIdx} className="tech-chip">
-                    <span className="tech-name">{tech.name}</span>
-                    <span className="tech-cat">{tech.category}</span>
+                  <div key={tIdx} className="tech-capsule-item">
+                    <span className="capsule-tech-name">{tech.name}</span>
+                    <span className="capsule-tech-category">{tech.category}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Step-by-Step Phases Timeline */}
-          <h3 className="timeline-section-title">
-            <span>🗺️</span> Step-by-Step Milestone Phases
-          </h3>
+          {/* Visual Roadmap Journey Conduit (Timeline Tree) */}
+          <div className="roadmap-timeline-section-title">
+            <span>🗺️</span> Step-by-Step Production Roadmap Journey
+          </div>
 
-          <div className="phases-timeline-list">
-            {roadmapData.phases?.map((phase) => (
-              <div key={phase.phase_number} className="phase-card">
-                <div className="phase-header-row">
-                  <span className="phase-tag">
-                    Phase {phase.phase_number}
-                  </span>
-                  <span className="phase-timeframe">{phase.timeframe}</span>
+          <div className="timeline-conduit-wrapper">
+            {roadmapData.phases?.map((phase, pIndex) => (
+              <div key={phase.phase_number} className="conduit-phase-node">
+                {/* Node Anchor Badge on the left spine */}
+                <div className="conduit-node-anchor">
+                  0{pIndex + 1}
                 </div>
 
-                <h4 className="phase-title">{phase.title}</h4>
-                <p className="phase-summary">{phase.summary}</p>
-
-                {/* Checkable topics list */}
-                <div className="phase-topics-box">
-                  <div className="phase-topics-title">Topics to Master (Click to track progress):</div>
-                  <div className="topics-checklist">
-                    {phase.topics?.map((topic, tIdx) => {
-                      const topicKey = `${roadmapData.course}_P${phase.phase_number}_T${tIdx}`;
-                      const isChecked = Boolean(checkedTopics[topicKey]);
-                      return (
-                        <label
-                          key={tIdx}
-                          className={`topic-checkbox-item ${isChecked ? "checked" : ""}`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => handleToggleTopic(topicKey)}
-                          />
-                          <span>{topic}</span>
-                        </label>
-                      );
-                    })}
+                {/* Milestone Phase Card */}
+                <div className="phase-milestone-card">
+                  <div className="phase-card-header">
+                    <span className="phase-status-pill">
+                      Phase 0{phase.phase_number} Milestone
+                    </span>
+                    <span className="phase-time-pill">{phase.timeframe}</span>
                   </div>
+
+                  <h4 className="phase-name-heading">{phase.title}</h4>
+                  <p className="phase-desc-p">{phase.summary}</p>
+
+                  {/* Modules Checklist Frame */}
+                  <div className="modules-checklist-frame">
+                    <div className="modules-frame-title">Core Skills to Master (Interactive Checklist):</div>
+                    <div className="modules-grid">
+                      {phase.topics?.map((topic, tIdx) => {
+                        const topicKey = `${roadmapData.course}_P${phase.phase_number}_T${tIdx}`;
+                        const isChecked = Boolean(checkedTopics[topicKey]);
+                        return (
+                          <label
+                            key={tIdx}
+                            className={`module-item-label ${isChecked ? "checked" : ""}`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => handleToggleTopic(topicKey)}
+                            />
+                            <span>{topic}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Hands-On Project Showcase Card (Terminal Style) */}
+                  {phase.hands_on_project && (
+                    <div className="project-terminal-card">
+                      <div className="terminal-badge-tag">
+                        <span>⚡</span> Production Deliverable // Capstone Project
+                      </div>
+                      <div className="terminal-project-title">{phase.hands_on_project.title}</div>
+                      <p className="terminal-project-desc">{phase.hands_on_project.description}</p>
+                    </div>
+                  )}
                 </div>
-
-                {/* Hands-On Production Project */}
-                {phase.hands_on_project && (
-                  <div className="phase-project-box">
-                    <div className="project-badge">⚡ Real-World Production Deliverable</div>
-                    <div className="project-title">{phase.hands_on_project.title}</div>
-                    <p className="project-desc">{phase.hands_on_project.description}</p>
-                  </div>
-                )}
               </div>
             ))}
           </div>
 
-          {/* Career & Salary Insights Panel */}
+          {/* Career & Salary Command Matrix */}
           {roadmapData.career_outcomes && (
-            <div className="career-intel-panel">
-              <div className="career-intel-header">
-                <span>💼</span> Career Outcomes & Industry Positioning
+            <div className="career-command-matrix">
+              <div className="matrix-header">
+                <span>💼</span> Career Matrix &amp; Market Intelligence
               </div>
 
-              <div className="career-stats-row">
-                <div className="stat-box">
-                  <div className="stat-title">Target Industry Compensation</div>
-                  <div className="stat-value">{roadmapData.career_outcomes.avg_salary}</div>
+              <div className="matrix-stats-grid">
+                <div className="metric-hud-box">
+                  <div className="metric-hud-title">Target Industry Compensation</div>
+                  <div className="metric-hud-value">{roadmapData.career_outcomes.avg_salary}</div>
                 </div>
-                <div className="stat-box">
-                  <div className="stat-title">Market Demand Rating</div>
-                  <div className="stat-value">{roadmapData.career_outcomes.industry_demand}</div>
+                <div className="metric-hud-box">
+                  <div className="metric-hud-title">Market Demand Rating</div>
+                  <div className="metric-hud-value">{roadmapData.career_outcomes.industry_demand}</div>
                 </div>
               </div>
 
-              <div className="roles-chips-flex">
+              <div className="roles-capsules-flow">
                 {roadmapData.career_outcomes.job_roles?.map((role, rIdx) => (
-                  <span key={rIdx} className="role-chip">
+                  <span key={rIdx} className="role-badge-pill">
                     👔 {role}
                   </span>
                 ))}
               </div>
 
               {roadmapData.pro_tips && (
-                <ul className="pro-tips-list">
+                <ul className="tips-bullet-list">
                   {roadmapData.pro_tips.map((tip, idx) => (
-                    <li key={idx} className="pro-tip-item">
-                      <span className="bulb">💡</span>
+                    <li key={idx} className="tip-bullet-row">
+                      <span className="bulb-glyph">💡</span>
                       <span>{tip}</span>
                     </li>
                   ))}
@@ -510,7 +522,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="roadmap-toast">
+        <div className="velfire-toast">
           {toastMessage}
         </div>
       )}
