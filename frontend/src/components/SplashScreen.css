@@ -1,0 +1,439 @@
+/* =========================================================
+   VELFIRE ULTRA-PREMIUM CINEMATIC SPLASH SCREEN
+   ========================================================= */
+
+.velfire-splash-root {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 99999;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 50% 45%, #08281d 0%, #03130e 45%, #020705 100%);
+  color: #f8fafc;
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  user-select: none;
+  cursor: pointer;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.velfire-splash-root.exiting {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* Ambient glow orb behind logo */
+.splash-ambient-core {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(320px, 60vw, 750px);
+  height: clamp(320px, 60vw, 750px);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.12) 40%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  animation: pulseCore 3.5s ease-in-out infinite alternate;
+}
+
+.splash-ambient-ring {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(280px, 50vw, 620px);
+  height: clamp(280px, 50vw, 620px);
+  border-radius: 50%;
+  border: 1px dashed rgba(52, 211, 153, 0.2);
+  pointer-events: none;
+  animation: rotateRing 24s linear infinite;
+}
+
+.splash-ambient-ring-inner {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(200px, 36vw, 460px);
+  height: clamp(200px, 36vw, 460px);
+  border-radius: 50%;
+  border: 1px solid rgba(250, 204, 21, 0.15);
+  pointer-events: none;
+  animation: rotateRingRev 18s linear infinite;
+}
+
+/* Subtle particle embers rising */
+.splash-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.splash-particle {
+  position: absolute;
+  bottom: -20px;
+  background: radial-gradient(circle, #6ee7b7 0%, rgba(16, 185, 129, 0.4) 60%, transparent 100%);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatEmber linear infinite;
+}
+
+/* Central Stage Container */
+.splash-stage {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 900px;
+}
+
+/* Top Badge */
+.splash-badge-wrapper {
+  opacity: 0;
+  transform: translateY(-12px);
+  animation: splashFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  margin-bottom: 24px;
+}
+
+.splash-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  backdrop-filter: blur(12px);
+  color: #a7f3d0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.splash-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399, 0 0 16px #34d399;
+  animation: pulseDot 1.6s ease-in-out infinite;
+}
+
+/* Main VELFIRE Wordmark Container */
+.splash-wordmark {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(4px, 1.2vw, 14px);
+  position: relative;
+  perspective: 1000px;
+  margin-bottom: 20px;
+}
+
+/* One by One Letter Styling */
+.splash-char {
+  display: inline-block;
+  font-family: 'Orbitron', 'Syne', sans-serif;
+  font-size: clamp(48px, 11vw, 110px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: clamp(1px, 0.5vw, 6px);
+  
+  /* Metallic emerald-gold gradient fill */
+  background: linear-gradient(180deg, #ffffff 0%, #a7f3d0 35%, #10b981 70%, #047857 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* Initial hidden state before drop-in */
+  opacity: 0;
+  transform: translateY(35px) scale(0.65) rotateX(25deg);
+  filter: blur(8px);
+  
+  /* Cinematic bounce & snap entrance */
+  animation: letterDropIn 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  
+  position: relative;
+}
+
+/* When letter lands, it gains glowing drop-shadow */
+.splash-char.landed {
+  filter: drop-shadow(0 0 24px rgba(16, 185, 129, 0.55)) drop-shadow(0 0 60px rgba(5, 150, 105, 0.3));
+}
+
+/* Gold accent highlight on V and E letters */
+.splash-char[data-char="V"],
+.splash-char[data-char="F"] {
+  background: linear-gradient(180deg, #ffffff 0%, #fef08a 35%, #10b981 75%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Radiant Shimmer Sweep across whole word once all letters land */
+.splash-shimmer-layer {
+  position: absolute;
+  inset: -15% -20%;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 48%,
+    rgba(110, 231, 183, 0.7) 50%,
+    rgba(255, 255, 255, 0.4) 52%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  opacity: 0;
+  animation: shimmerSweep 1.1s cubic-bezier(0.4, 0, 0.2, 1) 1.7s forwards;
+  mix-blend-mode: screen;
+}
+
+/* Tagline below logo */
+.splash-tagline-wrapper {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: splashFadeIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.5s forwards;
+  margin-bottom: 36px;
+}
+
+.splash-tagline {
+  font-size: clamp(12px, 2.2vw, 16px);
+  font-weight: 700;
+  letter-spacing: clamp(3px, 0.8vw, 8px);
+  text-transform: uppercase;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.splash-tagline-accent {
+  background: linear-gradient(135deg, #34d399 0%, #facc15 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.splash-tagline-line {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(52, 211, 153, 0.4), transparent);
+}
+.splash-tagline-line.left {
+  background: linear-gradient(270deg, rgba(52, 211, 153, 0.4), transparent);
+}
+
+/* Bottom Loading Bar & System Status */
+.splash-footer {
+  position: absolute;
+  bottom: clamp(28px, 6vh, 48px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: clamp(240px, 80vw, 360px);
+  z-index: 10;
+  opacity: 0;
+  animation: splashFadeIn 0.8s ease 0.6s forwards;
+}
+
+.splash-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(52, 211, 153, 0.15);
+}
+
+.splash-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #059669 0%, #10b981 50%, #fde047 100%);
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.8);
+  border-radius: 9999px;
+  transition: width 0.1s linear;
+}
+
+.splash-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 11px;
+  color: #64748b;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.splash-status-text {
+  color: #a7f3d0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.splash-skip-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.splash-skip-btn:hover {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: #ecfdf5;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.3);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   KEYFRAME ANIMATIONS
+   ========================================================= */
+
+@keyframes letterDropIn {
+  0% {
+    opacity: 0;
+    transform: translateY(38px) scale(0.65) rotateX(25deg);
+    filter: blur(10px);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.15) rotateX(-5deg);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1) rotateX(0deg);
+    filter: blur(0px);
+  }
+}
+
+@keyframes shimmerSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%) skewX(-20deg);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(120%) skewX(-20deg);
+  }
+}
+
+@keyframes splashFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseCore {
+  from {
+    transform: translate(-50%, -50%) scale(0.92);
+    opacity: 0.65;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1.12);
+    opacity: 1;
+  }
+}
+
+@keyframes rotateRing {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes rotateRingRev {
+  from {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.6;
+  }
+}
+
+@keyframes floatEmber {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-105vh) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .splash-stage {
+    padding: 0 16px;
+  }
+
+  .splash-wordmark {
+    gap: 3px;
+  }
+
+  .splash-badge {
+    padding: 5px 12px;
+    font-size: 10px;
+    letter-spacing: 1.8px;
+  }
+
+  .splash-tagline {
+    font-size: 11px;
+    letter-spacing: 3px;
+  }
+}

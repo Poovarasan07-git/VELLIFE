@@ -5,6 +5,7 @@ import TermsPolicy from "./pages/TermsPolicy";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Chatbot from "./pages/Chatbot";
+import SplashScreen from "./components/SplashScreen";
 import "./App.css";
 
 function App() {
@@ -29,12 +30,6 @@ function App() {
     // Clear user state so authentication is always required on entry
     setCurrentUser(null);
     localStorage.removeItem("velfire_user");
-
-    const timer = setTimeout(() => {
-      setCurrentView("login");
-    }, 1800);
-
-    return () => clearTimeout(timer);
   }, []);
 
   const handleLoginSuccess = (user) => {
@@ -143,28 +138,7 @@ function App() {
     );
   }
 
-  const letters = "VELFIRE".split("");
-
-  return (
-    <div
-      className="splash-page"
-      onClick={() => setCurrentView("login")}
-      style={{ cursor: "pointer" }}
-      title="Click anywhere to continue to Login"
-    >
-      <div className="logo">
-        {letters.map((letter, index) => (
-          <span
-            key={index}
-            className="logo-letter"
-            style={{ animationDelay: `${index * 0.15}s` }}
-          >
-            {letter}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
+  return <SplashScreen onComplete={() => setCurrentView("login")} />;
 }
 
 export default App;
