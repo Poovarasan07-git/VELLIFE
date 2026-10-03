@@ -140,7 +140,7 @@
   gap: clamp(4px, 1.2vw, 14px);
   position: relative;
   perspective: 1000px;
-  margin-bottom: 20px;
+  margin: 0;
 }
 
 /* One by One Letter Styling */

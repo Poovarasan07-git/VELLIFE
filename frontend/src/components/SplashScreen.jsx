@@ -4,8 +4,6 @@ import "./SplashScreen.css";
 const LETTERS = ["V", "E", "L", "F", "I", "R", "E"];
 
 export default function SplashScreen({ onComplete }) {
-  const [progress, setProgress] = useState(0);
-  const [statusText, setStatusText] = useState("INITIALIZING CORE...");
   const [isExiting, setIsExiting] = useState(false);
 
   // Generate deterministic particles for ambient luxury background
@@ -24,36 +22,16 @@ export default function SplashScreen({ onComplete }) {
     setIsExiting(true);
     setTimeout(() => {
       onComplete?.();
-    }, 550);
+    }, 500);
   };
 
   useEffect(() => {
-    // Progress bar animation & dynamic status messages
-    const startTime = Date.now();
-    const duration = 3400; // 3.4 seconds total showcase
+    // Total duration: allows letters to land one-by-one + shimmer sweep
+    const timer = setTimeout(() => {
+      handleFinish();
+    }, 2500);
 
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const currentPct = Math.min(100, Math.round((elapsed / duration) * 100));
-      setProgress(currentPct);
-
-      if (currentPct < 35) {
-        setStatusText("INITIALIZING NEURAL CORE...");
-      } else if (currentPct < 70) {
-        setStatusText("LOADING AI CAREER ECOSYSTEM...");
-      } else if (currentPct < 95) {
-        setStatusText("SECURING ENVIRONMENT...");
-      } else {
-        setStatusText("WELCOME TO VELFIRE");
-      }
-
-      if (elapsed >= duration) {
-        clearInterval(interval);
-        handleFinish();
-      }
-    }, 30);
-
-    // Keyboard support: Escape, Space, Enter to quickly skip
+    // Keyboard support: Escape, Space, Enter to skip immediately
     const handleKeyDown = (e) => {
       if (["Escape", "Enter", " "].includes(e.key)) {
         e.preventDefault();
@@ -64,7 +42,7 @@ export default function SplashScreen({ onComplete }) {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      clearInterval(interval);
+      clearTimeout(timer);
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
@@ -73,7 +51,7 @@ export default function SplashScreen({ onComplete }) {
     <div
       className={`velfire-splash-root ${isExiting ? "exiting" : ""}`}
       onClick={handleFinish}
-      title="Click anywhere to skip intro"
+      title="Click anywhere to continue"
     >
       {/* Ambient core glow & rotating rings */}
       <div className="splash-ambient-core" />
@@ -97,21 +75,12 @@ export default function SplashScreen({ onComplete }) {
         ))}
       </div>
 
-      {/* Main Center Stage */}
+      {/* Main Center Stage: ONLY the animated title */}
       <div className="splash-stage">
-        {/* Top futuristic badge */}
-        <div className="splash-badge-wrapper">
-          <span className="splash-badge">
-            <span className="splash-badge-dot" />
-            VELFIRE SYSTEM v2.0
-          </span>
-        </div>
-
-        {/* Logo Wordmark: Letters arrive one by one */}
         <div className="splash-wordmark">
           {LETTERS.map((char, index) => {
-            // Sequential delay: 0.28s, 0.49s, 0.70s, 0.91s, 1.12s, 1.33s, 1.54s
-            const delaySec = 0.28 + index * 0.21;
+            // Sequential delay: 0.25s, 0.45s, 0.65s, 0.85s, 1.05s, 1.25s, 1.45s
+            const delaySec = 0.25 + index * 0.2;
             return (
               <span
                 key={index}
@@ -128,38 +97,6 @@ export default function SplashScreen({ onComplete }) {
 
           {/* Shimmer sweep layer across whole word after letters land */}
           <div className="splash-shimmer-layer" />
-        </div>
-
-        {/* Tagline */}
-        <div className="splash-tagline-wrapper">
-          <div className="splash-tagline">
-            <span className="splash-tagline-line left" />
-            <span>AI CAREER <span className="splash-tagline-accent">OPERATING SYSTEM</span></span>
-            <span className="splash-tagline-line" />
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Progress & Skip row */}
-      <div className="splash-footer" onClick={(e) => e.stopPropagation()}>
-        <div className="splash-progress-track">
-          <div
-            className="splash-progress-bar"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        <div className="splash-status-row">
-          <span className="splash-status-text">
-            <span>●</span> {statusText}
-          </span>
-          <button
-            type="button"
-            className="splash-skip-btn"
-            onClick={handleFinish}
-          >
-            Skip Intro →
-          </button>
         </div>
       </div>
     </div>
