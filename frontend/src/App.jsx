@@ -13,22 +13,26 @@ function App() {
   const [createdEmail, setCreatedEmail] = useState("");
 
   useEffect(() => {
-    // Check if user is already saved in localStorage for session persistence
+    // Always show the login page before entering the website
+    // Prefill the email if previously saved, but require logging in
     const savedUser = localStorage.getItem("velfire_user");
-    
-    const timer = setTimeout(() => {
-      if (savedUser) {
-        try {
-          const userObj = JSON.parse(savedUser);
-          setCurrentUser(userObj);
-          setCurrentView("home");
-          return;
-        } catch (e) {
-          localStorage.removeItem("velfire_user");
+    if (savedUser) {
+      try {
+        const userObj = JSON.parse(savedUser);
+        if (userObj?.email) {
+          setCreatedEmail(userObj.email);
         }
+      } catch (e) {
+        localStorage.removeItem("velfire_user");
       }
+    }
+    // Clear user state so authentication is always required on entry
+    setCurrentUser(null);
+    localStorage.removeItem("velfire_user");
+
+    const timer = setTimeout(() => {
       setCurrentView("login");
-    }, 2500);
+    }, 1800);
 
     return () => clearTimeout(timer);
   }, []);
@@ -142,7 +146,12 @@ function App() {
   const letters = "VELFIRE".split("");
 
   return (
-    <div className="splash-page">
+    <div
+      className="splash-page"
+      onClick={() => setCurrentView("login")}
+      style={{ cursor: "pointer" }}
+      title="Click anywhere to continue to Login"
+    >
       <div className="logo">
         {letters.map((letter, index) => (
           <span
