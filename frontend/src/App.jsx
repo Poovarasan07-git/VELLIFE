@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Chatbot from "./pages/Chatbot";
 import SplashScreen from "./components/SplashScreen";
+import AnimatedCursor from "./components/AnimatedCursor";
 import "./App.css";
 
 function App() {
@@ -78,67 +79,76 @@ function App() {
     setCurrentView("chatbot");
   };
 
-  if (currentView === "login") {
-    return (
-      <Login
-        onNavigateToSignup={handleNavigateToSignup}
-        onLoginSuccess={handleLoginSuccess}
-        initialEmail={createdEmail}
-      />
-    );
-  }
+  const renderCurrentView = () => {
+    if (currentView === "login") {
+      return (
+        <Login
+          onNavigateToSignup={handleNavigateToSignup}
+          onLoginSuccess={handleLoginSuccess}
+          initialEmail={createdEmail}
+        />
+      );
+    }
 
-  if (currentView === "signup") {
-    return (
-      <Signup
-        onNavigateToLogin={handleNavigateToLogin}
-        onSignupSuccess={handleSignupSuccess}
-      />
-    );
-  }
+    if (currentView === "signup") {
+      return (
+        <Signup
+          onNavigateToLogin={handleNavigateToLogin}
+          onSignupSuccess={handleSignupSuccess}
+        />
+      );
+    }
 
-  if (currentView === "terms_policy") {
-    return (
-      <TermsPolicy
-        createdEmail={createdEmail}
-        onAcceptTerms={handleAcceptTerms}
-      />
-    );
-  }
+    if (currentView === "terms_policy") {
+      return (
+        <TermsPolicy
+          createdEmail={createdEmail}
+          onAcceptTerms={handleAcceptTerms}
+        />
+      );
+    }
 
-  if (currentView === "chatbot" && currentUser) {
-    return (
-      <Chatbot
-        user={currentUser}
-        onLogout={handleLogout}
-        onBackToDashboard={() => setCurrentView("dashboard")}
-      />
-    );
-  }
+    if (currentView === "chatbot" && currentUser) {
+      return (
+        <Chatbot
+          user={currentUser}
+          onLogout={handleLogout}
+          onBackToDashboard={() => setCurrentView("dashboard")}
+        />
+      );
+    }
 
-  if (currentView === "dashboard" && currentUser) {
-    return (
-      <Dashboard
-        user={currentUser}
-        onLogout={handleLogout}
-        onBackToHome={() => setCurrentView("home")}
-        onOpenChatbot={handleOpenChatbot}
-      />
-    );
-  }
+    if (currentView === "dashboard" && currentUser) {
+      return (
+        <Dashboard
+          user={currentUser}
+          onLogout={handleLogout}
+          onBackToHome={() => setCurrentView("home")}
+          onOpenChatbot={handleOpenChatbot}
+        />
+      );
+    }
 
-  if (currentView === "home" && currentUser) {
-    return (
-      <Home
-        user={currentUser}
-        onLogout={handleLogout}
-        onUpdateUser={handleUpdateUser}
-        onOpenDashboard={handleOpenDashboard}
-      />
-    );
-  }
+    if (currentView === "home" && currentUser) {
+      return (
+        <Home
+          user={currentUser}
+          onLogout={handleLogout}
+          onUpdateUser={handleUpdateUser}
+          onOpenDashboard={handleOpenDashboard}
+        />
+      );
+    }
 
-  return <SplashScreen onComplete={() => setCurrentView("login")} />;
+    return <SplashScreen onComplete={() => setCurrentView("login")} />;
+  };
+
+  return (
+    <>
+      <AnimatedCursor />
+      {renderCurrentView()}
+    </>
+  );
 }
 
 export default App;
