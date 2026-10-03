@@ -1019,107 +1019,95 @@
 }
 
 /* ==========================================================================
-   VELFIRE LEARNING HUB - LUXURY FRENCH BUTTER COLOR PALETTE
+   VELFIRE LEARNING HUB: BUTTER COLOR & GREEN COLOR MIX BACKGROUND
    ========================================================================== */
-
-.portal-modal-overlay.butter-theme {
-  background: #fefce8 !important;
+.learning-full-modal.learning-hub-choice-mode {
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(254, 240, 138, 0.5) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(52, 211, 153, 0.45) 0%, transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(4, 120, 87, 0.4) 0%, transparent 60%),
+    linear-gradient(135deg, #fefce8 0%, #fef08a 22%, #bbf7d0 55%, #10b981 85%, #047857 100%) !important;
+  color: #022c22 !important;
 }
 
-.learning-full-modal.learning-hub-butter {
-  background: radial-gradient(circle at 50% 15%, #fffdf0 0%, #fefce8 35%, #fef9c3 75%, #fef08a 100%) !important;
-  color: #1c1917 !important;
+.learning-hub-choice-mode .portal-modal-header {
+  background: rgba(254, 252, 232, 0.85) !important;
+  backdrop-filter: blur(18px) !important;
+  border-bottom: 1.5px solid rgba(4, 120, 87, 0.25) !important;
 }
 
-.learning-hub-butter .portal-modal-header {
-  background: rgba(254, 252, 232, 0.92) !important;
-  backdrop-filter: blur(20px);
-  border-bottom: 1.5px solid rgba(217, 119, 6, 0.2) !important;
-}
-
-.learning-hub-butter .btn-return-dashboard {
-  background: linear-gradient(135deg, #78350f 0%, #451a03 100%) !important;
+.learning-hub-choice-mode .btn-return-dashboard {
+  background: linear-gradient(135deg, #047857 0%, #064e3b 100%) !important;
   color: #fefce8 !important;
-  border: 1px solid #b45309 !important;
-  box-shadow: 0 4px 14px rgba(120, 53, 15, 0.25);
+  border: 1.5px solid #059669 !important;
+  box-shadow: 0 4px 15px rgba(4, 120, 87, 0.3) !important;
 }
 
-.learning-hub-butter .btn-return-dashboard:hover {
-  background: linear-gradient(135deg, #92400e 0%, #78350f 100%) !important;
+.learning-hub-choice-mode .full-page-close-btn {
+  background: rgba(4, 120, 87, 0.15) !important;
+  color: #064e3b !important;
+  border: 1.5px solid rgba(4, 120, 87, 0.3) !important;
 }
 
-.learning-hub-butter .mode-switch-btn {
-  background: rgba(255, 255, 255, 0.8) !important;
-  color: #78350f !important;
-  border: 1px solid rgba(217, 119, 6, 0.3) !important;
+.learning-hub-choice-mode .full-page-close-btn:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
 }
 
-.learning-hub-butter .mode-switch-btn:hover {
-  background: rgba(254, 243, 199, 0.9) !important;
-  color: #451a03 !important;
+.learning-hub-choice-mode .domain-dropdown {
+  background: #064e3b !important;
+  color: #fef08a !important;
+  border: 1.5px solid #10b981 !important;
 }
 
-.learning-hub-butter .mode-switch-btn.active {
-  background: #78350f !important;
-  color: #fefce8 !important;
-  box-shadow: 0 4px 14px rgba(120, 53, 15, 0.3) !important;
+.learning-hub-choice-mode .mode-switch-btn {
+  background: rgba(4, 120, 87, 0.12) !important;
+  color: #064e3b !important;
+  border: 1px solid rgba(4, 120, 87, 0.25) !important;
 }
 
-.learning-hub-butter .domain-dropdown {
-  background: #ffffff !important;
-  color: #451a03 !important;
-  border: 1.5px solid rgba(217, 119, 6, 0.35) !important;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);
-}
-
-.learning-hub-butter .full-page-close-btn {
-  background: rgba(255, 255, 255, 0.85) !important;
-  color: #78350f !important;
-  border: 1px solid rgba(217, 119, 6, 0.3) !important;
-}
-
-.learning-hub-butter .full-page-close-btn:hover {
-  background: #fed7aa !important;
-  color: #9a3412 !important;
+.learning-hub-choice-mode .mode-switch-btn.active {
+  background: #047857 !important;
+  color: #fef08a !important;
+  border-color: #10b981 !important;
 }
 
 .learning-choice-container {
   flex: 1;
   overflow-y: auto;
   padding: 48px 40px;
-  max-width: 1240px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: transparent;
 }
 
 .choice-hero-heading {
   text-align: center;
-  margin-bottom: 42px;
+  margin-bottom: 40px;
 }
 
 .choice-hero-heading h2 {
-  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(28px, 4vw, 42px);
+  font-family: 'Orbitron', 'Outfit', sans-serif;
+  font-size: clamp(32px, 5vw, 46px);
   font-weight: 900;
   margin: 0 0 12px 0;
-  background: linear-gradient(135deg, #1c1917 0%, #78350f 45%, #b45309 85%, #d97706 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  filter: drop-shadow(0 2px 10px rgba(180, 83, 9, 0.15));
-  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #022c22 0%, #064e3b 45%, #047857 75%, #a16207 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.08));
 }
 
 .choice-hero-heading p {
-  font-size: 17px;
-  color: #854d0e !important;
+  font-size: 16px;
   font-weight: 700;
+  color: #064e3b;
   margin: 0;
-  max-width: 680px;
+  max-width: 650px;
 }
 
 .choice-cards-grid {
@@ -1137,29 +1125,30 @@
 
 .choice-card {
   position: relative;
-  background: linear-gradient(145deg, #ffffff 0%, #fffdf2 50%, #fef9c3 100%) !important;
-  border: 2px solid rgba(217, 119, 6, 0.28) !important;
+  background: linear-gradient(145deg, rgba(2, 44, 34, 0.94) 0%, rgba(6, 78, 59, 0.96) 100%);
+  border: 2px solid #fde047; /* Butter gold border */
   border-radius: 28px;
   padding: 38px 34px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 20px 45px rgba(180, 83, 9, 0.1), 0 4px 18px rgba(253, 224, 71, 0.2) !important;
+  box-shadow: 0 20px 45px rgba(4, 120, 87, 0.35), inset 0 1px 0 rgba(254, 240, 138, 0.4);
+  backdrop-filter: blur(20px);
 }
 
 .choice-card:hover {
   transform: translateY(-8px) scale(1.02);
-  border-color: #d97706 !important;
-  box-shadow: 0 28px 65px rgba(180, 83, 9, 0.18), 0 6px 24px rgba(253, 224, 71, 0.35) !important;
+  border-color: #fef08a;
+  box-shadow: 0 28px 60px rgba(4, 120, 87, 0.5), 0 0 30px rgba(254, 240, 138, 0.45);
 }
 
 .card-roadmap-choice {
-  border-color: rgba(16, 185, 129, 0.4) !important;
+  border-color: #fde047;
 }
 
 .card-course-choice {
-  border-color: rgba(245, 158, 11, 0.45) !important;
+  border-color: #fef08a;
 }
 
 .choice-badge {
@@ -1174,56 +1163,52 @@
 }
 
 .badge-roadmap {
-  background: #dcfce7 !important;
-  color: #15803d !important;
-  border: 1.5px solid #86efac !important;
+  background: rgba(254, 240, 138, 0.2);
+  color: #fef08a;
+  border: 1px solid #fde047;
 }
 
 .badge-course {
-  background: #fef3c7 !important;
-  color: #b45309 !important;
-  border: 1.5px solid #fcd34d !important;
+  background: rgba(134, 239, 172, 0.25);
+  color: #86efac;
+  border: 1px solid #86efac;
 }
 
 .choice-icon-hero {
-  font-size: 56px;
-  margin-bottom: 18px;
+  font-size: 54px;
+  margin-bottom: 16px;
 }
 
 .choice-card h3 {
   font-size: 26px;
   font-weight: 900;
-  margin: 0 0 10px 0;
-  color: #1c1917 !important;
-  font-family: 'Outfit', sans-serif;
+  margin: 0 0 12px 0;
+  background: linear-gradient(135deg, #ffffff 0%, #fef08a 60%, #86efac 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .choice-card p {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.65;
-  color: #451a03 !important;
-  font-weight: 500;
+  color: #d1fae5;
   margin: 0 0 22px 0;
 }
 
 .choice-bullet-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 8px;
+  margin-bottom: 28px;
 }
 
 .choice-bullet-list span {
   font-size: 13px;
   font-weight: 700;
-  color: #78350f !important;
-  background: rgba(254, 243, 199, 0.9) !important;
-  border: 1px solid rgba(245, 158, 11, 0.3) !important;
-  padding: 8px 14px;
-  border-radius: 12px;
+  color: #fef08a; /* Butter gold bullet text */
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .btn-choice-action {
@@ -1232,36 +1217,35 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 16px 28px;
+  padding: 14px 24px;
   border-radius: 16px;
   border: none;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   transition: all 0.25s ease;
-  letter-spacing: 0.5px;
 }
 
 .btn-roadmap-choice {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
-  color: #ffffff !important;
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35) !important;
+  background: linear-gradient(135deg, #fde047 0%, #facc15 50%, #10b981 100%);
+  color: #022c22;
+  box-shadow: 0 8px 24px rgba(250, 204, 21, 0.35);
 }
 
 .btn-roadmap-choice:hover {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%) !important;
-  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5) !important;
+  filter: brightness(1.08);
+  box-shadow: 0 12px 30px rgba(250, 204, 21, 0.5);
 }
 
 .btn-course-choice {
-  background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #f59e0b 100%) !important;
-  color: #ffffff !important;
-  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.35) !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #fde047 100%);
+  color: #022c22;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
 }
 
 .btn-course-choice:hover {
-  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
-  box-shadow: 0 12px 30px rgba(217, 119, 6, 0.5) !important;
+  filter: brightness(1.08);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5);
 }
 
 /* ROADMAP GENERATOR CONTROL CARD */
