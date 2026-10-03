@@ -13,19 +13,6 @@ import uvicorn
 # Database file path
 DB_PATH = os.path.join(os.path.dirname(__file__), "vellife.db")
 
-# Load environment variables from .env if present
-ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
-if os.path.exists(ENV_PATH):
-    try:
-        with open(ENV_PATH, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    k, v = line.split("=", 1)
-                    os.environ[k.strip()] = v.strip().strip("'\"")
-    except Exception as e:
-        print(f"Error loading .env file: {e}")
-
 app = FastAPI(title="VELFIRE API", version="1.0.0")
 
 # Enable CORS for React frontend
@@ -276,139 +263,35 @@ def clean_user_name(raw_name: str) -> str:
         s = s[:-3]
     return s.capitalize() if s else "Poovarasan"
 
-def fetch_live_llm_response(user_name: str, message: str, model_choice: str = "VELFIRE GPT-4o") -> str:
-    # Customize system prompt based on the selected Model
-    if "Code" in model_choice or "Pro" in model_choice:
-        system_prompt = (
-            f"You are WILDFIRE Code & System Pro, an elite senior software architect and AI engineer. "
-            f"Address the user naturally as '{user_name}'. "
-            f"Provide production-grade, highly optimized code snippets, clean directory structures, "
-            f"and robust error-handling logic with clear markdown code blocks."
-        )
-    elif "Mini" in model_choice:
-        system_prompt = (
-            f"You are WILDFIRE GPT-4o Mini, a ultra-fast, concise, and direct AI assistant. "
-            f"Address the user as '{user_name}'. "
-            f"Provide clear, quick, high-speed bullet points and direct answers without unnecessary fluff."
-        )
-    else: # Default VELFIRE GPT-4o
-        system_prompt = (
-            f"You are WILDFIRE GPT-4o, a state-of-the-art intelligent AI mentor modeled after ChatGPT. "
-            f"Address the user naturally as '{user_name}'. "
-            f"Provide rich, comprehensive, beautifully formatted answers with headings, bullet points, tables, and code where relevant."
-        )
-
-    # API Keys from environment / .env
-    gemini_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    groq_key = os.environ.get("GROQ_API_KEY")
-    openai_key = os.environ.get("OPENAI_API_KEY")
-
-    # Map selected model to provider-specific model IDs
-    gemini_model_id = "gemini-1.5-pro" if "Pro" in model_choice or "GPT-4o" in model_choice else "gemini-1.5-flash"
-    groq_model_id = "llama-3.3-70b-versatile" if "Pro" in model_choice or "GPT-4o" in model_choice else "llama-3.1-8b-instant"
-    openai_model_id = "gpt-4o" if "4o" in model_choice and "Mini" not in model_choice else "gpt-4o-mini"
-
-    # =========================================================================
-    # TIER 1: GOOGLE GEMINI API (Primary Choice if Key Available)
-    # =========================================================================
-    if gemini_key:
-        try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model_id}:generateContent?key={gemini_key}"
-            payload = {
-                "contents": [
-                    {
-                        "role": "user",
-                        "parts": [{"text": f"{system_prompt}\n\nUser Question: {message}"}]
-                    }
-                ]
-            }
-            data = json.dumps(payload).encode("utf-8")
-            req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-            with urllib.request.urlopen(req, timeout=10) as res:
-                if res.status == 200:
-                    resp_json = json.loads(res.read().decode("utf-8"))
-                    candidates = resp_json.get("candidates", [])
-                    if candidates:
-                        parts = candidates[0].get("content", {}).get("parts", [])
-                        if parts and parts[0].get("text"):
-                            print(f"✅ Served via Gemini API ({gemini_model_id})")
-                            return parts[0]["text"].strip()
-        except Exception as e:
-            print(f"⚠️ Gemini API fallback triggered: {e}")
-
-    # =========================================================================
-    # TIER 2: GROQ API (Ultra-Fast Llama-3.3 / Llama-3.1 Fallback)
-    # =========================================================================
-    if groq_key:
-        try:
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            payload = {
-                "model": groq_model_id,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": message}
-                ]
-            }
-            data = json.dumps(payload).encode("utf-8")
-            req = urllib.request.Request(url, data=data, headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {groq_key}"
-            })
-            with urllib.request.urlopen(req, timeout=10) as res:
-                if res.status == 200:
-                    resp_json = json.loads(res.read().decode("utf-8"))
-                    choices = resp_json.get("choices", [])
-                    if choices:
-                        print(f"✅ Served via Groq API ({groq_model_id})")
-                        return choices[0]["message"]["content"].strip()
-        except Exception as e:
-            print(f"⚠️ Groq API fallback triggered: {e}")
-
-    # =========================================================================
-    # TIER 3: OPENAI API (GPT-4o / GPT-4o-Mini Fallback)
-    # =========================================================================
-    if openai_key:
-        try:
-            url = "https://api.openai.com/v1/chat/completions"
-            payload = {
-                "model": openai_model_id,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": message}
-                ]
-            }
-            data = json.dumps(payload).encode("utf-8")
-            req = urllib.request.Request(url, data=data, headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {openai_key}"
-            })
-            with urllib.request.urlopen(req, timeout=10) as res:
-                if res.status == 200:
-                    resp_json = json.loads(res.read().decode("utf-8"))
-                    choices = resp_json.get("choices", [])
-                    if choices:
-                        print(f"✅ Served via OpenAI API ({openai_model_id})")
-                        return choices[0]["message"]["content"].strip()
-        except Exception as e:
-            print(f"⚠️ OpenAI API fallback triggered: {e}")
-
-    # =========================================================================
-    # TIER 4: FREE PUBLIC LLM API (Pollinations GET stream)
-    # =========================================================================
+def fetch_live_llm_response(user_name: str, message: str) -> str:
     try:
-        import urllib.parse
-        encoded_prompt = urllib.parse.quote(f"System: {system_prompt}\nUser: {message}")
-        url = f"https://text.pollinations.ai/{encoded_prompt}"
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=6) as res:
+        url = "https://text.pollinations.ai/"
+        system_prompt = (
+            f"You are VELFIRE AI, a real-time intelligent AI assistant modeled after ChatGPT. "
+            f"Address the user naturally as '{user_name}'. "
+            f"Provide rich, thorough, beautifully structured Markdown answers with clear headings, bullet points, tables, and code snippets where relevant. "
+            f"Never output robotic template phrases."
+        )
+        payload = {
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": message}
+            ],
+            "model": "openai"
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(req, timeout=12) as res:
             if res.status == 200:
                 answer = res.read().decode("utf-8").strip()
-                if answer and len(answer) > 15:
-                    print("✅ Served via Free LLM API Stream")
+                if answer and len(answer) > 10:
                     return answer
     except Exception as e:
-        print(f"⚠️ Free LLM Stream fallback triggered: {e}")
-
+        print(f"Live AI fetch exception: {e}")
     return ""
 
 # Request schemas
@@ -457,7 +340,7 @@ def chat_ai(data: ChatRequest):
             }
 
     # E. Query Live LLM for 100% real AI responses on all questions
-    live_reply = fetch_live_llm_response(user_name, message, data.model)
+    live_reply = fetch_live_llm_response(user_name, message)
     if live_reply:
         return {"status": "success", "reply": live_reply}
 

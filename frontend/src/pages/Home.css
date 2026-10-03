@@ -42,14 +42,25 @@
 
 /* Header Brand Logo */
 .brand-logo {
-  font-size: 26px;
+  font-family: 'Orbitron', 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  font-size: 28px;
   font-weight: 900;
-  letter-spacing: 4px;
+  letter-spacing: 5px;
   margin: 0;
-  color: #fefce8;
+  background: linear-gradient(135deg, #ffffff 0%, #34d399 45%, #fde047 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   cursor: pointer;
   white-space: nowrap;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  filter: drop-shadow(0 2px 10px rgba(16, 185, 129, 0.45));
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex;
+  align-items: center;
+}
+
+.brand-logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 4px 18px rgba(253, 224, 71, 0.7));
 }
 
 /* Header Navigation Links */
@@ -203,25 +214,53 @@
 }
 
 .live-dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: #10b981;
-  box-shadow: 0 0 8px #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: genz-pulse 2s infinite;
 }
 
-.hero-heading {
-  font-size: 42px;
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -1px;
+.hero-heading-animated {
+  font-family: 'Outfit', 'Orbitron', 'Plus Jakarta Sans', sans-serif;
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
   margin: 0;
+  min-height: 120px;
+  color: #ffffff;
 }
 
-.text-highlight {
-  background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+.word-reveal-span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px) scale(0.94);
+  animation: wordFadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes wordFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.text-highlight-animated {
+  background: linear-gradient(135deg, #ffffff 0%, #34d399 35%, #38bdf8 70%, #c084fc 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: text-gradient-shift 6s ease infinite;
+  display: inline-block;
 }
 
 .hero-subtext {
@@ -270,23 +309,24 @@
 .btn-get-started {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 32px;
-  border-radius: 14px;
-  border: none;
-  background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+  gap: 12px;
+  padding: 16px 36px;
+  border-radius: 16px;
+  border: 1px solid #34d399;
+  background: linear-gradient(135deg, #047857 0%, #10b981 50%, #059669 100%);
   color: #ffffff;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(4, 120, 87, 0.35);
-  transition: all 0.25s ease;
+  box-shadow: 0 10px 30px rgba(4, 120, 87, 0.45);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 0.3px;
 }
 
 .btn-get-started:hover {
-  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(4, 120, 87, 0.45);
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 36px rgba(16, 185, 129, 0.55);
 }
 
 /* SECONDARY WORKSPACE HOME PAGE */

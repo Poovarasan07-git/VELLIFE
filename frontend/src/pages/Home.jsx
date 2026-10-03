@@ -27,6 +27,22 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard }) {
   const [saveError, setSaveError] = useState("");
   const fileInputRef = useRef(null);
 
+  // Dynamic Animated Title Phrases for Gen-Z Hero Section
+  const heroPhrases = [
+    "Accelerate Your Tech Growth",
+    "Master Full Stack & AI Skills",
+    "Build Production SaaS Projects",
+    "Launch Your Software Career"
+  ];
+  const [phraseIndex, setPhraseIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % heroPhrases.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Sync profile edit state if user prop changes
   useEffect(() => {
     if (user) {
@@ -316,8 +332,17 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard }) {
                   <span className="live-dot"></span> AI CAREER OPERATING SYSTEM
                 </div>
 
-                <h2 className="hero-heading">
-                  Accelerate Your Tech Growth with <span className="text-highlight">VELFIRE OS</span>
+                <h2 className="hero-heading-animated">
+                  {heroPhrases[phraseIndex].split(" ").map((word, wIdx) => (
+                    <span 
+                      key={`${phraseIndex}-${wIdx}`} 
+                      className="word-reveal-span" 
+                      style={{ animationDelay: `${wIdx * 0.12}s` }}
+                    >
+                      {word}{" "}
+                    </span>
+                  ))}
+                  <span className="text-highlight-animated">with VELFIRE OS</span>
                 </h2>
 
                 <p className="hero-subtext">

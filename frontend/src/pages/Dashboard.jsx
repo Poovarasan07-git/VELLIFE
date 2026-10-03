@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
+import VelfireCoursesHub from "../components/courses/VelfireCoursesHub";
+import CurriculumHub from "../components/curriculum/CurriculumHub";
 
 function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -10,11 +12,26 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
   const [activeModal, setActiveModal] = useState(null);
 
   // Learning Portal Sub-Tabs:
-  // 'roadmap' | 'text' | 'recorded' | 'live' | 'assessment' | 'resume_builder' | 'resume_analyzer' | 'mock_test' | 'mock_interview'
-  const [learningTab, setLearningTab] = useState("roadmap");
+  // 'roadmap' | 'full_curriculum' | 'recorded' | 'live' | 'assessment' | 'resume_builder' | 'resume_analyzer' | 'mock_test' | 'mock_interview'
+  const [learningTab, setLearningTab] = useState("full_curriculum");
 
   // Selected Career Domain
   const [selectedDomain, setSelectedDomain] = useState("Data Analyst");
+
+  // Learning Portal Mode: 'choice' (2 buttons choice) | 'roadmap' (VELFIRE Roadmap Generator) | 'course' (VELFIRE Course Hub)
+  const [learningMode, setLearningMode] = useState("choice");
+
+  // Roadmap Generator State
+  const [roadmapTargetLevel, setRoadmapTargetLevel] = useState("Intermediate");
+  const [roadmapDuration, setRoadmapDuration] = useState("3 Months Mastery");
+  const [isGeneratingRoadmap, setIsGeneratingRoadmap] = useState(false);
+
+  const handleGenerateRoadmapAction = () => {
+    setIsGeneratingRoadmap(true);
+    setTimeout(() => {
+      setIsGeneratingRoadmap(false);
+    }, 600);
+  };
 
   // 10 Career Domains Data
   const domainsList = [
@@ -333,7 +350,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
     return "V";
   };
 
-  const handleSendMessage = async (textToSend) => {
+  const handleSendMessage = (textToSend) => {
     const text = textToSend || chatInput;
     if (!text.trim()) return;
 
@@ -346,40 +363,16 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
     setChatMessages((prev) => [...prev, userMsg]);
     if (!textToSend) setChatInput("");
 
-    let replyText = "";
-    try {
-      const displayName = user?.name || (user?.email ? user.email.split("@")[0] : "User");
-      const res = await fetch("http://127.0.0.1:8000/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_name: displayName,
-          message: text,
-          model: "VELFIRE AI",
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.reply) {
-          replyText = data.reply;
-        }
-      }
-    } catch (e) {
-      console.error("Chat API error:", e);
-    }
-
-    if (!replyText) {
-      replyText = `WILDFIRE AI: Great query regarding "${text}"! Visit our Learning Portal for structured roadmaps & domain tests.`;
-    }
-
-    setChatMessages((prev) => [
-      ...prev,
-      {
-        sender: "bot",
-        text: replyText,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      },
-    ]);
+    setTimeout(() => {
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: `WILDFIRE AI: Great query regarding ${text}! Visit our Learning Portal for structured roadmaps & domain tests.`,
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    }, 600);
   };
 
   const filteredJobs = sampleJobs.filter((job) => {
@@ -599,17 +592,46 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
       {/* --- MODAL 2: COURSE & LEARNING PLATFORM --- */}
       {/* ========================================================================= */}
       {activeModal === "learning" && (
-        <div className="portal-modal-overlay" onClick={() => setActiveModal(null)}>
-          <div className="portal-modal-card learning-full-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="portal-modal-overlay full-screen-overlay">
+          <div className="portal-modal-card learning-full-modal">
             
             {/* Modal Top Header */}
             <div className="portal-modal-header">
-              <div className="modal-header-info">
-                <span className="modal-header-icon">🎓</span>
-                <div>
-                  <h3>WILDFIRE Learning Platform</h3>
-                  <span className="modal-subtitle">Domain Selection: <strong>{selectedDomain}</strong></span>
-                </div>
+              <button 
+                className="btn-return-dashboard" 
+                onClick={() => {
+                  setActiveModal(null);
+                  setLearningMode("choice");
+                }} 
+                title="Return to Main Dashboard"
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Return to Dashboard</span>
+              </button>
+
+              {/* Mode Switcher Header Pills */}
+              <div className="learning-platform-mode-switcher">
+                <button 
+                  className={`mode-switch-btn ${learningMode === "roadmap" ? "active" : ""}`}
+                  onClick={() => {
+                    setLearningMode("roadmap");
+                    setLearningTab("roadmap");
+                  }}
+                >
+                  🗺️ VELFIRE Roadmap
+                </button>
+                <button 
+                  className={`mode-switch-btn ${learningMode === "course" ? "active" : ""}`}
+                  onClick={() => {
+                    setLearningMode("course");
+                    setLearningTab("full_curriculum");
+                  }}
+                >
+                  🎓 VELFIRE Courses
+                </button>
               </div>
 
               {/* Domain Dropdown Selector */}
@@ -627,129 +649,218 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                 </select>
               </div>
 
-              <button className="portal-modal-close" onClick={() => setActiveModal(null)}>✕</button>
-            </div>
-
-            {/* Navigation Tabs Bar inside Learning Platform */}
-            <div className="learning-tabs-nav">
-              <button className={learningTab === "roadmap" ? "active" : ""} onClick={() => setLearningTab("roadmap")}>
-                🗺️ Roadmap & Skill Gap
-              </button>
-              <button className={learningTab === "text" ? "active" : ""} onClick={() => setLearningTab("text")}>
-                📖 Text Learning
-              </button>
-              <button className={learningTab === "recorded" ? "active" : ""} onClick={() => setLearningTab("recorded")}>
-                🎥 Recorded Classes
-              </button>
-              <button className={learningTab === "live" ? "active" : ""} onClick={() => setLearningTab("live")}>
-                🔴 Live Classes
-              </button>
-              <button className={learningTab === "assessment" ? "active" : ""} onClick={() => setLearningTab("assessment")}>
-                📝 Assessments
-              </button>
-              <button className={learningTab === "resume_builder" ? "active" : ""} onClick={() => setLearningTab("resume_builder")}>
-                📄 Resume Builder
-              </button>
-              <button className={learningTab === "resume_analyzer" ? "active" : ""} onClick={() => setLearningTab("resume_analyzer")}>
-                🔍 Resume Analyzer
-              </button>
-              <button className={learningTab === "mock_test" ? "active" : ""} onClick={() => setLearningTab("mock_test")}>
-                ✍️ Mock Tests
-              </button>
-              <button className={learningTab === "mock_interview" ? "active highlight-interview" : "highlight-interview"} onClick={() => setLearningTab("mock_interview")}>
-                🎤 Mock Interview {mockInterviewScore >= 80 ? "✓" : "⚡"}
+              <button className="full-page-close-btn" onClick={() => { setActiveModal(null); setLearningMode("choice"); }} title="Return to Dashboard">
+                ✕ Return
               </button>
             </div>
 
-            {/* TAB CONTENT BODY */}
-            <div className="learning-tab-content">
-              
-              {/* TAB 1: ROADMAP & SKILL GAP */}
-              {learningTab === "roadmap" && (
-                <div className="tab-pane-roadmap">
-                  <div className="domain-overview-card">
-                    <h4>{selectedDomain} Overview</h4>
+            {/* CHOICE VIEW: 2 BIG BUTTON CARDS */}
+            {learningMode === "choice" && (
+              <div className="learning-choice-container">
+                <div className="choice-hero-heading">
+                  <h2>🎓 VELFIRE Learning Hub</h2>
+                  <p>Choose your pathway: Generate a custom AI Career Roadmap or enter the Course Learning Portal.</p>
+                </div>
+
+                <div className="choice-cards-grid">
+                  {/* CARD 1: VELFIRE ROADMAP */}
+                  <div className="choice-card card-roadmap-choice" onClick={() => { setLearningMode("roadmap"); setLearningTab("roadmap"); }}>
+                    <div className="choice-badge badge-roadmap">🗺️ AI Pathway</div>
+                    <div className="choice-icon-hero">🗺️</div>
+                    <h3>1. VELFIRE Roadmap</h3>
                     <p>
-                      Master key techniques, software packages, and production practices essential for {selectedDomain} roles.
+                      Generate custom AI-powered step-by-step roadmaps for <strong>{selectedDomain}</strong>, analyze skill gaps, select milestone durations, and track structured career goals.
+                    </p>
+
+                    <div className="choice-bullet-list">
+                      <span>⚡ AI Custom Milestone Generation</span>
+                      <span>📊 Interactive Skill Gap Analysis</span>
+                      <span>📅 Customizable Timeline (1 - 6 Months)</span>
+                    </div>
+
+                    <button className="btn-choice-action btn-roadmap-choice">
+                      <span>Open VELFIRE Roadmap</span>
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* CARD 2: VELFIRE COURSE */}
+                  <div className="choice-card card-course-choice" onClick={() => { setLearningMode("course"); setLearningTab("full_curriculum"); }}>
+                    <div className="choice-badge badge-course">🎓 Full Curriculum</div>
+                    <div className="choice-icon-hero">📚</div>
+                    <h3>2. VELFIRE Course</h3>
+                    <p>
+                      Access comprehensive course learning modules: Text chapters, Recorded video classes, Live workshops, Quizzes, Resume Builder, ATS Analyzer & Mock Interview Gate.
+                    </p>
+
+                    <div className="choice-bullet-list">
+                      <span>📖 Text, Video & Live Classes</span>
+                      <span>📄 ATS Resume Builder & Analyzer</span>
+                      <span>🎤 Mock Interview Gatekeeper (80% Pass)</span>
+                    </div>
+
+                    <button className="btn-choice-action btn-course-choice">
+                      <span>Open VELFIRE Courses</span>
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ROADMAP GENERATOR VIEW */}
+            {learningMode === "roadmap" && (
+              <div className="learning-tab-content">
+                <div className="tab-pane-roadmap">
+                  {/* AI Roadmap Generator Controls */}
+                  <div className="roadmap-generator-control-card">
+                    <div className="roadmap-gen-header">
+                      <div>
+                        <h4>⚡ VELFIRE AI Roadmap Generator</h4>
+                        <p>Customize target skill level and timeframe for <strong>{selectedDomain}</strong></p>
+                      </div>
+                      <button 
+                        className="btn-switch-to-course"
+                        onClick={() => { setLearningMode("course"); setLearningTab("text"); }}
+                      >
+                        🎓 Switch to VELFIRE Courses →
+                      </button>
+                    </div>
+
+                    <div className="roadmap-config-row">
+                      <div className="config-item">
+                        <label>Target Skill Level</label>
+                        <select 
+                          value={roadmapTargetLevel} 
+                          onChange={(e) => setRoadmapTargetLevel(e.target.value)}
+                        >
+                          <option value="Beginner">Beginner (Foundations)</option>
+                          <option value="Intermediate">Intermediate (Core Skills)</option>
+                          <option value="Advanced">Advanced (Production Systems)</option>
+                        </select>
+                      </div>
+
+                      <div className="config-item">
+                        <label>Target Timeframe</label>
+                        <select 
+                          value={roadmapDuration} 
+                          onChange={(e) => setRoadmapDuration(e.target.value)}
+                        >
+                          <option value="1 Month Sprint">1 Month Fast Sprint</option>
+                          <option value="3 Months Mastery">3 Months Comprehensive</option>
+                          <option value="6 Months Path">6 Months Career Transformation</option>
+                        </select>
+                      </div>
+
+                      <button 
+                        className="btn-generate-ai-roadmap"
+                        onClick={handleGenerateRoadmapAction}
+                        disabled={isGeneratingRoadmap}
+                      >
+                        {isGeneratingRoadmap ? "⚡ Generating AI Roadmap..." : "🚀 Generate Dynamic AI Roadmap"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Domain Overview & Skill Gap */}
+                  <div className="domain-overview-card">
+                    <h4>{selectedDomain} — {roadmapTargetLevel} Roadmap ({roadmapDuration})</h4>
+                    <p>
+                      Personalized AI Career Pathway structured for <strong>{selectedDomain}</strong>. Follow step-by-step milestones to build required production skills.
                     </p>
                   </div>
 
                   <div className="skill-gap-analysis">
                     <h5>🎯 Skill Gap Analysis for {selectedDomain}</h5>
                     <div className="skill-chips-grid">
-                      <span className="skill-chip known">✓ Python (Current Skill)</span>
-                      <span className="skill-chip gap">✗ SQL (Required)</span>
-                      <span className="skill-chip gap">✗ Excel / Power BI (Required)</span>
-                      <span className="skill-chip gap">✗ Statistics & Logic (Required)</span>
-                      <span className="skill-chip gap">✗ System Design (Required)</span>
+                      <span className="skill-chip known">✓ Current Domain Alignment</span>
+                      {domainsList.find(d => d.name === selectedDomain)?.requiredSkills.map((sk, sIdx) => (
+                        <span key={sIdx} className={sIdx === 0 ? "skill-chip known" : "skill-chip gap"}>
+                          {sIdx === 0 ? `✓ ${sk}` : `✗ ${sk} (Target Skill)`}
+                        </span>
+                      ))}
                     </div>
                   </div>
 
                   <div className="milestone-roadmap">
-                    <h5>🗺️ Structured Learning Roadmap</h5>
+                    <h5>🗺️ Step-by-Step Milestones</h5>
                     <div className="roadmap-steps">
                       <div className="step-card">
-                        <span className="step-num">Step 1</span>
-                        <h6>Beginner Fundamentals</h6>
-                        <p>Core syntax, logic flow, and basic environment setup.</p>
+                        <span className="step-num">Phase 1 (Week 1–2)</span>
+                        <h6>Core Concepts & Setup</h6>
+                        <p>Master foundational syntax, development environment, and key toolstacks.</p>
                       </div>
                       <div className="step-card">
-                        <span className="step-num">Step 2</span>
-                        <h6>Intermediate Data & Tools</h6>
-                        <p>SQL databases, API endpoints, and clean data transformations.</p>
+                        <span className="step-num">Phase 2 (Week 3–5)</span>
+                        <h6>Hands-on Data & APIs</h6>
+                        <p>Build working endpoints, query databases, and execute data pipelines.</p>
                       </div>
                       <div className="step-card">
-                        <span className="step-num">Step 3</span>
-                        <h6>Advanced Real-world Projects</h6>
-                        <p>Production deployment, performance optimization, and testing.</p>
+                        <span className="step-num">Phase 3 (Week 6–8)</span>
+                        <h6>Production Architecture</h6>
+                        <p>Scale applications, implement unit tests, and deploy on cloud infrastructure.</p>
                       </div>
                       <div className="step-card">
-                        <span className="step-num">Step 4</span>
-                        <h6>Assessments & Mock Interview Gate</h6>
-                        <p>Achieve 80%+ score in Mock Interview to unlock WILDFIRE Jobs.</p>
+                        <span className="step-num">Phase 4 (Week 9–12)</span>
+                        <h6>ATS Resume & Mock Interview Gate</h6>
+                        <p>Build ATS-compliant resume and achieve 80%+ score in Mock Interview to unlock Jobs.</p>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* TAB 2: TEXT LEARNING */}
-              {learningTab === "text" && (
-                <div className="tab-pane-text">
-                  <div className="text-learning-sidebar">
-                    {textChapters.map((chap, idx) => (
-                      <button
-                        key={idx}
-                        className={`chapter-link ${activeChapterIndex === idx ? "active" : ""}`}
-                        onClick={() => setActiveChapterIndex(idx)}
-                      >
-                        <span>{chap.title}</span>
-                        <span className="duration">{chap.duration}</span>
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="text-learning-body">
-                    <h3>{textChapters[activeChapterIndex].title}</h3>
-                    <p className="chapter-desc">{textChapters[activeChapterIndex].content}</p>
-
-                    <h4>Key Takeaways</h4>
-                    <ul className="key-points-list">
-                      {textChapters[activeChapterIndex].keyPoints.map((pt, pIdx) => (
-                        <li key={pIdx}>{pt}</li>
-                      ))}
-                    </ul>
-
-                    <h4>Code & Practical Example</h4>
-                    <pre className="code-example-block">
-                      <code>{textChapters[activeChapterIndex].codeSnippet}</code>
-                    </pre>
-
-                    <button className="btn-finish-chapter" onClick={() => alert("Chapter marked as completed! Progress updated.")}>
-                      ✓ Mark Chapter Completed
-                    </button>
-                  </div>
+            {/* COURSE PLATFORM VIEW */}
+            {learningMode === "course" && (
+              <>
+                {/* Navigation Tabs Bar inside Learning Platform */}
+                <div className="learning-tabs-nav">
+                  <button className={learningTab === "full_curriculum" || learningTab === "text" || !learningTab ? "active" : ""} onClick={() => setLearningTab("full_curriculum")}>
+                    🎓 Full Curriculum
+                  </button>
+                  <button className={learningTab === "recorded" ? "active" : ""} onClick={() => setLearningTab("recorded")}>
+                    🎥 Recorded Classes
+                  </button>
+                  <button className={learningTab === "live" ? "active" : ""} onClick={() => setLearningTab("live")}>
+                    🔴 Live Classes
+                  </button>
+                  <button className={learningTab === "assessment" ? "active" : ""} onClick={() => setLearningTab("assessment")}>
+                    📝 Assessments
+                  </button>
+                  <button className={learningTab === "resume_builder" ? "active" : ""} onClick={() => setLearningTab("resume_builder")}>
+                    📄 Resume Builder
+                  </button>
+                  <button className={learningTab === "resume_analyzer" ? "active" : ""} onClick={() => setLearningTab("resume_analyzer")}>
+                    🔍 Resume Analyzer
+                  </button>
+                  <button className={learningTab === "mock_test" ? "active" : ""} onClick={() => setLearningTab("mock_test")}>
+                    ✍️ Mock Tests
+                  </button>
+                  <button className={learningTab === "mock_interview" ? "active highlight-interview" : "highlight-interview"} onClick={() => setLearningTab("mock_interview")}>
+                    🎤 Mock Interview {mockInterviewScore >= 80 ? "✓" : "⚡"}
+                  </button>
+                  <button className="btn-switch-to-roadmap-inline" onClick={() => setLearningMode("roadmap")}>
+                    🗺️ Switch to VELFIRE Roadmap →
+                  </button>
                 </div>
+
+                {/* TAB CONTENT BODY */}
+                <div className="learning-tab-content">
+
+              {/* TAB 1: FULL CURRICULUM - CAREER PATHWAY MODULE */}
+              {(learningTab === "full_curriculum" || learningTab === "text" || !learningTab) && (
+                <CurriculumHub
+                  selectedDomain={selectedDomain}
+                  onSwitchToRoadmap={() => setLearningMode("roadmap")}
+                  onBackToChoice={() => setLearningMode("choice")}
+                />
               )}
 
               {/* TAB 3: RECORDED CLASSES */}
@@ -1061,19 +1172,33 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
               )}
 
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
+    </div>
+  )}
 
       {/* ========================================================================= */}
       {/* --- MODAL 3: JOB PORTAL & PREPARATION GATE --- */}
       {/* ========================================================================= */}
       {activeModal === "jobs" && (
-        <div className="portal-modal-overlay" onClick={() => setActiveModal(null)}>
-          <div className="portal-modal-card jobs-full-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="portal-modal-overlay full-screen-overlay">
+          <div className="portal-modal-card jobs-full-modal">
             
             {/* Modal Header */}
             <div className="portal-modal-header">
+              <button 
+                className="btn-return-dashboard" 
+                onClick={() => setActiveModal(null)} 
+                title="Return to Main Dashboard"
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Return to Dashboard</span>
+              </button>
+
               <div className="modal-header-info">
                 <span className="modal-header-icon">💼</span>
                 <div>
@@ -1081,7 +1206,9 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                   <span className="modal-subtitle">Direct Tech Hiring & Application Management</span>
                 </div>
               </div>
-              <button className="portal-modal-close" onClick={() => setActiveModal(null)}>✕</button>
+              <button className="full-page-close-btn" onClick={() => setActiveModal(null)} title="Return to Dashboard">
+                ✕ Return
+              </button>
             </div>
 
             {/* Preparation Gate Access Check */}
@@ -1098,15 +1225,23 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                   <div className="check-item pending">✗ Mock Interview Score: {mockInterviewScore}/100 (80 Required)</div>
                 </div>
 
-                <button
-                  className="btn-unlock-gate-action"
-                  onClick={() => {
-                    setActiveModal("learning");
-                    setLearningTab("mock_interview");
-                  }}
-                >
-                  🎤 Take Mock Interview Now to Unlock Jobs →
-                </button>
+                <div className="locked-gate-actions">
+                  <button
+                    className="btn-unlock-gate-action"
+                    onClick={() => {
+                      setActiveModal("learning");
+                      setLearningTab("mock_interview");
+                    }}
+                  >
+                    🎤 Take Mock Interview Now to Unlock Jobs →
+                  </button>
+                  <button
+                    className="btn-return-secondary"
+                    onClick={() => setActiveModal(null)}
+                  >
+                    ← Return to Dashboard
+                  </button>
+                </div>
               </div>
             ) : (
               /* UNLOCKED JOB PORTAL */

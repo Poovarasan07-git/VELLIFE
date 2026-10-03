@@ -44,12 +44,15 @@ body {
   justify-content: center;
   align-items: center;
 
+  font-family: 'Orbitron', 'Outfit', 'Plus Jakarta Sans', sans-serif;
   font-size: clamp(42px, 9vw, 90px);
-  font-weight: 800;
-  letter-spacing: clamp(1px, 1vw, 8px);
+  font-weight: 900;
+  letter-spacing: clamp(2px, 1.2vw, 10px);
 
-  color: #047857;
-  text-shadow: 0 4px 20px rgba(254, 240, 138, 0.6);
+  background: linear-gradient(135deg, #047857 0%, #10b981 50%, #fde047 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 6px 24px rgba(16, 185, 129, 0.45));
 }
 
 .logo-letter {
