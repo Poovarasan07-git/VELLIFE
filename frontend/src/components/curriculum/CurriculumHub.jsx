@@ -82,6 +82,29 @@ function CurriculumHub({
     });
   };
 
+  // Direct 1-Click Launch into Course Reader
+  const handleStartCourseDirectly = (course) => {
+    const richCourse = TEXTBOOK_COURSES[course.id] || course;
+    setSelectedCourse(richCourse);
+
+    if (richCourse.sections && richCourse.sections.length > 0) {
+      const sec = richCourse.sections[0];
+      if (sec.modules && sec.modules.length > 0) {
+        const mod = sec.modules[0];
+        if (mod.lessons && mod.lessons.length > 0) {
+          const prog = userProgress[course.id]?.completedLessons || [];
+          const firstUncompleted = mod.lessons.find(l => !prog.includes(l.id)) || mod.lessons[0];
+          setSelectedSection(sec);
+          setSelectedModule(mod);
+          setSelectedLesson(firstUncompleted);
+          setViewMode('reader');
+          return;
+        }
+      }
+    }
+    setViewMode('detail');
+  };
+
   const handleBackToMain = () => {
     setViewMode('main');
   };
@@ -96,6 +119,7 @@ function CurriculumHub({
         <CurriculumMainView
           userProgress={userProgress}
           onExploreCourse={handleExploreCourse}
+          onStartCourse={handleStartCourseDirectly}
           onSwitchToRoadmap={onSwitchToRoadmap}
         />
       )}

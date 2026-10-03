@@ -731,36 +731,102 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
             {/* COURSE PLATFORM VIEW */}
             {learningMode === "course" && (
               <>
-                {/* Navigation Tabs Bar inside Learning Platform */}
-                <div className="learning-tabs-nav">
-                  <button className={learningTab === "full_curriculum" || learningTab === "text" || !learningTab ? "active" : ""} onClick={() => setLearningTab("full_curriculum")}>
-                    🎓 Full Curriculum
+                {/* Modern Organized 4-Suite Navigation Bar */}
+                <div className="learning-tabs-nav modern-suite-nav">
+                  <button 
+                    className={`suite-tab-btn ${learningTab === "full_curriculum" || learningTab === "text" || !learningTab ? "active" : ""}`} 
+                    onClick={() => setLearningTab("full_curriculum")}
+                  >
+                    <span className="suite-tab-icon">🎓</span>
+                    <span className="suite-tab-text">Courses & Tracks</span>
                   </button>
-                  <button className={learningTab === "recorded" ? "active" : ""} onClick={() => setLearningTab("recorded")}>
-                    🎥 Recorded Classes
+
+                  <button 
+                    className={`suite-tab-btn ${learningTab === "recorded" || learningTab === "live" ? "active" : ""}`} 
+                    onClick={() => setLearningTab(learningTab === "live" ? "live" : "recorded")}
+                  >
+                    <span className="suite-tab-icon">🎥</span>
+                    <span className="suite-tab-text">Video & Live Hub</span>
                   </button>
-                  <button className={learningTab === "live" ? "active" : ""} onClick={() => setLearningTab("live")}>
-                    🔴 Live Classes
+
+                  <button 
+                    className={`suite-tab-btn ${learningTab === "assessment" || learningTab === "mock_test" ? "active" : ""}`} 
+                    onClick={() => setLearningTab(learningTab === "mock_test" ? "mock_test" : "assessment")}
+                  >
+                    <span className="suite-tab-icon">📝</span>
+                    <span className="suite-tab-text">Tests & Practice</span>
                   </button>
-                  <button className={learningTab === "assessment" ? "active" : ""} onClick={() => setLearningTab("assessment")}>
-                    📝 Assessments
+
+                  <button 
+                    className={`suite-tab-btn ${learningTab === "resume_builder" || learningTab === "resume_analyzer" || learningTab === "mock_interview" ? "active highlight-interview" : ""}`} 
+                    onClick={() => setLearningTab("resume_builder")}
+                  >
+                    <span className="suite-tab-icon">🚀</span>
+                    <span className="suite-tab-text">Career Suite {mockInterviewScore >= 80 ? "✓" : "⚡"}</span>
                   </button>
-                  <button className={learningTab === "resume_builder" ? "active" : ""} onClick={() => setLearningTab("resume_builder")}>
-                    📄 Resume Builder
-                  </button>
-                  <button className={learningTab === "resume_analyzer" ? "active" : ""} onClick={() => setLearningTab("resume_analyzer")}>
-                    🔍 Resume Analyzer
-                  </button>
-                  <button className={learningTab === "mock_test" ? "active" : ""} onClick={() => setLearningTab("mock_test")}>
-                    ✍️ Mock Tests
-                  </button>
-                  <button className={learningTab === "mock_interview" ? "active highlight-interview" : "highlight-interview"} onClick={() => setLearningTab("mock_interview")}>
-                    🎤 Mock Interview {mockInterviewScore >= 80 ? "✓" : "⚡"}
-                  </button>
+
                   <button className="btn-switch-to-roadmap-inline" onClick={() => setLearningMode("roadmap")}>
                     🗺️ Switch to VELFIRE Roadmap →
                   </button>
                 </div>
+
+                {/* Contextual Sub-Suite Toggles for Ultra Easy Navigation */}
+                {(learningTab === "recorded" || learningTab === "live") && (
+                  <div className="sub-suite-toggles-bar">
+                    <button 
+                      className={`sub-toggle-pill ${learningTab === "recorded" ? "active" : ""}`}
+                      onClick={() => setLearningTab("recorded")}
+                    >
+                      🎥 Recorded Video Classes ({recordedVideos.length})
+                    </button>
+                    <button 
+                      className={`sub-toggle-pill ${learningTab === "live" ? "active" : ""}`}
+                      onClick={() => setLearningTab("live")}
+                    >
+                      🔴 Scheduled Live Workshops ({liveClassesList.length})
+                    </button>
+                  </div>
+                )}
+
+                {(learningTab === "assessment" || learningTab === "mock_test") && (
+                  <div className="sub-suite-toggles-bar">
+                    <button 
+                      className={`sub-toggle-pill ${learningTab === "assessment" ? "active" : ""}`}
+                      onClick={() => setLearningTab("assessment")}
+                    >
+                      📝 Domain Technical Assessment
+                    </button>
+                    <button 
+                      className={`sub-toggle-pill ${learningTab === "mock_test" ? "active" : ""}`}
+                      onClick={() => setLearningTab("mock_test")}
+                    >
+                      ✍️ Full Placement Mock Exam
+                    </button>
+                  </div>
+                )}
+
+                {(learningTab === "resume_builder" || learningTab === "resume_analyzer" || learningTab === "mock_interview") && (
+                  <div className="sub-suite-toggles-bar">
+                    <button 
+                      className={`sub-toggle-pill ${learningTab === "resume_builder" ? "active" : ""}`}
+                      onClick={() => setLearningTab("resume_builder")}
+                    >
+                      📄 ATS Resume Builder
+                    </button>
+                    <button 
+                      className={`sub-toggle-pill ${learningTab === "resume_analyzer" ? "active" : ""}`}
+                      onClick={() => setLearningTab("resume_analyzer")}
+                    >
+                      🔍 ATS Resume Analyzer
+                    </button>
+                    <button 
+                      className={`sub-toggle-pill ${learningTab === "mock_interview" ? "active highlight-sub" : ""}`}
+                      onClick={() => setLearningTab("mock_interview")}
+                    >
+                      🎤 Mock Interview Gatekeeper (80% Pass) {mockInterviewScore >= 80 ? "✓" : "⚡"}
+                    </button>
+                  </div>
+                )}
 
                 {/* TAB CONTENT BODY */}
                 <div className="learning-tab-content">

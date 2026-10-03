@@ -150,6 +150,113 @@
   box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6);
 }
 
+/* QUICK RESUME HERO CARD */
+.quick-resume-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, rgba(2, 44, 34, 0.96) 0%, rgba(6, 78, 59, 0.98) 100%);
+  border: 2px solid #fde047;
+  border-radius: 18px;
+  padding: 18px 26px;
+  margin-top: 20px;
+  box-shadow: 0 12px 30px rgba(4, 120, 87, 0.4), 0 0 20px rgba(254, 240, 138, 0.2);
+}
+
+.quick-resume-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quick-resume-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #fde047;
+}
+
+.quick-resume-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.quick-resume-meta {
+  font-size: 13px;
+  color: #a7f3d0;
+  margin: 0;
+}
+
+.btn-quick-resume-action {
+  background: linear-gradient(135deg, #fde047 0%, #facc15 50%, #10b981 100%);
+  color: #022c22;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
+}
+
+.btn-quick-resume-action:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(250, 204, 21, 0.6);
+}
+
+/* CURRICULUM METRICS STRIP */
+.curriculum-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.metric-pill-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(145deg, rgba(2, 44, 34, 0.85) 0%, rgba(6, 78, 59, 0.9) 100%);
+  border: 1.5px solid rgba(253, 224, 71, 0.35);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 20px rgba(4, 120, 87, 0.25);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.metric-pill-item:hover {
+  transform: translateY(-2px);
+  border-color: #fde047;
+}
+
+.metric-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.metric-val {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fef08a;
+  line-height: 1.2;
+}
+
+.metric-sub {
+  font-size: 12px;
+  color: #a7f3d0;
+  font-weight: 600;
+}
+
 /* FILTER & SEARCH BAR */
 .curriculum-filter-bar {
   background: linear-gradient(145deg, rgba(2, 44, 34, 0.94) 0%, rgba(6, 78, 59, 0.96) 100%);
@@ -507,6 +614,62 @@
   filter: brightness(1.1);
   transform: translateY(-2px);
   box-shadow: 0 8px 22px rgba(250, 204, 21, 0.55);
+}
+
+/* CARD DUAL ACTIONS ROW */
+.card-actions-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.btn-card-learn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #fde047 0%, #facc15 50%, #10b981 100%);
+  color: #022c22;
+  border: none;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(250, 204, 21, 0.35);
+  white-space: nowrap;
+}
+
+.btn-card-learn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(250, 204, 21, 0.55);
+}
+
+.btn-card-syllabus-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(254, 240, 138, 0.12);
+  border: 1.5px solid rgba(253, 224, 71, 0.35);
+  color: #fef08a;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-card-syllabus-secondary:hover {
+  background: rgba(254, 240, 138, 0.22);
+  border-color: #fde047;
+  color: #ffffff;
+  transform: translateY(-2px);
 }
 
 /* PROFESSIONAL SKILLS SECTION */

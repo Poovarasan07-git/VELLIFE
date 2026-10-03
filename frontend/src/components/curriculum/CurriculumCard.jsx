@@ -1,7 +1,7 @@
 // src/components/curriculum/CurriculumCard.jsx
 import React from 'react';
 
-function CurriculumCard({ course, progress = 0, onExplore }) {
+function CurriculumCard({ course, progress = 0, onExplore, onStartCourse }) {
   const isStarted = progress > 0;
   const isCompleted = progress >= 100;
 
@@ -15,7 +15,7 @@ function CurriculumCard({ course, progress = 0, onExplore }) {
     <div className="curriculum-card">
       <div 
         className="curriculum-card-banner"
-        style={{ background: course.bannerGradient || "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)" }}
+        style={{ background: course.bannerGradient || "linear-gradient(135deg, rgba(2, 44, 34, 0.95) 0%, rgba(6, 78, 59, 0.97) 100%)" }}
       >
         <div className="banner-top-tags">
           <span className="cat-badge">{course.category}</span>
@@ -60,7 +60,7 @@ function CurriculumCard({ course, progress = 0, onExplore }) {
         <div className="card-progress-bar-area">
           <div className="progress-info-row">
             <span className="status-text">
-              {isCompleted ? "✓ Completed" : isStarted ? "In Progress" : "Not Started"}
+              {isCompleted ? "✓ Completed" : isStarted ? "In Progress" : "Ready to Start"}
             </span>
             <span className="percentage-text">{Math.round(progress)}%</span>
           </div>
@@ -72,16 +72,27 @@ function CurriculumCard({ course, progress = 0, onExplore }) {
           </div>
         </div>
 
-        <button 
-          className="btn-explore-curriculum"
-          onClick={() => onExplore(course)}
-        >
-          <span>Explore Curriculum</span>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </button>
+        {/* Dual Quick Action Buttons for Easy 1-Click Learning */}
+        <div className="card-actions-row">
+          <button 
+            className="btn-card-learn-primary"
+            onClick={() => onStartCourse ? onStartCourse(course) : onExplore(course)}
+            title="Start or Continue Learning this course"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span>{isCompleted ? "Review Lessons" : isStarted ? "Continue" : "Start Learning"}</span>
+          </button>
+
+          <button 
+            className="btn-card-syllabus-secondary"
+            onClick={() => onExplore(course)}
+            title="View Full Curriculum Syllabus"
+          >
+            <span>Syllabus</span>
+          </button>
+        </div>
       </div>
     </div>
   );
