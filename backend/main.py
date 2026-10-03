@@ -358,7 +358,542 @@ def chat_ai(data: ChatRequest):
         "   - **Iterate Continuously**: Refine edge cases, optimize performance, and keep your code organized.\n\n"
         f"Would you like me to write code examples or step-by-step guidance specifically for this, **{user_name}**?"
     )
-    return {"status": "success", "reply": fallback_reply}
+class RoadmapRequest(BaseModel):
+    course: str
+    level: str = "Intermediate"
+    duration: str = "3 Months Mastery"
+    goal: str = "Job Placement & Mastery"
+
+def build_fallback_roadmap(course: str, level: str, duration: str, goal: str) -> dict:
+    course_clean = course.strip().title() if course.strip() else "Full Stack Software Engineering"
+    c_lower = course_clean.lower()
+
+    # Determine timeline intervals based on duration
+    if "1 Month" in duration or "Sprint" in duration:
+        timeframes = ["Week 1", "Week 2", "Week 3", "Week 4"]
+        total_hours = "60-80 Hours"
+        weekly = "15-20 hrs/week"
+    elif "6 Month" in duration or "Transformation" in duration:
+        timeframes = ["Months 1–2", "Month 3", "Months 4–5", "Month 6"]
+        total_hours = "200-260 Hours"
+        weekly = "8-12 hrs/week"
+    else:
+        timeframes = ["Weeks 1–3", "Weeks 4–7", "Weeks 8–10", "Weeks 11–12"]
+        total_hours = "120-150 Hours"
+        weekly = "10-14 hrs/week"
+
+    # Domain Knowledge Patterns
+    if any(k in c_lower for k in ["data analy", "power bi", "tableau", "bi developer", "business analy", "sql"]):
+        prereqs = ["Basic Math & Statistics", "Spreadsheets (Excel basics)", "Analytical Thinking"]
+        tech_stack = [
+            {"name": "Python", "category": "Core Language"},
+            {"name": "SQL (PostgreSQL)", "category": "Database Querying"},
+            {"name": "Pandas & NumPy", "category": "Data Wrangling"},
+            {"name": "Power BI & Tableau", "category": "BI Dashboards"},
+            {"name": "Excel Advanced", "category": "Spreadsheet Modeling"}
+        ]
+        phases = [
+            {
+                "phase_number": 1,
+                "timeframe": timeframes[0],
+                "title": "Excel Mastery & Relational SQL Foundations",
+                "summary": "Master data manipulation in spreadsheets and writing advanced multi-table SQL queries, window functions, and joins.",
+                "topics": ["Advanced Excel (VLOOKUP, INDEX-MATCH, Pivot Tables)", "Relational DB Design & ERDs", "SQL Joins, Group By & Subqueries", "Window Functions (RANK, DENSE_RANK, LEAD, LAG)"],
+                "hands_on_project": {
+                    "title": "Global E-Commerce Sales Performance SQL Audit",
+                    "description": "Clean, structure, and query 100,000+ sales records to uncover revenue drivers and customer churn trends."
+                },
+                "milestone_goal": "Write fluent complex analytical SQL queries with sub-second execution."
+            },
+            {
+                "phase_number": 2,
+                "timeframe": timeframes[1],
+                "title": "Python for Data Analysis & Statistical Modeling",
+                "summary": "Automate data processing, handle missing values, and extract statistical distributions using Pandas and NumPy.",
+                "topics": ["Pandas Series & DataFrames", "Data Cleaning, Imputation & Reshaping", "Descriptive & Inferential Statistics", "Exploratory Data Analysis (EDA) with Seaborn"],
+                "hands_on_project": {
+                    "title": "Customer Lifetime Value (LTV) & Retention Engine",
+                    "description": "Develop an automated Python pipeline that calculates cohort retention curves and segmentation metrics."
+                },
+                "milestone_goal": "Perform automated end-to-end data cleaning and hypothesis testing in Python."
+            },
+            {
+                "phase_number": 3,
+                "timeframe": timeframes[2],
+                "title": "Interactive BI Dashboards & Data Storytelling",
+                "summary": "Transform raw numbers into executive dashboards using Power BI and Tableau with real-time DAX measures.",
+                "topics": ["Data Modeling & Star Schema in Power BI", "DAX Formulas (CALCULATE, RELATED, Time Intelligence)", "Interactive Filters, Drill-Downs & Bookmarks", "Executive Storytelling & KPI Reporting"],
+                "hands_on_project": {
+                    "title": "Executive C-Suite Financial & Operations Cockpit",
+                    "description": "Design an interactive multi-page Power BI dashboard with automated alerts and cross-filtering."
+                },
+                "milestone_goal": "Deliver publication-ready dashboards tailored for VP and Director level stakeholders."
+            },
+            {
+                "phase_number": 4,
+                "timeframe": timeframes[3],
+                "title": "Production Portfolio, Case Studies & Interview Gate",
+                "summary": "Synthesize your portfolio on GitHub, write business case memos, and ace technical SQL/Python live case interviews.",
+                "topics": ["End-to-End Analytics Case Studies", "GitHub Project Documentation & Readmes", "Live SQL & Python Whiteboarding Practice", "ATS Resume Optimization & Portfolio Presentation"],
+                "hands_on_project": {
+                    "title": "Capstone: End-to-End Business Intelligence Pipeline",
+                    "description": "Connect live APIs, pipe data into SQL, analyze with Python, and publish an interactive Power BI dashboard."
+                },
+                "milestone_goal": "Pass live technical SQL screens and showcase a top-tier GitHub analytics portfolio."
+            }
+        ]
+        job_roles = ["Data Analyst", "Business Intelligence (BI) Analyst", "SQL Developer", "Operations Analyst"]
+        salary = "$70,000 - $115,000 / ₹7 - ₹18 LPA"
+        demand = "Extremely High (Across Tech, Finance & E-Commerce)"
+    elif any(k in c_lower for k in ["ai", "machine learning", "ml", "deep learning", "llm", "genai", "nlp"]):
+        prereqs = ["Python Programming", "Linear Algebra & Calculus", "Probability & Statistics"]
+        tech_stack = [
+            {"name": "Python 3.12", "category": "Core Language"},
+            {"name": "PyTorch", "category": "Deep Learning"},
+            {"name": "Scikit-Learn", "category": "Machine Learning"},
+            {"name": "Hugging Face & LangChain", "category": "LLMs & GenAI"},
+            {"name": "FastAPI & Docker", "category": "Model Serving"}
+        ]
+        phases = [
+            {
+                "phase_number": 1,
+                "timeframe": timeframes[0],
+                "title": "Mathematical Foundations & Classical ML",
+                "summary": "Deep dive into matrix operations, gradient descent, feature engineering, and standard classification/regression algorithms.",
+                "topics": ["Vector & Matrix Math in NumPy", "Linear/Logistic Regression & SVMs", "Tree-based Models (Random Forest, XGBoost)", "Evaluation Metrics (ROC-AUC, F1-Score, Cross-Validation)"],
+                "hands_on_project": {
+                    "title": "Predictive Customer Churn & Risk Engine",
+                    "description": "Train and evaluate tuned XGBoost classifiers on imbalanced financial datasets with feature importance analysis."
+                },
+                "milestone_goal": "Build, tune, and evaluate classical ML pipelines with proper validation."
+            },
+            {
+                "phase_number": 2,
+                "timeframe": timeframes[1],
+                "title": "Deep Learning & Neural Network Architectures with PyTorch",
+                "summary": "Construct neural networks from scratch, implement backpropagation, and specialize in CNNs and Transformers.",
+                "topics": ["PyTorch Tensors, Autograd & Custom Datasets", "Feedforward & Deep Networks (ReLU, Dropout, BatchNorm)", "Convolutional Neural Networks (CNNs) for Vision", "Recurrent Networks, Attention Mechanisms & Transformers"],
+                "hands_on_project": {
+                    "title": "Multi-Modal Neural Classifier in PyTorch",
+                    "description": "Implement a custom convolutional and attention model for automated image and text sentiment classification."
+                },
+                "milestone_goal": "Train and optimize multi-layer deep learning models with GPU acceleration."
+            },
+            {
+                "phase_number": 3,
+                "timeframe": timeframes[2],
+                "title": "LLMs, LangChain, RAG Pipelines & Fine-Tuning",
+                "summary": "Harness Large Language Models, build Retrieval-Augmented Generation (RAG) systems, and fine-tune models with LoRA.",
+                "topics": ["Transformer Self-Attention & Positional Encodings", "Vector Databases (ChromaDB, Pinecone)", "Retrieval-Augmented Generation (RAG) Pipelines", "Quantization, LoRA & Parameter-Efficient Fine-Tuning"],
+                "hands_on_project": {
+                    "title": "Enterprise Knowledge-Base RAG Agent with LangChain",
+                    "description": "Construct an AI system that ingests PDFs, indexes embeddings in a vector DB, and answers complex technical queries."
+                },
+                "milestone_goal": "Deploy production-grade RAG agents and fine-tune open-source models."
+            },
+            {
+                "phase_number": 4,
+                "timeframe": timeframes[3],
+                "title": "MLOps, Model Deployment & Production Serving",
+                "summary": "Wrap models into high-throughput FastAPI endpoints, containerize with Docker, and monitor model drift in production.",
+                "topics": ["FastAPI Asynchronous Inference Endpoints", "Dockerization & GPU Runtime Containerization", "Model Monitoring, Latency Optimization & ONNX", "MLOps CI/CD Pipelines & Cloud Deployment"],
+                "hands_on_project": {
+                    "title": "Production AI Microservice with Real-Time Inference",
+                    "description": "Package an optimized PyTorch/Hugging Face model into a load-tested Docker container deployed on cloud servers."
+                },
+                "milestone_goal": "Deploy production AI endpoints meeting strict latency and scalability SLA requirements."
+            }
+        ]
+        job_roles = ["AI/ML Engineer", "Machine Learning Scientist", "LLM Application Developer", "MLOps Engineer"]
+        salary = "$110,000 - $190,000 / ₹14 - ₹40 LPA"
+        demand = "Surging Exponentially (Top Industry Priority)"
+    elif any(k in c_lower for k in ["devops", "cloud", "aws", "docker", "kubernetes", "sre", "terraform"]):
+        prereqs = ["Linux CLI Navigation", "Networking Fundamentals (TCP/IP, DNS)", "Basic Scripting (Bash/Python)"]
+        tech_stack = [
+            {"name": "Linux (Ubuntu)", "category": "Operating System"},
+            {"name": "Docker", "category": "Containers"},
+            {"name": "Kubernetes", "category": "Orchestration"},
+            {"name": "Terraform", "category": "Infrastructure as Code"},
+            {"name": "AWS / GCP", "category": "Cloud Provider"},
+            {"name": "GitHub Actions", "category": "CI/CD"}
+        ]
+        phases = [
+            {
+                "phase_number": 1,
+                "timeframe": timeframes[0],
+                "title": "Linux Mastery, Networking & Bash Automation",
+                "summary": "Master system administration, process management, SSH keys, DNS, subnetting, and robust Bash shell scripting.",
+                "topics": ["Linux Filesystem, Permissions & Systemd Services", "Networking (IP Addressing, Subnets, Firewalls, Reverse Proxies)", "Bash Scripting & Cron Job Automation", "Git Workflows & Version Control for Operations"],
+                "hands_on_project": {
+                    "title": "Automated Linux Server Provisioning & Hardening Script",
+                    "description": "Write zero-interaction Bash automation that sets up firewalls, users, Nginx reverse proxy, and SSL certificates."
+                },
+                "milestone_goal": "Confidently manage, secure, and debug headless Linux production servers."
+            },
+            {
+                "phase_number": 2,
+                "timeframe": timeframes[1],
+                "title": "Containerization with Docker & Multi-Stage Builds",
+                "summary": "Containerize microservices, optimize image sizes using multi-stage builds, and orchestrate with Docker Compose.",
+                "topics": ["Docker Architecture & Container Lifecycles", "Dockerfile Optimization & Multi-stage Builds", "Docker Compose for Multi-Container Apps", "Networking, Volumes & Secret Management in Containers"],
+                "hands_on_project": {
+                    "title": "Multi-Tier Microservice Container Suite",
+                    "description": "Containerize a React frontend, Python API, and PostgreSQL database with persistent volumes and healthchecks."
+                },
+                "milestone_goal": "Build minimal, vulnerability-free container images under 100MB."
+            },
+            {
+                "phase_number": 3,
+                "timeframe": timeframes[2],
+                "title": "Kubernetes (K8s) Cluster Management & Helm",
+                "summary": "Deploy and scale resilient applications on Kubernetes using Pods, Deployments, Services, Ingress, and Helm charts.",
+                "topics": ["Kubernetes Architecture (Control Plane vs Worker Nodes)", "Deployments, ReplicaSets & Rolling Updates", "Services (ClusterIP, NodePort, LoadBalancer) & Ingress", "Helm Packaging, ConfigMaps & PersistentVolumes"],
+                "hands_on_project": {
+                    "title": "High-Availability Auto-Scaling Web Application on K8s",
+                    "description": "Deploy a multi-replica application with Horizontal Pod Autoscaler (HPA), rolling zero-downtime updates, and ingress."
+                },
+                "milestone_goal": "Orchestrate zero-downtime rolling deployments across distributed clusters."
+            },
+            {
+                "phase_number": 4,
+                "timeframe": timeframes[3],
+                "title": "Infrastructure as Code (Terraform) & Production CI/CD",
+                "summary": "Provision cloud resources declaratively using Terraform and automate continuous delivery with GitHub Actions.",
+                "topics": ["Terraform Providers, State Management & Modules", "AWS VPC, EC2, S3, IAM & RDS Automation", "GitHub Actions CI/CD Pipelines (Lint, Test, Build, Deploy)", "Prometheus & Grafana Observability"],
+                "hands_on_project": {
+                    "title": "Complete GitOps CI/CD & Terraform Cloud Architecture",
+                    "description": "A push to GitHub automatically triggers tests, builds Docker images, runs Terraform, and deploys to Kubernetes."
+                },
+                "milestone_goal": "Deliver fully automated GitOps pipelines from code commit to cloud deployment."
+            }
+        ]
+        job_roles = ["DevOps Engineer", "Cloud Solutions Architect", "Site Reliability Engineer (SRE)", "Platform Engineer"]
+        salary = "$95,000 - $160,000 / ₹12 - ₹32 LPA"
+        demand = "Critical Industry Shortage (Massive Demand)"
+    elif any(k in c_lower for k in ["cyber", "security", "ethical hack", "penetration", "soc", "network security"]):
+        prereqs = ["Computer Networking (OSI Model, TCP/IP)", "Linux Fundamentals", "Basic Python/Bash Scripting"]
+        tech_stack = [
+            {"name": "Kali Linux", "category": "SecOps OS"},
+            {"name": "Wireshark & Nmap", "category": "Recon & Packet Analysis"},
+            {"name": "Metasploit & Burp Suite", "category": "Penetration Testing"},
+            {"name": "Splunk / ELK", "category": "SIEM & SOC Monitoring"},
+            {"name": "Python Security Scripts", "category": "Scripting & Automation"}
+        ]
+        phases = [
+            {
+                "phase_number": 1,
+                "timeframe": timeframes[0],
+                "title": "Network Defense, Protocol Analysis & Linux Security",
+                "summary": "Master deep packet inspection, TCP/IP handshake mechanisms, firewall rules, and Linux permission auditing.",
+                "topics": ["OSI & TCP/IP Model In-Depth", "Wireshark Packet Analysis & Traffic Auditing", "Port Scanning & Network Reconnaissance with Nmap", "Linux Hardening & User Privilege Management"],
+                "hands_on_project": {
+                    "title": "Intrusion Detection & Traffic Analyzer in Python",
+                    "description": "Build a network sniffer that detects SYN flood attacks and suspicious port scanning in real-time."
+                },
+                "milestone_goal": "Identify unauthorized network anomalies and capture malicious packets."
+            },
+            {
+                "phase_number": 2,
+                "timeframe": timeframes[1],
+                "title": "Web Application Security & OWASP Top 10",
+                "summary": "Intercept and analyze HTTP traffic using Burp Suite to identify and mitigate SQLi, XSS, CSRF, and SSRF flaws.",
+                "topics": ["OWASP Top 10 Vulnerabilities", "Burp Suite Proxy, Repeater & Intruder", "SQL Injection (Manual & Automated with sqlmap)", "Cross-Site Scripting (Reflected, Stored, DOM XSS)"],
+                "hands_on_project": {
+                    "title": "Vulnerability Assessment of Target Web Applications",
+                    "description": "Conduct simulated penetration tests on OWASP Juice Shop and produce a standardized remediation report."
+                },
+                "milestone_goal": "Perform comprehensive vulnerability assessments on web application endpoints."
+            },
+            {
+                "phase_number": 3,
+                "timeframe": timeframes[2],
+                "title": "System Exploitation, Privilege Escalation & Cryptography",
+                "summary": "Execute controlled exploits with Metasploit, exploit misconfigurations to escalate privileges, and implement AES/RSA ciphers.",
+                "topics": ["Metasploit Framework & Payload Creation", "Linux & Windows Privilege Escalation Techniques", "Symmetric vs Asymmetric Cryptography (AES, RSA, ECC)", "Public Key Infrastructure (PKI) & TLS Handshake"],
+                "hands_on_project": {
+                    "title": "Capture The Flag (CTF) Machine Penetration Walkthrough",
+                    "description": "Gain initial access and escalate to root privilege on vulnerable lab environments (Hack The Box / TryHackMe)."
+                },
+                "milestone_goal": "Demonstrate privilege escalation and document root access findings."
+            },
+            {
+                "phase_number": 4,
+                "timeframe": timeframes[3],
+                "title": "SOC Operations, SIEM Monitoring & Incident Response",
+                "summary": "Monitor logs with Splunk, write detection rules, triage security alerts, and execute incident response runbooks.",
+                "topics": ["SIEM Architecture with Splunk / Elastic", "Analyzing Syslog, Windows Event Logs & Auth Logs", "Incident Response Lifecycle (NIST Framework)", "Security Certifications Prep (CompTIA Security+, CEH)"],
+                "hands_on_project": {
+                    "title": "Enterprise SOC Incident Investigation & Forensics Report",
+                    "description": "Investigate a simulated multi-stage ransomware breach using SIEM logs and author an incident response timeline."
+                },
+                "milestone_goal": "Triage live SOC alerts and deliver structured incident remediation documentation."
+            }
+        ]
+        job_roles = ["Cybersecurity Analyst", "SOC Analyst (L1/L2)", "Penetration Tester", "Information Security Specialist"]
+        salary = "$80,000 - $140,000 / ₹9 - ₹25 LPA"
+        demand = "High & Expanding (Crucial for all Enterprises)"
+    elif any(k in c_lower for k in ["mobile", "flutter", "react native", "android", "ios", "swift", "kotlin"]):
+        prereqs = ["Object-Oriented Programming", "Basic UI/UX Understanding", "Version Control (Git)"]
+        tech_stack = [
+            {"name": "Flutter & Dart", "category": "Framework"},
+            {"name": "React Native", "category": "Cross-Platform"},
+            {"name": "Firebase / Supabase", "category": "Backend as a Service"},
+            {"name": "REST & GraphQL APIs", "category": "Networking"},
+            {"name": "State Management (Bloc / Redux)", "category": "State Management"}
+        ]
+        phases = [
+            {
+                "phase_number": 1,
+                "timeframe": timeframes[0],
+                "title": "Core Language & Responsive Mobile UI Layouts",
+                "summary": "Master core syntax, declarative UI layout composition, navigation stacks, and custom animations.",
+                "topics": ["Language Fundamentals (Dart / Modern JS / TypeScript)", "Widget & Component Hierarchies", "Responsive Flexbox Layouts for Multi-Screen Support", "Screen Transitions, Navigation Stacks & Modals"],
+                "hands_on_project": {
+                    "title": "Modern Interactive Mobile E-Commerce Showcase App",
+                    "description": "Build a responsive mobile app featuring animated product cards, cart interactions, and smooth tab navigation."
+                },
+                "milestone_goal": "Design pixel-perfect responsive layouts that render smoothly on iOS and Android."
+            },
+            {
+                "phase_number": 2,
+                "timeframe": timeframes[1],
+                "title": "State Management & Asynchronous API Integration",
+                "summary": "Manage complex app states cleanly, handle offline caching, and connect to live cloud REST/GraphQL APIs.",
+                "topics": ["Predictable State Management (Bloc / Provider / Zustand)", "HTTP Requests, JSON Serialization & Error Handling", "Local Storage & Offline Caching (SQLite / Hive)", "Forms, Input Validation & User Feedback"],
+                "hands_on_project": {
+                    "title": "Real-Time Weather & Live Location Tracking App",
+                    "description": "Fetch real-time GPS coordinates, consume global weather APIs, and cache recent searches offline."
+                },
+                "milestone_goal": "Implement robust state management with flawless offline caching."
+            },
+            {
+                "phase_number": 3,
+                "timeframe": timeframes[2],
+                "title": "Authentication, Push Notifications & Cloud Backends",
+                "summary": "Integrate Firebase/Supabase for Google & Apple login, real-time database sync, and remote push notifications.",
+                "topics": ["OAuth Authentication (Google, Apple, Email/Password)", "Cloud Firestore / Supabase Real-Time Subscriptions", "Push Notifications (Firebase Cloud Messaging)", "Device Hardware APIs (Camera, Biometrics, Geolocation)"],
+                "hands_on_project": {
+                    "title": "Real-Time Social Messenger with Media Sharing",
+                    "description": "Develop an instant chat app with biometric lock, media uploads, and real-time read receipts."
+                },
+                "milestone_goal": "Integrate cloud auth, hardware camera access, and real-time push messaging."
+            },
+            {
+                "phase_number": 4,
+                "timeframe": timeframes[3],
+                "title": "Performance Optimization, App Store & Play Store Deployment",
+                "summary": "Profile frame rates, resolve memory leaks, configure release keystores, and submit to App Store and Google Play.",
+                "topics": ["60 FPS Performance Profiling & Memory Leak Detection", "Writing Unit & Widget Tests", "CI/CD Mobile Pipelines (Fastlane / GitHub Actions)", "App Store (TestFlight) & Google Play Console Submission"],
+                "hands_on_project": {
+                    "title": "Production Release Build & App Store Ready Bundle",
+                    "description": "Package, sign, and build production APK/AAB and iOS IPA bundles with automated Fastlane scripts."
+                },
+                "milestone_goal": "Publish a production-certified mobile app ready for App Store and Google Play."
+            }
+        ]
+        job_roles = ["Mobile App Developer", "Flutter Developer", "React Native Engineer", "Cross-Platform Specialist"]
+        salary = "$75,000 - $135,000 / ₹8 - ₹24 LPA"
+        demand = "High & Steady (Consumer & SaaS Apps)"
+    else:
+        # Dynamic Custom Course Architecture for any course name typed
+        prereqs = ["Basic Computing Fundamentals", "Problem Solving & Logic", "Commitment to Hands-on Practice"]
+        tech_stack = [
+            {"name": f"{course_clean} Core", "category": "Core Foundation"},
+            {"name": "Modern Toolchain & IDE", "category": "Environment"},
+            {"name": "Git & GitHub", "category": "Version Control"},
+            {"name": "API & Data Integrations", "category": "Architecture"},
+            {"name": "Production Testing Frameworks", "category": "Quality Assurance"}
+        ]
+        phases = [
+            {
+                "phase_number": 1,
+                "timeframe": timeframes[0],
+                "title": f"Phase 1: {course_clean} Foundations & Environment Setup",
+                "summary": f"Establish a rock-solid grasp of foundational concepts, setup standard development tooling, and write your first programs.",
+                "topics": [
+                    f"Core syntax, data structures, and principles of {course_clean}",
+                    "Development environment setup, package managers & linters",
+                    "Version control with Git, branching strategies, and repository management",
+                    "Basic algorithmic problem solving and writing clean, readable code"
+                ],
+                "hands_on_project": {
+                    "title": f"{course_clean} Starter Application",
+                    "description": f"Build a modular starter application implementing core principles, input handling, and automated error logging."
+                },
+                "milestone_goal": f"Master foundational workflows and syntax of {course_clean}."
+            },
+            {
+                "phase_number": 2,
+                "timeframe": timeframes[1],
+                "title": f"Phase 2: Core Implementation & System Architecture",
+                "summary": f"Dive deep into production design patterns, asynchronous workflows, data persistence, and service communication.",
+                "topics": [
+                    f"Advanced design patterns and architecture in {course_clean}",
+                    "Connecting with databases, caching layers, and external REST APIs",
+                    "Handling asynchronous tasks, background workers, and performance tuning",
+                    "Structuring modular codebases for maintainability and team scalability"
+                ],
+                "hands_on_project": {
+                    "title": f"Data-Driven {course_clean} Micro-Platform",
+                    "description": f"Engineer an end-to-end operational platform with persistent storage, validation, and real-time updates."
+                },
+                "milestone_goal": "Architect scalable components and establish robust data flows."
+            },
+            {
+                "phase_number": 3,
+                "timeframe": timeframes[2],
+                "title": f"Phase 3: Production Hardening, Testing & Optimization",
+                "summary": f"Scale your solutions to production standards with comprehensive unit tests, security audits, and latency optimization.",
+                "topics": [
+                    "Writing automated unit, integration, and end-to-end test suites",
+                    "Security hardening, authentication, role-based access control (RBAC)",
+                    "Profiling bottlenecks, memory consumption, and query optimization",
+                    "Containerization with Docker for consistent development and deployment"
+                ],
+                "hands_on_project": {
+                    "title": f"Production-Ready {course_clean} Enterprise System",
+                    "description": f"Build a fully tested, containerized application with automated error tracking and performance metrics."
+                },
+                "milestone_goal": "Deliver zero-defect, production-ready systems meeting enterprise benchmarks."
+            },
+            {
+                "phase_number": 4,
+                "timeframe": timeframes[3],
+                "title": "Phase 4: Capstone Deployment, Portfolio & Job Placement",
+                "summary": "Deploy your capstone project to cloud infrastructure, prepare an ATS-optimized resume, and conquer technical interviews.",
+                "topics": [
+                    "Cloud deployment (AWS/Vercel/DigitalOcean) with CI/CD automation",
+                    "Crafting an impactful GitHub portfolio with live production demos",
+                    f"Interview preparation: System design and domain technical questions for {course_clean}",
+                    "ATS resume optimization and high-impact LinkedIn positioning"
+                ],
+                "hands_on_project": {
+                    "title": f"Live Capstone Showcase Project: {course_clean} Production Suite",
+                    "description": f"Launch a live, public-facing project with custom domain, automated deployment, and documentation."
+                },
+                "milestone_goal": "Pass technical job screens and showcase an industry-recognized portfolio."
+            }
+        ]
+        job_roles = [f"{course_clean} Specialist", f"{course_clean} Engineer", "Software Developer", "Technical Consultant"]
+        salary = "$80,000 - $145,000 / ₹9 - ₹26 LPA"
+        demand = "Strong & Growing Across Tech Sectors"
+
+    return {
+        "course": course_clean,
+        "tagline": f"Master {course_clean} from Foundations to Production Architecture in {duration}",
+        "overview": f"A comprehensive, career-focused learning pathway designed to build production-grade competence in {course_clean}. Follow structured milestones with real-world projects and technical validation.",
+        "difficulty": level,
+        "duration": duration,
+        "estimated_hours": total_hours,
+        "weekly_hours": weekly,
+        "goal": goal,
+        "prerequisites": prereqs,
+        "tech_stack": tech_stack,
+        "phases": phases,
+        "career_outcomes": {
+            "job_roles": job_roles,
+            "avg_salary": salary,
+            "industry_demand": demand
+        },
+        "pro_tips": [
+            f"Build at least 2 public GitHub projects implementing {course_clean} rather than just watching tutorials.",
+            "Write clean unit tests and include architectural diagrams in your project Readme files.",
+            "Focus on real-world constraints like latency, cost, and maintainability to stand out in technical interviews."
+        ]
+    }
+
+def fetch_live_ai_roadmap(course: str, level: str, duration: str, goal: str) -> dict:
+    try:
+        url = "https://text.pollinations.ai/"
+        system_prompt = (
+            "You are VELFIRE AI, an expert software career roadmap architect. "
+            "Generate an in-depth, realistic, career-aligned learning roadmap for the specified course. "
+            "Output strictly valid JSON and nothing else. No markdown commentary outside JSON.\n"
+            "JSON structure must match:\n"
+            "{\n"
+            '  "course": "...",\n'
+            '  "tagline": "...",\n'
+            '  "overview": "...",\n'
+            '  "difficulty": "...",\n'
+            '  "duration": "...",\n'
+            '  "estimated_hours": "...",\n'
+            '  "weekly_hours": "...",\n'
+            '  "prerequisites": ["...", "..."],\n'
+            '  "tech_stack": [{"name": "...", "category": "..."}],\n'
+            '  "phases": [\n'
+            '    {\n'
+            '      "phase_number": 1,\n'
+            '      "timeframe": "Weeks 1-2",\n'
+            '      "title": "...",\n'
+            '      "summary": "...",\n'
+            '      "topics": ["...", "...", "...", "..."],\n'
+            '      "hands_on_project": {"title": "...", "description": "..."},\n'
+            '      "milestone_goal": "..."\n'
+            '    }\n'
+            '  ],\n'
+            '  "career_outcomes": {\n'
+            '    "job_roles": ["...", "..."],\n'
+            '    "avg_salary": "...",\n'
+            '    "industry_demand": "..."\n'
+            '  },\n'
+            '  "pro_tips": ["...", "...", "..."]\n'
+            "}"
+        )
+
+        user_prompt = f"Course: {course}\nTarget Skill Level: {level}\nDuration: {duration}\nCareer Goal: {goal}\nGenerate the complete roadmap JSON now."
+        payload = {
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            "model": "openai",
+            "jsonMode": True
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(req, timeout=9) as res:
+            if res.status == 200:
+                raw_text = res.read().decode("utf-8").strip()
+                # Clean code blocks if present
+                clean_json = re.sub(r'^```json\s*', '', raw_text, flags=re.IGNORECASE)
+                clean_json = re.sub(r'```$', '', clean_json).strip()
+                parsed = json.loads(clean_json)
+                if isinstance(parsed, dict) and "phases" in parsed and len(parsed["phases"]) >= 2:
+                    return parsed
+    except Exception as e:
+        print(f"Live AI roadmap generation error: {e}")
+    return {}
+
+@app.post("/api/roadmap/generate")
+def generate_roadmap_endpoint(data: RoadmapRequest):
+    course = data.course.strip()
+    if not course:
+        raise HTTPException(status_code=400, detail="Course or domain title is required.")
+
+    level = data.level.strip() if data.level else "Intermediate"
+    duration = data.duration.strip() if data.duration else "3 Months Mastery"
+    goal = data.goal.strip() if data.goal else "Job Placement & Mastery"
+
+    # Attempt live AI synthesis
+    live_roadmap = fetch_live_ai_roadmap(course, level, duration, goal)
+    if live_roadmap:
+        return {
+            "status": "success",
+            "source": "live_llm",
+            "roadmap": live_roadmap
+        }
+
+    # Deterministic high-quality fallback
+    fallback_roadmap = build_fallback_roadmap(course, level, duration, goal)
+    return {
+        "status": "success",
+        "source": "velfire_ai_engine",
+        "roadmap": fallback_roadmap
+    }
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

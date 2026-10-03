@@ -354,25 +354,6 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard }) {
                   <span className="feature-pill">⚡ 24/7 AI Assistant</span>
                   <span className="feature-pill">🎓 Skill Certifications</span>
                   <span className="feature-pill">💼 Direct Job Placement</span>
-                  <span className="feature-pill">🚀 100+ Real-World Labs</span>
-                </div>
-
-                {/* Live Metrics Ribbon */}
-                <div className="hero-metrics-ribbon">
-                  <div className="metric-item">
-                    <span className="metric-val">98.4%</span>
-                    <span className="metric-lbl">Placement Rate</span>
-                  </div>
-                  <div className="metric-sep"></div>
-                  <div className="metric-item">
-                    <span className="metric-val">120+</span>
-                    <span className="metric-lbl">Interactive Labs</span>
-                  </div>
-                  <div className="metric-sep"></div>
-                  <div className="metric-item">
-                    <span className="metric-val">24/7</span>
-                    <span className="metric-lbl">AI Mentor Support</span>
-                  </div>
                 </div>
 
                 {/* Get Started / Continue Action Button */}
@@ -383,13 +364,6 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard }) {
                     onClick={handleContinueClick}
                   >
                     {hasStarted ? "Continue Workspace →" : "Get Started Now →"}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-hero-secondary"
-                    onClick={handleContinueClick}
-                  >
-                    Launch AI Dashboard ⚡
                   </button>
                 </div>
               </div>

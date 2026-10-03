@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./Dashboard.css";
 import VelfireCoursesHub from "../components/courses/VelfireCoursesHub";
 import CurriculumHub from "../components/curriculum/CurriculumHub";
+import VelfireRoadmapGenerator from "../components/roadmap/VelfireRoadmapGenerator";
 
 function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -717,103 +718,13 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
             {/* ROADMAP GENERATOR VIEW */}
             {learningMode === "roadmap" && (
               <div className="learning-tab-content">
-                <div className="tab-pane-roadmap">
-                  {/* AI Roadmap Generator Controls */}
-                  <div className="roadmap-generator-control-card">
-                    <div className="roadmap-gen-header">
-                      <div>
-                        <h4>⚡ VELFIRE AI Roadmap Generator</h4>
-                        <p>Customize target skill level and timeframe for <strong>{selectedDomain}</strong></p>
-                      </div>
-                      <button 
-                        className="btn-switch-to-course"
-                        onClick={() => { setLearningMode("course"); setLearningTab("text"); }}
-                      >
-                        🎓 Switch to VELFIRE Courses →
-                      </button>
-                    </div>
-
-                    <div className="roadmap-config-row">
-                      <div className="config-item">
-                        <label>Target Skill Level</label>
-                        <select 
-                          value={roadmapTargetLevel} 
-                          onChange={(e) => setRoadmapTargetLevel(e.target.value)}
-                        >
-                          <option value="Beginner">Beginner (Foundations)</option>
-                          <option value="Intermediate">Intermediate (Core Skills)</option>
-                          <option value="Advanced">Advanced (Production Systems)</option>
-                        </select>
-                      </div>
-
-                      <div className="config-item">
-                        <label>Target Timeframe</label>
-                        <select 
-                          value={roadmapDuration} 
-                          onChange={(e) => setRoadmapDuration(e.target.value)}
-                        >
-                          <option value="1 Month Sprint">1 Month Fast Sprint</option>
-                          <option value="3 Months Mastery">3 Months Comprehensive</option>
-                          <option value="6 Months Path">6 Months Career Transformation</option>
-                        </select>
-                      </div>
-
-                      <button 
-                        className="btn-generate-ai-roadmap"
-                        onClick={handleGenerateRoadmapAction}
-                        disabled={isGeneratingRoadmap}
-                      >
-                        {isGeneratingRoadmap ? "⚡ Generating AI Roadmap..." : "🚀 Generate Dynamic AI Roadmap"}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Domain Overview & Skill Gap */}
-                  <div className="domain-overview-card">
-                    <h4>{selectedDomain} — {roadmapTargetLevel} Roadmap ({roadmapDuration})</h4>
-                    <p>
-                      Personalized AI Career Pathway structured for <strong>{selectedDomain}</strong>. Follow step-by-step milestones to build required production skills.
-                    </p>
-                  </div>
-
-                  <div className="skill-gap-analysis">
-                    <h5>🎯 Skill Gap Analysis for {selectedDomain}</h5>
-                    <div className="skill-chips-grid">
-                      <span className="skill-chip known">✓ Current Domain Alignment</span>
-                      {domainsList.find(d => d.name === selectedDomain)?.requiredSkills.map((sk, sIdx) => (
-                        <span key={sIdx} className={sIdx === 0 ? "skill-chip known" : "skill-chip gap"}>
-                          {sIdx === 0 ? `✓ ${sk}` : `✗ ${sk} (Target Skill)`}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="milestone-roadmap">
-                    <h5>🗺️ Step-by-Step Milestones</h5>
-                    <div className="roadmap-steps">
-                      <div className="step-card">
-                        <span className="step-num">Phase 1 (Week 1–2)</span>
-                        <h6>Core Concepts & Setup</h6>
-                        <p>Master foundational syntax, development environment, and key toolstacks.</p>
-                      </div>
-                      <div className="step-card">
-                        <span className="step-num">Phase 2 (Week 3–5)</span>
-                        <h6>Hands-on Data & APIs</h6>
-                        <p>Build working endpoints, query databases, and execute data pipelines.</p>
-                      </div>
-                      <div className="step-card">
-                        <span className="step-num">Phase 3 (Week 6–8)</span>
-                        <h6>Production Architecture</h6>
-                        <p>Scale applications, implement unit tests, and deploy on cloud infrastructure.</p>
-                      </div>
-                      <div className="step-card">
-                        <span className="step-num">Phase 4 (Week 9–12)</span>
-                        <h6>ATS Resume & Mock Interview Gate</h6>
-                        <p>Build ATS-compliant resume and achieve 80%+ score in Mock Interview to unlock Jobs.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <VelfireRoadmapGenerator
+                  initialCourse={selectedDomain}
+                  onSwitchToCourse={() => {
+                    setLearningMode("course");
+                    setLearningTab("full_curriculum");
+                  }}
+                />
               </div>
             )}
 

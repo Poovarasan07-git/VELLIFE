@@ -28,15 +28,6 @@ body {
     radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 60%);
   background-attachment: fixed;
   color: #f8fafc;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M3 3L10 20L13.5 13.5L20 10L3 3Z' fill='%2310b981' stroke='%23022c22' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M5 5L9.5 17L12 12L17 9.5L5 5Z' fill='%2334d399'/%3E%3C/svg%3E") 3 3, auto;
-}
-
-button, a, select, [role="button"], input[type="button"], input[type="submit"], .clickable, .nav-btn, .action-btn, .btn-get-started, .card-action-btn, .btn-quick-edit-profile {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M3 3L10 20L13.5 13.5L20 10L3 3Z' fill='%23facc15' stroke='%23022c22' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M5 5L9.5 17L12 12L17 9.5L5 5Z' fill='%23fde047'/%3E%3Ccircle cx='13.5' cy='13.5' r='1.8' fill='%23ffffff'/%3E%3C/svg%3E") 3 3, pointer !important;
-}
-
-input[type="text"], input[type="email"], input[type="password"], textarea {
-  cursor: text;
 }
 
 html,
