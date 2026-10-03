@@ -593,8 +593,8 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
       {/* --- MODAL 2: COURSE & LEARNING PLATFORM --- */}
       {/* ========================================================================= */}
       {activeModal === "learning" && (
-        <div className="portal-modal-overlay full-screen-overlay">
-          <div className="portal-modal-card learning-full-modal">
+        <div className={`portal-modal-overlay full-screen-overlay ${learningMode === "choice" ? "butter-theme" : ""}`}>
+          <div className={`portal-modal-card learning-full-modal ${learningMode === "choice" ? "learning-hub-butter" : ""}`}>
             
             {/* Modal Top Header */}
             <div className="portal-modal-header">
