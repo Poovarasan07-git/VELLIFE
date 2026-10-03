@@ -6,7 +6,6 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Chatbot from "./pages/Chatbot";
 import SplashScreen from "./components/SplashScreen";
-import AnimatedCursor from "./components/AnimatedCursor";
 import "./App.css";
 
 function App() {
@@ -143,12 +142,7 @@ function App() {
     return <SplashScreen onComplete={() => setCurrentView("login")} />;
   };
 
-  return (
-    <>
-      <AnimatedCursor />
-      {renderCurrentView()}
-    </>
-  );
+  return renderCurrentView();
 }
 
 export default App;
