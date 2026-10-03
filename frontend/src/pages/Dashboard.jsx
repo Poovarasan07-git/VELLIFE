@@ -594,7 +594,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
       {/* ========================================================================= */}
       {activeModal === "learning" && (
         <div className="portal-modal-overlay full-screen-overlay">
-          <div className={`portal-modal-card learning-full-modal ${learningMode === "choice" ? "learning-hub-choice-mode" : ""}`}>
+          <div className={`portal-modal-card learning-full-modal learning-hub-${learningMode}-mode`}>
             
             {/* Modal Top Header */}
             <div className="portal-modal-header">
