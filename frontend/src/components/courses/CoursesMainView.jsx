@@ -13,7 +13,8 @@ function CoursesMainView({
   userProgress = {}, 
   onSelectCourse, 
   onStartLearning,
-  onSwitchToRoadmap
+  onSwitchToRoadmap,
+  onBackToChoice
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -98,15 +99,27 @@ function CoursesMainView({
           </p>
         </div>
 
-        {onSwitchToRoadmap && (
-          <button className="btn-roadmap-banner-link" onClick={onSwitchToRoadmap}>
-            <span>🗺️ AI Career Roadmap</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </button>
-        )}
+        <div className="courses-hero-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          {onBackToChoice && (
+            <button 
+              className="btn-roadmap-banner-link" 
+              style={{ background: 'rgba(255, 255, 255, 0.08)', borderColor: 'rgba(255, 255, 255, 0.15)' }}
+              onClick={onBackToChoice}
+              title="Return to Pathway selection"
+            >
+              <span>← Pathways</span>
+            </button>
+          )}
+          {onSwitchToRoadmap && (
+            <button className="btn-roadmap-banner-link" onClick={onSwitchToRoadmap}>
+              <span>🗺️ AI Career Roadmap</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Progress Stats Summary Bar */}

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
-import VelfireCoursesHub from "../components/courses/VelfireCoursesHub";
-import CurriculumHub from "../components/curriculum/CurriculumHub";
 import VelfireRoadmapGenerator from "../components/roadmap/VelfireRoadmapGenerator";
 
 function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
@@ -689,18 +687,18 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                   </div>
 
                   {/* CARD 2: VELFIRE COURSE */}
-                  <div className="choice-card card-course-choice" onClick={() => { setLearningMode("course"); setLearningTab("full_curriculum"); }}>
-                    <div className="choice-badge badge-course">🎓 Full Curriculum</div>
+                  <div className="choice-card card-course-choice" onClick={() => { setLearningMode("course"); }}>
+                    <div className="choice-badge badge-course">⏳ Work Starts Soon</div>
                     <div className="choice-icon-hero">📚</div>
                     <h3>2. VELFIRE Course</h3>
                     <p>
-                      Access comprehensive course learning modules: Text chapters, Recorded video classes, Live workshops, Quizzes, Resume Builder, ATS Analyzer & Mock Interview Gate.
+                      Work starts soon. Comprehensive domain courses and curriculum modules are under development.
                     </p>
 
                     <div className="choice-bullet-list">
-                      <span>📖 Text, Video & Live Classes</span>
-                      <span>📄 ATS Resume Builder & Analyzer</span>
-                      <span>🎤 Mock Interview Gatekeeper (80% Pass)</span>
+                      <span>🚀 Launching Soon</span>
+                      <span>📖 Full Syllabus & Notes</span>
+                      <span>💡 Interactive Learning Experience</span>
                     </div>
 
                     <button className="btn-choice-action btn-course-choice">
@@ -728,429 +726,108 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
               </div>
             )}
 
-            {/* COURSE PLATFORM VIEW */}
+            {/* VELFIRE COURSES - WORK STARTS SOON */}
             {learningMode === "course" && (
-              <>
-                {/* Modern Organized 4-Suite Navigation Bar */}
-                <div className="learning-tabs-nav modern-suite-nav">
-                  <button 
-                    className={`suite-tab-btn ${learningTab === "full_curriculum" || learningTab === "text" || !learningTab ? "active" : ""}`} 
-                    onClick={() => setLearningTab("full_curriculum")}
+              <div className="learning-tab-content">
+                <div 
+                  className="velfire-coming-soon-card" 
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: "52vh",
+                    textAlign: "center",
+                    padding: "48px 24px",
+                    borderRadius: "20px",
+                    background: "linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)",
+                    margin: "24px auto",
+                    maxWidth: "720px"
+                  }}
+                >
+                  <div 
+                    style={{
+                      width: "84px",
+                      height: "84px",
+                      borderRadius: "50%",
+                      background: "rgba(255, 107, 0, 0.12)",
+                      border: "1px solid rgba(255, 107, 0, 0.35)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "38px",
+                      marginBottom: "20px",
+                      boxShadow: "0 0 35px rgba(255, 107, 0, 0.25)"
+                    }}
                   >
-                    <span className="suite-tab-icon">🎓</span>
-                    <span className="suite-tab-text">Courses & Tracks</span>
-                  </button>
-
-                  <button 
-                    className={`suite-tab-btn ${learningTab === "recorded" || learningTab === "live" ? "active" : ""}`} 
-                    onClick={() => setLearningTab(learningTab === "live" ? "live" : "recorded")}
+                    🚀
+                  </div>
+                  <h2 
+                    style={{
+                      fontSize: "2.2rem",
+                      fontWeight: 700,
+                      letterSpacing: "-0.5px",
+                      color: "#ffffff",
+                      marginBottom: "12px"
+                    }}
                   >
-                    <span className="suite-tab-icon">🎥</span>
-                    <span className="suite-tab-text">Video & Live Hub</span>
-                  </button>
-
-                  <button 
-                    className={`suite-tab-btn ${learningTab === "assessment" || learningTab === "mock_test" ? "active" : ""}`} 
-                    onClick={() => setLearningTab(learningTab === "mock_test" ? "mock_test" : "assessment")}
+                    work starts soon
+                  </h2>
+                  <p 
+                    style={{
+                      fontSize: "1.05rem",
+                      color: "rgba(255, 255, 255, 0.65)",
+                      maxWidth: "480px",
+                      lineHeight: "1.6",
+                      marginBottom: "28px"
+                    }}
                   >
-                    <span className="suite-tab-icon">📝</span>
-                    <span className="suite-tab-text">Tests & Practice</span>
-                  </button>
-
-                  <button 
-                    className={`suite-tab-btn ${learningTab === "resume_builder" || learningTab === "resume_analyzer" || learningTab === "mock_interview" ? "active highlight-interview" : ""}`} 
-                    onClick={() => setLearningTab("resume_builder")}
-                  >
-                    <span className="suite-tab-icon">🚀</span>
-                    <span className="suite-tab-text">Career Suite {mockInterviewScore >= 80 ? "✓" : "⚡"}</span>
-                  </button>
-
-                  <button className="btn-switch-to-roadmap-inline" onClick={() => setLearningMode("roadmap")}>
-                    🗺️ Switch to VELFIRE Roadmap →
-                  </button>
-                </div>
-
-                {/* Contextual Sub-Suite Toggles for Ultra Easy Navigation */}
-                {(learningTab === "recorded" || learningTab === "live") && (
-                  <div className="sub-suite-toggles-bar">
-                    <button 
-                      className={`sub-toggle-pill ${learningTab === "recorded" ? "active" : ""}`}
-                      onClick={() => setLearningTab("recorded")}
+                    Our team is crafting structured, industry-grade modules for this domain. Explore our AI Career Roadmap in the meantime!
+                  </p>
+                  <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
+                    <button
+                      style={{
+                        padding: "12px 24px",
+                        borderRadius: "12px",
+                        background: "linear-gradient(135deg, #ff6b00 0%, #ff8800 100%)",
+                        color: "#fff",
+                        fontWeight: 600,
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontSize: "0.95rem"
+                      }}
+                      onClick={() => setLearningMode("roadmap")}
                     >
-                      🎥 Recorded Video Classes ({recordedVideos.length})
+                      <span>🗺️ Explore AI Roadmap</span>
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
                     </button>
-                    <button 
-                      className={`sub-toggle-pill ${learningTab === "live" ? "active" : ""}`}
-                      onClick={() => setLearningTab("live")}
+                    <button
+                      style={{
+                        padding: "12px 24px",
+                        borderRadius: "12px",
+                        background: "rgba(255, 255, 255, 0.06)",
+                        color: "rgba(255, 255, 255, 0.85)",
+                        fontWeight: 600,
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
+                        cursor: "pointer",
+                        fontSize: "0.95rem"
+                      }}
+                      onClick={() => setLearningMode("choice")}
                     >
-                      🔴 Scheduled Live Workshops ({liveClassesList.length})
+                      ← Back to Pathways
                     </button>
-                  </div>
-                )}
-
-                {(learningTab === "assessment" || learningTab === "mock_test") && (
-                  <div className="sub-suite-toggles-bar">
-                    <button 
-                      className={`sub-toggle-pill ${learningTab === "assessment" ? "active" : ""}`}
-                      onClick={() => setLearningTab("assessment")}
-                    >
-                      📝 Domain Technical Assessment
-                    </button>
-                    <button 
-                      className={`sub-toggle-pill ${learningTab === "mock_test" ? "active" : ""}`}
-                      onClick={() => setLearningTab("mock_test")}
-                    >
-                      ✍️ Full Placement Mock Exam
-                    </button>
-                  </div>
-                )}
-
-                {(learningTab === "resume_builder" || learningTab === "resume_analyzer" || learningTab === "mock_interview") && (
-                  <div className="sub-suite-toggles-bar">
-                    <button 
-                      className={`sub-toggle-pill ${learningTab === "resume_builder" ? "active" : ""}`}
-                      onClick={() => setLearningTab("resume_builder")}
-                    >
-                      📄 ATS Resume Builder
-                    </button>
-                    <button 
-                      className={`sub-toggle-pill ${learningTab === "resume_analyzer" ? "active" : ""}`}
-                      onClick={() => setLearningTab("resume_analyzer")}
-                    >
-                      🔍 ATS Resume Analyzer
-                    </button>
-                    <button 
-                      className={`sub-toggle-pill ${learningTab === "mock_interview" ? "active highlight-sub" : ""}`}
-                      onClick={() => setLearningTab("mock_interview")}
-                    >
-                      🎤 Mock Interview Gatekeeper (80% Pass) {mockInterviewScore >= 80 ? "✓" : "⚡"}
-                    </button>
-                  </div>
-                )}
-
-                {/* TAB CONTENT BODY */}
-                <div className="learning-tab-content">
-
-              {/* TAB 1: FULL CURRICULUM - CAREER PATHWAY MODULE */}
-              {(learningTab === "full_curriculum" || learningTab === "text" || !learningTab) && (
-                <CurriculumHub
-                  selectedDomain={selectedDomain}
-                  onSwitchToRoadmap={() => setLearningMode("roadmap")}
-                  onBackToChoice={() => setLearningMode("choice")}
-                />
-              )}
-
-              {/* TAB 3: RECORDED CLASSES */}
-              {learningTab === "recorded" && (
-                <div className="tab-pane-recorded">
-                  <div className="video-player-container">
-                    <div className="mock-screen">
-                      <span className="play-icon">▶</span>
-                      <h4>Playing: {recordedVideos[activeVideoIndex].title}</h4>
-                      <p>Duration: {recordedVideos[activeVideoIndex].duration} • HD 1080p</p>
-                    </div>
-                  </div>
-
-                  <div className="recorded-playlist">
-                    <h4>Course Video Playlist</h4>
-                    {recordedVideos.map((vid, idx) => (
-                      <div
-                        key={vid.id}
-                        className={`playlist-item ${activeVideoIndex === idx ? "active" : ""}`}
-                        onClick={() => setActiveVideoIndex(idx)}
-                      >
-                        <span className="thumb">{vid.thumbnail}</span>
-                        <div className="vid-info">
-                          <h6>{vid.title}</h6>
-                          <span className="vid-dur">{vid.duration}</span>
-                        </div>
-                        <span className={`status-tag ${vid.status.toLowerCase().replace(" ", "")}`}>
-                          {vid.status}
-                        </span>
-                      </div>
-                    ))}
                   </div>
                 </div>
-              )}
-
-              {/* TAB 4: LIVE CLASSES */}
-              {learningTab === "live" && (
-                <div className="tab-pane-live">
-                  <h3>🔴 Scheduled Live Interactive Classes</h3>
-                  <div className="live-classes-grid">
-                    {liveClassesList.map((lc) => (
-                      <div key={lc.id} className="live-card">
-                        <div className="live-status-badge">● LIVE UPCOMING</div>
-                        <h4>{lc.title}</h4>
-                        <p className="instructor">Instructor: <strong>{lc.instructor}</strong></p>
-                        <div className="live-meta">
-                          <span>📅 {lc.date}</span>
-                          <span>⏰ {lc.time}</span>
-                        </div>
-                        <a
-                          href={lc.meetUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="btn-join-live"
-                        >
-                          [JOIN LIVE CLASS]
-                        </a>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 5: ASSESSMENTS */}
-              {learningTab === "assessment" && (
-                <div className="tab-pane-assessment">
-                  <h3>📝 {selectedDomain} Assessment Test</h3>
-                  <p>Answer all technical questions to test your proficiency.</p>
-
-                  <div className="questions-list">
-                    {assessmentQuestions.map((q) => (
-                      <div key={q.id} className="question-item-card">
-                        <h4>Q{q.id}: {q.question}</h4>
-                        <div className="options-group">
-                          {q.options.map((opt, oIdx) => (
-                            <label key={oIdx} className="option-label">
-                              <input
-                                type="radio"
-                                name={`q_${q.id}`}
-                                checked={assessmentSelectedAnswers[q.id] === oIdx}
-                                onChange={() => setAssessmentSelectedAnswers({ ...assessmentSelectedAnswers, [q.id]: oIdx })}
-                              />
-                              <span>{opt}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button className="btn-submit-assessment" onClick={handleScoreAssessment}>
-                    Submit Assessment
-                  </button>
-
-                  {assessmentResult && (
-                    <div className={`assessment-result-box ${assessmentResult.passed ? "passed" : "failed"}`}>
-                      <h4>Result: {assessmentResult.percentage}% Score</h4>
-                      <p>
-                        Correct: {assessmentResult.score} / {assessmentResult.total} questions. Status: <strong>{assessmentResult.passed ? "PASSED ✓" : "FAILED (Retake suggested)"}</strong>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* TAB 6: RESUME BUILDER */}
-              {learningTab === "resume_builder" && (
-                <div className="tab-pane-resume-builder">
-                  <div className="resume-form">
-                    <h4>Build ATS-Friendly Technical Resume</h4>
-                    <div className="form-row">
-                      <input type="text" placeholder="Full Name" value={resumeData.name} onChange={(e) => setResumeData({ ...resumeData, name: e.target.value })} />
-                      <input type="email" placeholder="Email" value={resumeData.email} onChange={(e) => setResumeData({ ...resumeData, email: e.target.value })} />
-                    </div>
-                    <div className="form-row">
-                      <input type="text" placeholder="Phone" value={resumeData.phone} onChange={(e) => setResumeData({ ...resumeData, phone: e.target.value })} />
-                      <input type="text" placeholder="Location" value={resumeData.location} onChange={(e) => setResumeData({ ...resumeData, location: e.target.value })} />
-                    </div>
-                    <textarea placeholder="Professional Summary" rows="3" value={resumeData.summary} onChange={(e) => setResumeData({ ...resumeData, summary: e.target.value })} />
-                    <textarea placeholder="Technical Skills" rows="2" value={resumeData.skills} onChange={(e) => setResumeData({ ...resumeData, skills: e.target.value })} />
-                    <textarea placeholder="Key Projects" rows="2" value={resumeData.projects} onChange={(e) => setResumeData({ ...resumeData, projects: e.target.value })} />
-                    <button className="btn-save-resume" onClick={() => { setIsResumeCompleted(true); alert("Resume saved & updated!"); }}>
-                      Save & Enable Resume
-                    </button>
-                  </div>
-
-                  <div className="resume-preview-card">
-                    <h4>📄 Live Resume Preview</h4>
-                    <div className="preview-paper">
-                      <h2>{resumeData.name}</h2>
-                      <p className="contact">{resumeData.email} • {resumeData.phone} • {resumeData.location}</p>
-                      <hr />
-                      <h5>SUMMARY</h5>
-                      <p>{resumeData.summary}</p>
-                      <h5>TECHNICAL SKILLS</h5>
-                      <p>{resumeData.skills}</p>
-                      <h5>PROJECTS</h5>
-                      <p>{resumeData.projects}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 7: RESUME ANALYZER */}
-              {learningTab === "resume_analyzer" && (
-                <div className="tab-pane-resume-analyzer">
-                  <h3>🔍 ATS Resume Analyzer</h3>
-                  <div className="analyzer-controls">
-                    <label>Target Career Domain:</label>
-                    <select value={targetDomain} onChange={(e) => setTargetDomain(e.target.value)}>
-                      {domainsList.map((d) => (
-                        <option key={d.id} value={d.name}>{d.name}</option>
-                      ))}
-                    </select>
-                    <button className="btn-run-analysis" onClick={handleAnalyzeResume}>
-                      Analyze Resume Match
-                    </button>
-                  </div>
-
-                  {resumeAnalysisResult && (
-                    <div className="analysis-report">
-                      <div className="score-meter">
-                        <span className="meter-val">{resumeAnalysisResult.matchScore}%</span>
-                        <span className="meter-lbl">ATS Target Match</span>
-                      </div>
-
-                      <div className="report-sections">
-                        <div>
-                          <h5>✓ Matched Skills</h5>
-                          <ul>
-                            {resumeAnalysisResult.matchedSkills.map((s, idx) => <li key={idx}>{s}</li>)}
-                          </ul>
-                        </div>
-
-                        <div>
-                          <h5>✗ Missing Required Skills</h5>
-                          <ul>
-                            {resumeAnalysisResult.missingSkills.map((s, idx) => <li key={idx}>{s}</li>)}
-                          </ul>
-                        </div>
-                      </div>
-
-                      <h5>💡 Optimization Suggestions</h5>
-                      <ul>
-                        {resumeAnalysisResult.suggestions.map((s, idx) => <li key={idx}>{s}</li>)}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* TAB 8: MOCK TESTS */}
-              {learningTab === "mock_test" && (
-                <div className="tab-pane-mock-test">
-                  <h3>✍️ Domain Mock Practice Test</h3>
-                  <div className="questions-list">
-                    {mockTestQuestions.map((q) => (
-                      <div key={q.id} className="question-item-card">
-                        <h4>Q{q.id}: {q.q}</h4>
-                        <div className="options-group">
-                          {q.opts.map((opt, oIdx) => (
-                            <label key={oIdx} className="option-label">
-                              <input
-                                type="radio"
-                                name={`mt_${q.id}`}
-                                checked={mockTestAnswers[q.id] === oIdx}
-                                onChange={() => setMockTestAnswers({ ...mockTestAnswers, [q.id]: oIdx })}
-                              />
-                              <span>{opt}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button className="btn-submit-assessment" onClick={handleCalculateMockTest}>
-                    Submit Mock Test
-                  </button>
-
-                  {mockTestScore && (
-                    <div className="assessment-result-box passed">
-                      <h4>Score: {mockTestScore.percentage}%</h4>
-                      <p>Correct: {mockTestScore.score} / {mockTestScore.total}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* TAB 9: MOCK INTERVIEW (GATEKEEPER) */}
-              {learningTab === "mock_interview" && (
-                <div className="tab-pane-mock-interview">
-                  <div className="interview-header-card">
-                    <h3>🎤 WILDFIRE Domain Mock Interview: {selectedDomain}</h3>
-                    <p>Passing requirement: <strong>80/100</strong> to UNLOCK WILDFIRE Job Portal.</p>
-                  </div>
-
-                  {!interviewReport ? (
-                    <div className="interview-question-flow">
-                      <div className="q-progress">Question {currentInterviewStep + 1} of {interviewQuestions.length}</div>
-                      <h4 className="q-text">{interviewQuestions[currentInterviewStep].q}</h4>
-                      <p className="q-hint">💡 Hint: {interviewQuestions[currentInterviewStep].hint}</p>
-
-                      <textarea
-                        className="interview-answer-input"
-                        rows="4"
-                        placeholder="Type your detailed response here..."
-                        value={userInterviewAnswers[currentInterviewStep]}
-                        onChange={(e) => {
-                          const updated = [...userInterviewAnswers];
-                          updated[currentInterviewStep] = e.target.value;
-                          setUserInterviewAnswers(updated);
-                        }}
-                      />
-
-                      <div className="interview-nav-btns">
-                        {currentInterviewStep > 0 && (
-                          <button className="btn-prev-q" onClick={() => setCurrentInterviewStep(currentInterviewStep - 1)}>
-                            ← Previous Question
-                          </button>
-                        )}
-                        {currentInterviewStep < interviewQuestions.length - 1 ? (
-                          <button className="btn-next-q" onClick={() => setCurrentInterviewStep(currentInterviewStep + 1)}>
-                            Next Question →
-                          </button>
-                        ) : (
-                          <button className="btn-finish-interview" onClick={handleSubmitInterview}>
-                            Submit & Score Interview
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className={`interview-report-card ${interviewReport.status === "PASSED" ? "pass" : "fail"}`}>
-                      <h4>Mock Interview Evaluation Report</h4>
-                      <div className="interview-overall-score">
-                        <span className="score-num">{interviewReport.score}/100</span>
-                        <span className={`status-badge ${interviewReport.status.toLowerCase()}`}>
-                          STATUS: {interviewReport.status}
-                        </span>
-                      </div>
-
-                      <div className="scores-grid">
-                        <div>Technical Score: <strong>{interviewReport.techScore}%</strong></div>
-                        <div>Communication Score: <strong>{interviewReport.communicationScore}%</strong></div>
-                      </div>
-
-                      <h5>Strengths</h5>
-                      <ul>
-                        {interviewReport.strengths.map((s, idx) => <li key={idx}>{s}</li>)}
-                      </ul>
-
-                      {interviewReport.status === "PASSED" ? (
-                        <div className="job-unlock-success-msg">
-                          🎉 CONGRATULATIONS! You passed with {interviewReport.score}%. The <strong>WILDFIRE Job Portal is now UNLOCKED!</strong>
-                        </div>
-                      ) : (
-                        <div className="job-unlock-fail-msg">
-                          ⚠️ Score below 80%. Complete pending course chapters and try the mock interview again to unlock job listings.
-                        </div>
-                      )}
-
-                      <button className="btn-retry-interview" onClick={() => setInterviewReport(null)}>
-                        🔄 Retake Interview
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-            </div>
-          </>
-        )}
+              </div>
+            )}
       </div>
     </div>
   )}

@@ -802,123 +802,539 @@ export const COURSES_DATA = [
   },
   {
     id: "fullstack-web",
-    title: "Full Stack Web Development",
+    title: "Full Stack Web Development (Enterprise & B.Tech R20 Curriculum)",
     category: "Full Stack Development",
     level: "Intermediate",
-    estimatedDuration: "12 Hours",
-    shortDescription: "Build modern, responsive full stack web applications with HTML, CSS, JavaScript, React, Node.js, and SQL.",
-    fullDescription: "Become a versatile Full Stack Developer capable of architecting frontend user interfaces, backend APIs, and database schemas from start to production deployment.",
+    estimatedDuration: "28 Hours",
+    shortDescription: "Complete university-accredited & enterprise curriculum covering HTML5, CSS3, UNIX CLI, Git/GitHub, JavaScript OOP, Memory Management, AJAX/jQuery, React.js, Redux, Java Spring MVC, Maven, SQL Normalization, Spring JDBC, and Cloud Deployment.",
+    fullDescription: "Master end-to-end full stack software engineering mapped to the official B.Tech Computer Science / Computational Intelligence curriculum (R20A0516) and modern enterprise industry standards. From web fundamentals and client-side programming to enterprise Java Spring backend architectures, database schemas, and cloud deployment pipelines.",
     instructor: {
-      name: "Elena Rostova",
-      title: "Principal Full Stack Architect",
-      avatar: "👩‍💻"
+      name: "Prof. Elena Rostova & Dr. Aris Thorne",
+      title: "Principal Full Stack Architect & Academic Lead",
+      avatar: "👩‍🏫"
     },
     icon: "🌐",
     bannerGradient: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
     learningObjectives: [
-      "Structure semantic web pages with HTML5 and style with CSS flexbox/grid",
-      "Master modern JavaScript (ES6+), DOM manipulation, and Async/Await",
-      "Build modular frontend interfaces using React components and hooks",
-      "Develop scalable REST APIs using Node.js/Express or Python FastAPI",
-      "Connect applications to PostgreSQL databases using ORMs",
-      "Deploy full stack applications on Vercel or cloud servers"
+      "Understand 2-tier and 3-tier web architectures, HTTP protocols, and client-server workflows",
+      "Master semantic HTML5 documents, void/nested elements, tables, lists, and advanced validated forms",
+      "Style responsive web applications using CSS selectors, the box model, flexbox, border effects, and buttons",
+      "Navigate server shells via UNIX CLI commands and manage version control with Git & GitHub",
+      "Master JavaScript core semantics, variable scoping, OOP with ES6 classes, and memory lifecycle/garbage collection",
+      "Implement asynchronous data exchanges using AJAX (XMLHttpRequest), jQuery events, and JSON payloads",
+      "Build single-page web applications using React components, Virtual DOM, React Router, and controlled forms",
+      "Manage application-wide global state using Redux, actions, reducers, and async client-server communication",
+      "Architect enterprise Java backend applications using Model View Controller (MVC) pattern and Spring Framework",
+      "Design and consume RESTful APIs using Spring Boot and manage dependencies with Apache Maven",
+      "Model relational database schemas, apply normalization (1NF-3NF/BCNF), and persist data with Spring JDBC",
+      "Apply Agile/Scrum engineering principles and package/deploy applications to cloud environments"
     ],
-    skills: ["HTML5/CSS3", "JavaScript", "React", "Node.js", "REST APIs", "SQL", "Deployment"],
+    skills: [
+      "HTML5 & Web Semantics",
+      "CSS3 & Box Model",
+      "UNIX CLI & Shell",
+      "Git & GitHub",
+      "JavaScript (ES6+) & OOP",
+      "Memory Management",
+      "AJAX, jQuery & JSON",
+      "React.js & Virtual DOM",
+      "React Router & SPAs",
+      "Redux State Architecture",
+      "Java & Spring MVC",
+      "RESTful APIs & Maven",
+      "SQL & Normalization",
+      "Spring JDBC Persistence",
+      "Agile & Cloud Deployment"
+    ],
     modules: [
       {
         id: "fs-m1",
-        title: "Module 1 – Web Fundamentals (HTML5 & Semantic Structure)",
-        description: "HTML tags, semantic layouts, forms, and accessibility.",
+        title: "Module 1 – Unit I: Web Development Basics & HTML5 Architecture",
+        description: "Two-tier/Three-tier web architectures, Tim Berners-Lee hypertext fundamentals, HTML document structure, and semantic elements.",
         lessons: [
-          { id: "fs-m1-l1", title: "HTML5 Document Architecture", duration: "15 min", content: "Build web structures using semantic tags (<header>, <nav>, <main>, <section>, <footer>).", realWorldExample: "Ensuring web pages are accessible to screen readers and optimized for SEO.", codeSnippet: `<!DOCTYPE html>\n<html lang="en">\n<head><title>VELFIRE App</title></head>\n<body>\n  <header><h1>Dashboard</h1></header>\n</body>\n</html>`, keyPoints: ["Semantic HTML improves SEO and accessibility.", "Always provide alt text for images."], practiceTask: "Build a semantic HTML page containing a contact form." }
+          {
+            id: "fs-m1-l1",
+            title: "Web Architecture & HTML5 Document Structure",
+            duration: "20 min",
+            content: "HTML (HyperText Markup Language) was created by physicist Tim Berners-Lee at CERN in 1989. In modern two-tier and three-tier web architectures, HTML structures the client view layer. An HTML document consists of <!DOCTYPE html>, <html>, <head> (metadata, title, stylesheet links), and <body> (visible content). Elements are either block-level (taking full width, starting on a new line like <div>, <p>, <h1>-<h6>) or inline (taking only content width like <span>, <a>, <img>). Void elements (<br>, <hr>, <img>, <input>) do not require closing tags.",
+            realWorldExample: "Constructing the primary layout skeleton for an enterprise dashboard like VELFIRE.",
+            codeSnippet: `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>VELFIRE Dashboard - B.Tech Portal</title>\n</head>\n<body>\n  <header>\n    <h1>VELFIRE Career OS</h1>\n  </header>\n  <main>\n    <p>Welcome to Full Stack Web Development (R20A0516).</p>\n  </main>\n</body>\n</html>`,
+            keyPoints: [
+              "HTML documents are rendered top-to-bottom and left-to-right by browser layout engines.",
+              "Block-level elements structure layout; inline elements format text segments.",
+              "Void/empty elements (<br>, <hr>) do not have closing tags or inner text."
+            ],
+            practiceTask: "Create an HTML5 document containing proper DOCTYPE, metadata, header, main, and footer sections with nested heading and paragraph tags."
+          },
+          {
+            id: "fs-m1-l2",
+            title: "HTML Formatting, Tables, Lists & Media",
+            duration: "25 min",
+            content: "HTML provides physical tags for visual styling (<b>, <i>, <u>) and logical/semantic tags (<strong>, <em>, <mark>, <del>, <ins>, <sub>, <sup>) that inform search engines and assistive screen readers. Tables are defined using <table>, <tr> (table row), <th> (table header), and <td> (table data cell). Lists organize information as Ordered Lists (<ol> with type='1|I|i|A|a' and start attribute), Unordered Lists (<ul> with bullets), and Description/Definition Lists (<dl>, <dt> term, <dd> description). Images are embedded using <img src='...' alt='...'> with compulsory alternative text for accessibility.",
+            realWorldExample: "Displaying student grades and course schedules in a clean tabular view.",
+            codeSnippet: `<!-- Academic Course Modules Table -->\n<table border=\"1\" cellpadding=\"8\">\n  <thead>\n    <tr>\n      <th>Unit</th>\n      <th>Topic Name</th>\n      <th>Hours</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Unit I</td>\n      <td>HTML, CSS, Shell & Git</td>\n      <td>12</td>\n    </tr>\n    <tr>\n      <td>Unit II</td>\n      <td>JavaScript, OOP, AJAX & jQuery</td>\n      <td>14</td>\n    </tr>\n  </tbody>\n</table>`,
+            keyPoints: [
+              "Semantic tags like <strong> and <em> add logical importance over physical tags <b> and <i>.",
+              "Ordered lists support type ('1', 'A', 'a', 'I', 'i') and start attributes.",
+              "Tables require <thead>, <tbody>, <tr>, <th>, and <td> for structural correctness."
+            ],
+            practiceTask: "Write an HTML table representing an academic semester syllabus with Unit number, Subject title, and Marks weightage."
+          }
         ]
       },
       {
         id: "fs-m2",
-        title: "Module 2 – Responsive CSS Layouts (Flexbox & Grid)",
-        description: "Style interfaces with CSS variables, Flexbox, and CSS Grid.",
+        title: "Module 2 – Unit I: Advanced HTML5 Forms & Input Controls",
+        description: "Interactive form controls, input types, GET/POST submission methods, enctype, and HTML5 client-side validation.",
         lessons: [
-          { id: "fs-m2-l1", title: "Flexbox Layout Engine", duration: "20 min", content: "Align items along main and cross axes flexibly.", realWorldExample: "Building responsive navigation bars and card grids.", codeSnippet: `.card-container {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}`, keyPoints: ["flex-direction controls primary axis.", "justify-content aligns along main axis; align-items along cross axis."], practiceTask: "Create a 3-column responsive pricing table using Flexbox." }
+          {
+            id: "fs-m2-l1",
+            title: "HTML Forms Architecture & Submission Methods",
+            duration: "25 min",
+            content: "An HTML form (<form>) facilitates user data collection and transmission to web servers. Key form attributes include: 'action' (URL of the backend endpoint processing data), 'method' (GET appends data into the query string visible in the URL; POST transmits data securely inside the HTTP request body for passwords and sensitive information), 'target' (_self or _blank), 'autocomplete' (on/off), 'enctype' (application/x-www-form-urlencoded default, or multipart/form-data for file uploads), and 'novalidate' (bypasses browser validation). Form fields are logically grouped using <fieldset> with a <legend> caption.",
+            realWorldExample: "Student course registration and login forms transmitting credentials to a backend server.",
+            codeSnippet: `<form action=\"/api/register\" method=\"POST\" enctype=\"multipart/form-data\">\n  <fieldset>\n    <legend>Student Registration (B.Tech R20)</legend>\n    \n    <label for=\"stu-name\">Full Name:</label>\n    <input type=\"text\" id=\"stu-name\" name=\"name\" required placeholder=\"Enter student name\">\n    \n    <label for=\"stu-email\">Email Address:</label>\n    <input type=\"email\" id=\"stu-email\" name=\"email\" required>\n    \n    <label for=\"stu-pwd\">Password:</label>\n    <input type=\"password\" id=\"stu-pwd\" name=\"password\" required minlength=\"8\">\n    \n    <input type=\"submit\" value=\"Register Student\">\n  </fieldset>\n</form>`,
+            keyPoints: [
+              "Always use method='POST' when sending passwords, tokens, or large payloads.",
+              "Use enctype='multipart/form-data' whenever the form contains <input type='file'>.",
+              "Always pair input controls with <label for='...'> matching the input's id."
+            ],
+            practiceTask: "Build an HTML registration form with Name, Email, Password, Gender radio buttons, Hobbies checkboxes, and a Profile Photo file upload."
+          },
+          {
+            id: "fs-m2-l2",
+            title: "HTML5 Modern Input Types & Validation Controls",
+            duration: "20 min",
+            content: "HTML5 introduced rich semantic input types including: 'email', 'date', 'datetime-local', 'month', 'color', 'number', 'tel', 'url', and 'search'. Form controls also include multi-line textareas (<textarea rows='4' cols='50'>), single/multiple selection dropdowns (<select> with <option>), and push buttons (<button type='button|submit|reset'>). Validation attributes like 'required', 'pattern', 'min', 'max', 'autofocus', and 'placeholder' allow instant browser-native input verification before submitting to the backend.",
+            realWorldExample: "Filtering student course catalogs by date of registration, grade range, and category.",
+            codeSnippet: `<!-- HTML5 Specialized Inputs -->\n<div class=\"form-group\">\n  <label for=\"dob\">Date of Birth:</label>\n  <input type=\"date\" id=\"dob\" name=\"dob\" required>\n</div>\n\n<div class=\"form-group\">\n  <label for=\"branch\">Select Department:</label>\n  <select id=\"branch\" name=\"department\">\n    <option value=\"cse-aiml\">CSE (AIML)</option>\n    <option value=\"aids\">AI & Data Science</option>\n    <option value=\"it\">Information Technology</option>\n  </select>\n</div>`,
+            keyPoints: [
+              "HTML5 types like email and date trigger automatic device-optimized keyboards on mobile browsers.",
+              "Input elements without a 'name' attribute are excluded from form submissions.",
+              "Use 'placeholder' for instructional hints and 'required' to prevent empty submissions."
+            ],
+            practiceTask: "Create an interactive feedback form utilizing 'date', 'number', 'range', and dropdown select options with native HTML5 validation."
+          }
         ]
       },
       {
         id: "fs-m3",
-        title: "Module 3 – Modern JavaScript Essentials (ES6+)",
-        description: "Arrow functions, destructuring, spread operator, modules, and promises.",
+        title: "Module 3 – Unit I: CSS Styling, Box Model & Visual Layouts",
+        description: "Three methods of applying CSS, selector specificity, CSS box model, borders, margin/padding shorthand, and display mechanisms.",
         lessons: [
-          { id: "fs-m3-l1", title: "ES6 Destructuring & Promises", duration: "25 min", content: "Extract properties cleanly and handle asynchronous code with async/await.", realWorldExample: "Fetching user payload from an API and updating local UI state.", codeSnippet: `const fetchUserData = async () => {\n  const res = await fetch('/api/user');\n  const { name, email } = await res.json();\n  console.log(name, email);\n};`, keyPoints: ["Use const/let instead of var.", "Async/await turns asynchronous promises into readable linear code."], practiceTask: "Write an async function fetching weather data from a public API." }
+          {
+            id: "fs-m3-l1",
+            title: "CSS Integration Methods & Specificity Selectors",
+            duration: "25 min",
+            content: "CSS (Cascading Style Sheets) separates visual presentation from HTML markup. There are three ways to insert CSS: 1. Inline CSS (style attribute in HTML tag; hardest to maintain), 2. Internal/Embedded CSS (<style> block in <head>), and 3. External CSS (linked .css file via <link rel='stylesheet' href='style.css'>; recommended for modularity and browser caching). CSS Selectors target elements: Element Selector ('p', 'h1'), ID Selector ('#header', unique per page), Class Selector ('.card', reusable), Universal Selector ('*'), and Grouping Selector ('h1, h2, p' to eliminate redundant declarations).",
+            realWorldExample: "Establishing a consistent design system and color palette across all web pages of an application.",
+            codeSnippet: `/* External Style Sheet: style.css */\n* {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n}\n\n/* Element & Class Selectors */\nbody {\n  font-family: 'Space Grotesk', sans-serif;\n  background-color: #f7fafb;\n  color: #090a0b;\n}\n\n.card {\n  background: #ffffff;\n  border-radius: 12px;\n  padding: 24px;\n}\n\n/* Grouping Selector */\nh1, h2, h3 {\n  font-family: 'Oswald', sans-serif;\n  letter-spacing: -0.5px;\n}`,
+            keyPoints: [
+              "External CSS is the industry standard because browsers cache the file, reducing bandwidth.",
+              "Specificity hierarchy: Inline Styles > ID (#) > Class (.) > Element (tag).",
+              "Group selectors with commas (h1, h2, p) to avoid code duplication."
+            ],
+            practiceTask: "Build an external stylesheet with element, class, ID, and grouping selectors styling an academic article layout."
+          },
+          {
+            id: "fs-m3-l2",
+            title: "CSS Box Model, Spacing & Display Properties",
+            duration: "25 min",
+            content: "Every element on a web page is rendered as a rectangular box comprising four concentric layers: Content, Padding (inner space between content and border), Border (thickness, style like solid/dashed/double, and color), and Margin (outer transparent clearance around the element). Margin shorthand supports 1 to 4 values (top right bottom left). Display properties dictate formatting: 'display: block' (takes full width, breaks line), 'display: inline' (takes only text width, ignores top/bottom margin), 'display: inline-block' (inline flow with configurable width and height), 'display: none' (removes element from document layout), and 'display: flex' (modern multi-axis flexbox).",
+            realWorldExample: "Creating interactive call-to-action buttons with hover elevation, box-shadows, and rounded borders.",
+            codeSnippet: `/* Interactive Box Model Button */\n.btn-primary {\n  display: inline-block;\n  padding: 12px 28px; /* Vertical / Horizontal */\n  margin: 10px 0;\n  background-color: #047857;\n  color: #ffffff;\n  border: 2px solid #10b981;\n  border-radius: 8px;\n  cursor: pointer;\n  box-shadow: 0 4px 14px rgba(4, 120, 87, 0.3);\n  transition: all 0.25s ease;\n}\n\n.btn-primary:hover {\n  background-color: #065f46;\n  transform: translateY(-2px);\n  box-shadow: 0 8px 20px rgba(4, 120, 87, 0.45);\n}`,
+            keyPoints: [
+              "Box Model order from inside to outside: Content -> Padding -> Border -> Margin.",
+              "display: inline-block permits setting width, height, margin-top, and margin-bottom.",
+              "Use border-collapse: collapse and border-spacing on tables to manage cell spacing."
+            ],
+            practiceTask: "Implement a card component demonstrating margin, padding, border-radius, box-shadow, and a button with smooth hover transition."
+          }
         ]
       },
       {
         id: "fs-m4",
-        title: "Module 4 – DOM Manipulation & Event Handling",
-        description: "Dynamic UI updates, event listeners, and form handling.",
+        title: "Module 4 – Unit I: Web Servers Shell, UNIX CLI & Git/GitHub",
+        description: "Server shell command-line navigation, process management, Git version control workflow, branching, and GitHub collaboration.",
         lessons: [
-          { id: "fs-m4-l1", title: "Interactive DOM Operations", duration: "20 min", content: "Select DOM nodes, add event listeners, and update element styles dynamically.", realWorldExample: "Toggling dark mode themes when the user clicks a button.", codeSnippet: `document.getElementById("theme-btn").addEventListener("click", () => {\n  document.body.classList.toggle("dark-theme");\n});`, keyPoints: ["Event bubbling and delegation.", "Manipulate classes using classList.toggle()."], practiceTask: "Create a dynamic character counter for a textarea input." }
+          {
+            id: "fs-m4-l1",
+            title: "UNIX/Linux Server Shell & Process Commands",
+            duration: "20 min",
+            content: "Production web applications run on UNIX/Linux web servers. Developers must navigate through the command-line shell (CLI). Essential file commands: 'pwd' (print working directory), 'ls -al' (list all files with permissions), 'cd dirName' (change directory), 'mkdir dir' (create directory), 'touch file' (create empty file), 'cp -r src dst' (copy), 'mv src dst' (move/rename), 'rm -f file' (remove file), 'cat > file' (write standard input to file), 'head -n 10 file' and 'tail -n 10 file'. Process management commands: 'ps' (running processes), 'top' (real-time resource monitor), 'kill pid' (terminate process), 'killall name', 'bg' and 'fg' (background/foreground control). System info: 'df' (disk space), 'free' (memory/RAM), 'uname -a' (kernel info), and 'whoami'.",
+            realWorldExample: "Deploying and managing background Node.js/Python server daemons on an Ubuntu cloud server.",
+            codeSnippet: `# Linux Terminal Workflow Example\npwd                      # /var/www/velfire-app\nmkdir -p backend/logs    # Create directory structure\ntouch backend/server.py  # Create server entrypoint\nps -aux | grep python    # Check running python web server\nkill -9 18452            # Terminate hanging process by PID\nfree -h                  # Verify available system RAM`,
+            keyPoints: [
+              "ls -al displays hidden configuration files (.env, .git) with read/write permissions.",
+              "Use 'ps' and 'kill' to monitor and manage rogue server processes on production machines.",
+              "Use 'free' and 'df' to inspect server memory and disk space before deploying new builds."
+            ],
+            practiceTask: "Practice creating a nested project directory, touching 3 files, copying one, and checking system info using UNIX CLI commands."
+          },
+          {
+            id: "fs-m4-l2",
+            title: "Version Control with Git, Branching & GitHub Pages",
+            duration: "25 min",
+            content: "Git is a distributed version control system developed by Linus Torvalds in 2005. Git manages repositories across three tiers: Working Directory (modified files), Staging Area ('git add' / 'git add --all'), and Repository Commits ('git commit -m \"message\"'). Workflow commands: 'git init' (initialize repo), 'git status' (track modified files), 'git log' (commit history), and 'git diff'. For remote collaboration with GitHub: 'git remote add origin <url>', 'git push origin master', 'git fetch' (download commits), 'git merge', and 'git pull' (fetch + merge). Branching enables isolated feature development: 'git checkout -b <branch>', 'git checkout <branch>', pull requests (PR) for peer reviews, and hosting static apps on GitHub Pages (.github.io).",
+            realWorldExample: "Managing multi-developer team feature branches on GitHub with Pull Request reviews.",
+            codeSnippet: `# Complete Git Lifecycle\ngit init\ngit config --global user.name \"Poovarasan\"\ngit config --global user.email \"velfire07@gmail.com\"\ngit add .\ngit commit -m \"feat: initialize full stack enterprise app\"\ngit branch -M main\ngit remote add origin https://github.com/poovarasan/velfire.git\ngit push -u origin main\n\n# Feature Branching Workflow\ngit checkout -b feature/auth-system\n# Make edits...\ngit commit -am \"feat: implement JWT token authentication\"\ngit push origin feature/auth-system`,
+            keyPoints: [
+              "Git tracks snapshots of file changes rather than storing entire file duplicates.",
+              "The staging area ('git add') allows selective commits of logical change units.",
+              "Pull requests on GitHub facilitate code inspection, automated tests, and safe branch merging."
+            ],
+            practiceTask: "Initialize a local Git repository, create a README.md, stage and commit with a descriptive message, and create a feature branch."
+          }
         ]
       },
       {
         id: "fs-m5",
-        title: "Module 5 – React Fundamentals & Components",
-        description: "JSX, props, component composition, and virtual DOM.",
+        title: "Module 5 – Unit II: JavaScript Fundamentals & Memory Management",
+        description: "JavaScript translation engine, variables, lexical and global scoping, memory lifecycle, and garbage collection mechanisms.",
         lessons: [
-          { id: "fs-m5-l1", title: "Building Reusable React Components", duration: "25 min", content: "Divide user interfaces into independent, composable functional components.", realWorldExample: "Creating a universal Button component used across the entire web portal.", codeSnippet: `function CourseCard({ title, level }) {\n  return (\n    <div className="card">\n      <h3>{title}</h3>\n      <span className="badge">{level}</span>\n    </div>\n  );\n}`, keyPoints: ["React uses JSX syntax.", "Props pass data down from parent to child components."], practiceTask: "Create a reusable Badge component accepting label and color props." }
+          {
+            id: "fs-m5-l1",
+            title: "JavaScript Core, Variable Scoping & Window Object",
+            duration: "20 min",
+            content: "JavaScript was created in 1995 by Brendan Eich at Netscape. It is an interpreted, lightweight, object-based scripting language translated by the browser's embedded JS engine. JS code can be placed inside <body>, <head>, or external .js files (enabling browser caching and code reusability). Variable declarations: 'var' (function-scoped, hoisted), 'let' (block-scoped), and 'const' (immutable binding). Local variables declared inside functions are isolated, whereas global variables declared outside functions automatically attach to the global 'window' object in browsers.",
+            realWorldExample: "Handling secure token storage and user sessions without polluting the global window scope.",
+            codeSnippet: `// Local vs Global Scope & Window Object\nvar globalAppName = \"VELFIRE OS\"; // Attached to window.globalAppName\nlet sessionToken = \"xyz_987654\";\n\nfunction calculateScore(completedUnits) {\n  let unitWeight = 20; // Local variable: inaccessible outside\n  var finalScore = completedUnits * unitWeight;\n  return finalScore;\n}\n\nconsole.log(calculateScore(4)); // 80\nconsole.log(window.globalAppName); // \"VELFIRE OS\"`,
+            keyPoints: [
+              "External .js files improve page load speeds due to browser caching.",
+              "Use 'let' and 'const' instead of 'var' to prevent variable hoisting bugs and accidental global pollution.",
+              "Variables declared outside functions in non-module scripts attach to the browser 'window' object."
+            ],
+            practiceTask: "Write a JavaScript script demonstrating local variable scoping inside a function and verifying that local variables cannot be accessed from global scope."
+          },
+          {
+            id: "fs-m5-l2",
+            title: "Memory Management Lifecycle & Garbage Collection",
+            duration: "25 min",
+            content: "Memory management in JavaScript consists of three phases: 1. Allocation (automatic assignment upon variable, object, or function creation), 2. Utilization (reading or writing values), and 3. Deallocation/Release (freeing unreferenced memory). JavaScript employs an automated Garbage Collector (Mark-and-Sweep algorithm) that identifies and frees memory that is no longer reachable from the root object. For dynamically allocated object properties, the 'delete' keyword can remove properties manually ('delete student.temporaryData') to release memory references.",
+            realWorldExample: "Cleaning up unmounted DOM elements, event listeners, and cached payloads to prevent browser memory leaks.",
+            codeSnippet: `// JavaScript Memory Allocation & Deallocation\nlet activeSession = {\n  sessionId: \"sess_12345\",\n  userData: { name: \"Poovarasan\", role: \"Developer\" },\n  temporaryCache: new Array(100000).fill(\"temp_data\")\n};\n\n// Manually free memory allocated to heavy cache\ndelete activeSession.temporaryCache;\n\n// Nullify reference so Garbage Collector reclaims entire object\nactiveSession = null;`,
+            keyPoints: [
+              "Memory lifecycle: Allocate -> Use -> Release.",
+              "JavaScript's Garbage Collector automatically reclaims objects that have zero reachable references.",
+              "Dangling event listeners and un-cleared intervals cause memory leaks if not explicitly cleaned up."
+            ],
+            practiceTask: "Write a demonstration script that allocates a large array in memory, processes it, and deletes/nullifies the reference for garbage collection."
+          }
         ]
       },
       {
         id: "fs-m6",
-        title: "Module 6 – React Hooks (useState & useEffect)",
-        description: "Manage component state and side effects cleanly.",
+        title: "Module 6 – Unit II: Object-Oriented JavaScript (OOP & ES6 Classes)",
+        description: "Object creation patterns, ES6 class syntax, constructors, encapsulation, methods, and prototypal inheritance.",
         lessons: [
-          { id: "fs-m6-l1", title: "State Management with useState", duration: "25 min", content: "Store local component state that triggers automatic UI re-renders when updated.", realWorldExample: "Tracking search input text or filtering course lists in real time.", codeSnippet: `const [searchTerm, setSearchTerm] = useState("");\n<input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />`, keyPoints: ["Never mutate state directly — always use the setter function.", "useEffect manages API calls and subscriptions."], practiceTask: "Build a counter component with Increment, Decrement, and Reset buttons." }
+          {
+            id: "fs-m6-l1",
+            title: "Object Creation Patterns & ES6 Classes",
+            duration: "25 min",
+            content: "In Object-Oriented Programming (OOP), problems are organized into entities called objects that bind data (properties) with functions (methods). In JavaScript, objects can be created via: 1. Object Literal syntax ('const obj = { key: value };'), 2. 'new Object()', 3. Constructor Functions ('function Student(name) { this.name = name; }'), and 4. ES6 Class syntax. Introduced in ECMAScript 2015 (ES6), classes provide clean syntax for defining constructor methods and shared member functions.",
+            realWorldExample: "Modeling Student, Course, and Enrollment entities in an EdTech platform.",
+            codeSnippet: `// ES6 Class Definition\nclass Student {\n  constructor(name, rollNo, branch) {\n    this.name = name;\n    this.rollNo = rollNo;\n    this.branch = branch;\n    this.courses = [];\n  }\n\n  enrollCourse(courseName) {\n    this.courses.push(courseName);\n    return \`\${this.name} enrolled in \${courseName}\`;\n  }\n\n  getDetails() {\n    return \`Roll: \${this.rollNo} | Name: \${this.name} | Branch: \${this.branch}\`;\n  }\n}\n\nconst student1 = new Student(\"Karthik\", \"20A0516\", \"CSE-AIML\");\nconsole.log(student1.enrollCourse(\"Full Stack Development\"));\nconsole.log(student1.getDetails());`,
+            keyPoints: [
+              "ES6 classes are syntactic sugar over JavaScript's prototype-based inheritance model.",
+              "The 'constructor' method executes automatically when instantiating a new object via 'new'.",
+              "Methods declared inside classes are attached to the prototype, saving memory across instances."
+            ],
+            practiceTask: "Create an ES6 class 'Course' with properties (courseCode, title, credits) and methods to calculate grade points and print details."
+          },
+          {
+            id: "fs-m6-l2",
+            title: "Encapsulation & Hierarchical Class Inheritance",
+            duration: "20 min",
+            content: "Encapsulation is the wrapping of data and manipulating functions into a single unit, hiding internal state from unauthorized external tampering. Inheritance allows derived child classes to inherit attributes and methods from parent classes using the 'extends' keyword and 'super()' constructor call, facilitating code reusability and hierarchical classification.",
+            realWorldExample: "Deriving specialized 'AdminUser' and 'StudentUser' classes from a base 'User' class.",
+            codeSnippet: `// Base Class\nclass User {\n  constructor(username, email) {\n    this.username = username;\n    this.email = email;\n  }\n\n  getProfile() {\n    return \`User: \${this.username} (\${this.email})\`;\n  }\n}\n\n// Derived Child Class (Inheritance)\nclass Instructor extends User {\n  constructor(username, email, subjectTaught) {\n    super(username, email); // Call parent constructor\n    this.subjectTaught = subjectTaught;\n  }\n\n  teach() {\n    return \`\${this.username} is lecturing on \${this.subjectTaught}.\`;\n  }\n}\n\nconst prof = new Instructor(\"Dr. Thorne\", \"thorne@velfire.edu\", \"Spring MVC & Databases\");\nconsole.log(prof.getProfile());\nconsole.log(prof.teach());`,
+            keyPoints: [
+              "Inheritance promotes the DRY (Don't Repeat Yourself) principle through code reusability.",
+              "Child classes must call 'super()' before referencing 'this' in their constructor.",
+              "Child classes can override parent methods to provide specialized behavior (Polymorphism)."
+            ],
+            practiceTask: "Implement a parent class 'Vehicle' and a derived child class 'Car' demonstrating inheritance and method overriding."
+          }
         ]
       },
       {
         id: "fs-m7",
-        title: "Module 7 – Node.js & Express Backend Setup",
-        description: "Creating an HTTP web server, routing, and middleware.",
+        title: "Module 7 – Unit II: Asynchronous Communication, AJAX & jQuery",
+        description: "AJAX data exchange, XMLHttpRequest lifecycle (readyState 0-4), HTTP response headers, jQuery events, and JSON data serialization.",
         lessons: [
-          { id: "fs-m7-l1", title: "Express REST API Endpoints", duration: "25 min", content: "Build web servers that listen for incoming HTTP requests (GET, POST, PUT, DELETE).", realWorldExample: "Serving course list JSON payloads to frontend client apps.", codeSnippet: `const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.get('/api/courses', (req, res) => {\n  res.json([{ id: 1, title: 'Full Stack' }]);\n});\napp.listen(5000);`, keyPoints: ["Express simplifies HTTP request routing.", "Use middleware for CORS and JSON parsing."], practiceTask: "Create a GET /api/health endpoint returning operational server status." }
+          {
+            id: "fs-m7-l1",
+            title: "AJAX & XMLHttpRequest Lifecycle",
+            duration: "25 min",
+            content: "AJAX (Asynchronous JavaScript and XML) enables web applications to send and retrieve data from a web server asynchronously in the background without reloading the page. The core mechanism is the 'XMLHttpRequest' (XHR) object. Key methods: 'open(method, url, async)' and 'send(data)'. The request progresses through 5 readyState phases: 0 (Unsent), 1 (Opened), 2 (Headers Received), 3 (Loading), and 4 (Finished/Done). Once readyState == 4 and status == 200 (OK), data is extracted via 'responseText' (plain text/JSON) or 'responseXML' (XML document).",
+            realWorldExample: "Fetching course search recommendations and live notification counts without page reloads.",
+            codeSnippet: `// Asynchronous AJAX Request Implementation\nfunction fetchCourseData(courseId) {\n  const xhr = new XMLHttpRequest();\n  \n  xhr.onreadystatechange = function() {\n    // Check if request completed and status is 200 OK\n    if (xhr.readyState === 4) {\n      if (xhr.status === 200) {\n        const course = JSON.parse(xhr.responseText);\n        console.log(\"Fetched Course:\", course);\n      } else {\n        console.error(\"AJAX Request Failed with status:\", xhr.status);\n      }\n    }\n  };\n\n  xhr.open(\"GET\", \`/api/courses/\${courseId}\`, true);\n  xhr.setRequestHeader(\"Accept\", \"application/json\");\n  xhr.send();\n}`,
+            keyPoints: [
+              "readyState 4 indicates the response is fully received; status 200 indicates HTTP OK.",
+              "AJAX dramatically improves user experience by eliminating full page refreshes.",
+              "JSON is preferred over XML due to smaller payload sizes and native JS object compatibility."
+            ],
+            practiceTask: "Implement an XMLHttpRequest function that fetches JSON data from an endpoint and prints response headers and parsed payload."
+          },
+          {
+            id: "fs-m7-l2",
+            title: "jQuery Events & JSON Data Format Serialization",
+            duration: "25 min",
+            content: "jQuery is a fast, lightweight JavaScript library designed to simplify DOM traversal, event handling, and animation using CSS-style selectors ($('p').click()). jQuery categorizes events into: Mouse Events (click, dblclick, mouseenter), Keyboard Events (keyup, keydown), Form Events (submit, change, focus, blur), and Document/Window Events (load, scroll, resize). JSON (JavaScript Object Notation) is a lightweight text-based data-interchange format. Built-in methods: 'JSON.stringify(obj)' converts in-memory JS objects into strings for network transmission, and 'JSON.parse(str)' deserializes strings back into JS objects.",
+            realWorldExample: "Submitting user review forms using jQuery and parsing incoming JSON responses from an API.",
+            codeSnippet: `// jQuery Event Handling & JSON Serialization\n$(document).ready(function() {\n  $(\"#btn-submit-review\").click(function(event) {\n    event.preventDefault();\n    \n    // Create JS payload object\n    const reviewData = {\n      courseId: \"fullstack-web\",\n      rating: 5,\n      comment: \"Outstanding Full Stack R20 notes!\"\n    };\n\n    // Serialize to JSON string\n    const jsonPayload = JSON.stringify(reviewData);\n    console.log(\"Serialized JSON:\", jsonPayload);\n\n    // Post via AJAX\n    $.ajax({\n      url: \"/api/reviews\",\n      type: \"POST\",\n      contentType: \"application/json\",\n      data: jsonPayload,\n      success: function(response) {\n        $(\"#status-msg\").text(\"Review submitted successfully!\");\n      }\n    });\n  });\n});`,
+            keyPoints: [
+              "$(document).ready() guarantees code executes only after the full DOM tree is loaded.",
+              "JSON.stringify() converts JS objects to strings; JSON.parse() parses strings to objects.",
+              "jQuery events provide cross-browser normalized event behavior."
+            ],
+            practiceTask: "Write a jQuery script that listens for a form submission, serializes form data into JSON, and displays it on the web page."
+          }
         ]
       },
       {
         id: "fs-m8",
-        title: "Module 8 – Database Integration (SQL & ORM)",
-        description: "Connect Express server to relational databases.",
+        title: "Module 8 – Unit III: React.js Fundamentals & Virtual DOM",
+        description: "Component-based architecture, in-memory Virtual DOM reconciliation, JSX, props, and useState/useEffect hooks.",
         lessons: [
-          { id: "fs-m8-l1", title: "Database Queries from Backend", duration: "25 min", content: "Execute parameterized database queries safely to prevent SQL injection.", realWorldExample: "Storing user registration accounts securely in PostgreSQL.", codeSnippet: `const pool = require('./db');\napp.get('/users', async (req, res) => {\n  const result = await pool.query('SELECT * FROM users');\n  res.json(result.rows);\n});`, keyPoints: ["Use connection pools for database efficiency.", "Use parameterized queries ($1, $2) for security."], practiceTask: "Write a POST endpoint inserting a new course record into PostgreSQL." }
+          {
+            id: "fs-m8-l1",
+            title: "React Architecture, Virtual DOM & Component Reusability",
+            duration: "25 min",
+            content: "ReactJS is an open-source, component-based frontend library created by Jordan Walke at Facebook in 2011 (released publicly in 2013). In MVC architectures, React acts as the 'V' (View layer). Traditional DOM updates are computationally expensive because browsers reconstruct layout trees on changes. React solves this by operating on an in-memory Virtual DOM. When state changes occur, React compares the new Virtual DOM with a previous snapshot (Diffing algorithm) and updates only the specific changed nodes in the real browser DOM (Reconciliation). React components are reusable, composable functions outputting JSX (JavaScript XML).",
+            realWorldExample: "Rendering thousands of dynamic course cards in an interactive grid without browser stutter.",
+            codeSnippet: `// Reusable Composable React Component\nimport React from 'react';\n\nfunction CourseBadge({ title, hours, isBTechCertified }) {\n  return (\n    <div className=\"course-card-badge\">\n      <h4>{title}</h4>\n      <p>Duration: {hours} Hours</p>\n      {isBTechCertified && (\n        <span className=\"badge-certified\">✓ R20 Accredited</span>\n      )}\n    </div>\n  );\n}\n\nexport default CourseBadge;`,
+            keyPoints: [
+              "Virtual DOM resides in memory and updates 10x faster than direct browser DOM manipulation.",
+              "React components must return a single root JSX element or Fragment (<>...</>).",
+              "Props are read-only inputs passed from parent components to child components."
+            ],
+            practiceTask: "Create a reusable React functional component that accepts props (title, unitNumber, topicsCount) and renders a formatted syllabus card."
+          },
+          {
+            id: "fs-m8-l2",
+            title: "State Management with React Hooks (useState & useEffect)",
+            duration: "25 min",
+            content: "While props pass immutable data downward, 'state' represents mutable data that changes over time based on user interactions. The 'useState' hook allows functional components to store and update internal state, triggering an automated UI re-render on setter calls. The 'useEffect' hook handles asynchronous side effects such as fetching API data, setting timers, and managing browser event subscriptions.",
+            realWorldExample: "Tracking completed quiz answers and fetching course progress percentages from a backend API.",
+            codeSnippet: `import React, { useState, useEffect } from 'react';\n\nfunction CourseProgressTracker({ courseId }) {\n  const [completedCount, setCompletedCount] = useState(0);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    // Simulate fetching progress from backend API\n    fetch(\`/api/progress/\${courseId}\`)\n      .then(res => res.json())\n      .then(data => {\n        setCompletedCount(data.completed);\n        setLoading(false);\n      });\n  }, [courseId]); // Re-run effect only when courseId changes\n\n  return (\n    <div className=\"tracker-card\">\n      {loading ? <p>Loading Progress...</p> : (\n        <div>\n          <h3>Completed Lessons: {completedCount}</h3>\n          <button onClick={() => setCompletedCount(c => c + 1)}>\n            Mark Next Lesson Done\n          </button>\n        </div>\n      )}\n    </div>\n  );\n}`,
+            keyPoints: [
+              "Never mutate state directly (e.g. count = 5); always use setter functions (setCount(5)).",
+              "Pass an empty dependency array [] to useEffect to run an effect strictly on mount.",
+              "React enforces unidirectional (one-way) data flow: Parent -> Child via props."
+            ],
+            practiceTask: "Build a counter component featuring Increment, Decrement, and Reset buttons using useState."
+          }
         ]
       },
       {
         id: "fs-m9",
-        title: "Module 9 – Authentication & JWT Security",
-        description: "Password hashing (bcrypt) and JSON Web Tokens (JWT).",
+        title: "Module 9 – Unit III: React Router & Controlled Form Architecture",
+        description: "Single Page Application (SPA) navigation, Route matching, animated page transitions, and controlled component forms.",
         lessons: [
-          { id: "fs-m9-l1", title: "Securing Endpoints with JWT", duration: "25 min", content: "Issue signed JWT tokens upon user login to authenticate protected API requests.", realWorldExample: "Ensuring only logged-in students can submit mock interview answers.", codeSnippet: `const jwt = require('jsonwebtoken');\nconst token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1d' });`, keyPoints: ["Passwords must always be hashed with bcrypt before storing.", "Send JWT in Authorization header: Bearer <token>."], practiceTask: "Write middleware verifying JWT tokens on protected API routes." }
+          {
+            id: "fs-m9-l1",
+            title: "React Router & Single Page Application (SPA) Architecture",
+            duration: "25 min",
+            content: "Traditional multi-page websites request new HTML documents on every link click. Single Page Applications (SPAs) load a single HTML document once and dynamically update the view as users navigate without page reloads. 'react-router-dom' provides components: <BrowserRouter> (HTML5 pushState history), <HashRouter> (hash-based routing), <Routes> / <Switch> (matches current URL path), <Route path='...' element={...}>, and <Link to='...'> (client-side navigation without refresh). Page transitions can be animated smoothly using 'react-transition-group'.",
+            realWorldExample: "Switching between Home, Courses, Dashboard, and Chatbot in VELFIRE without reloading the page.",
+            codeSnippet: `import React from 'react';\nimport { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';\nimport Home from './Home';\nimport Curriculum from './Curriculum';\nimport About from './About';\n\nfunction AppNavigation() {\n  return (\n    <Router>\n      <nav className=\"navbar\">\n        <Link to=\"/\">Home</Link>\n        <Link to=\"/curriculum\">Syllabus</Link>\n        <Link to=\"/about\">About VELFIRE</Link>\n      </nav>\n\n      <Routes>\n        <Route path=\"/\" element={<Home />} />\n        <Route path=\"/curriculum\" element={<Curriculum />} />\n        <Route path=\"/about\" element={<About />} />\n      </Routes>\n    </Router>\n  );\n}`,
+            keyPoints: [
+              "SPAs eliminate full-page reload latency, yielding instant desktop-like transitions.",
+              "<Link> and <NavLink> prevent the default browser GET request and update history via pushState.",
+              "Use dynamic route parameters (/course/:id) to render detail views for specific courses."
+            ],
+            practiceTask: "Set up a React Router configuration with 3 distinct pages (Home, CourseDetails, About) and navigation links."
+          },
+          {
+            id: "fs-m9-l2",
+            title: "Controlled Form Components & Validation in React",
+            duration: "20 min",
+            content: "In plain HTML, form controls maintain their own internal state. In React, 'controlled components' ensure that form input values are strictly controlled by React component state. The React state acts as the 'single source of truth'. Input tags bind their 'value' prop to state and update state on the 'onChange' event handler, enabling real-time validation, dynamic error messaging, and conditional submission button states.",
+            realWorldExample: "Validating student roll number, email, and password complexity in real time as the user types.",
+            codeSnippet: `import React, { useState } from 'react';\n\nfunction StudentLoginForm() {\n  const [formData, setFormData] = useState({ rollNo: '', password: '' });\n  const [error, setError] = useState('');\n\n  const handleChange = (e) => {\n    const { name, value } = e.target;\n    setFormData(prev => ({ ...prev, [name]: value }));\n  };\n\n  const handleSubmit = (e) => {\n    e.preventDefault();\n    if (!formData.rollNo.startsWith('20A')) {\n      setError('Invalid Roll Number: Must start with R20 code (20A...)');\n      return;\n    }\n    setError('');\n    alert(\`Authenticated: \${formData.rollNo}\`);\n  };\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <input\n        name=\"rollNo\"\n        value={formData.rollNo}\n        onChange={handleChange}\n        placeholder=\"Roll No (e.g. 20A0516)\"\n      />\n      <input\n        type=\"password\"\n        name=\"password\"\n        value={formData.password}\n        onChange={handleChange}\n        placeholder=\"Password\"\n      />\n      {error && <p className=\"error-text\">{error}</p>}\n      <button type=\"submit\">Login</button>\n    </form>\n  );\n}`,
+            keyPoints: [
+              "In controlled components, the React component state is the single source of truth.",
+              "Use computed property names [name]: value to manage multiple inputs with a single handler.",
+              "Prevent default form submission reload using e.preventDefault() in onSubmit."
+            ],
+            practiceTask: "Create a controlled form with Name, Email, and Course dropdown with real-time error validation."
+          }
         ]
       },
       {
         id: "fs-m10",
-        title: "Module 10 – State Management & Context API",
-        description: "Global state sharing without prop drilling.",
+        title: "Module 10 – Unit III: Flow Architecture & Redux State Management",
+        description: "Predictable state containers, Redux Store, Action creators, pure Reducers, Dispatch, and asynchronous middleware (Redux Thunk).",
         lessons: [
-          { id: "fs-m10-l1", title: "React Context API", duration: "20 min", content: "Share global state like current logged-in user and theme settings across the component tree.", realWorldExample: "Providing current user session state throughout the entire application.", codeSnippet: `const UserContext = createContext();\nexport const UserProvider = ({ children }) => (\n  <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>\n);`, keyPoints: ["Eliminates tedious prop drilling.", "Keep context scoped to logical domains."], practiceTask: "Create a ThemeContext that toggles application-wide color modes." }
+          {
+            id: "fs-m10-l1",
+            title: "Redux Architecture (Store, Actions, Reducers & Dispatch)",
+            duration: "25 min",
+            content: "When applications grow large with deeply nested component hierarchies, passing props down through multiple intermediary components (prop drilling) becomes unmaintainable. Redux implements a unidirectional Flow Architecture centered around a single centralized global state container called the 'Store'. Redux follows three core principles: 1. Single source of truth (the entire state lives in one store object tree), 2. State is read-only (state can only be changed by dispatching an Action object), and 3. Changes are made with pure Reducer functions ('(previousState, action) => newState') without mutations.",
+            realWorldExample: "Managing global logged-in user profile, theme preferences, and active course progress across all application tabs.",
+            codeSnippet: `// 1. Action Types & Creators\nconst ENROLL_COURSE = 'courses/ENROLL';\nconst enrollCourse = (courseId) => ({\n  type: ENROLL_COURSE,\n  payload: courseId\n});\n\n// 2. Initial State\nconst initialState = { enrolledCourseIds: [] };\n\n// 3. Pure Reducer Function (No mutations!)\nfunction courseReducer(state = initialState, action) {\n  switch (action.type) {\n    case ENROLL_COURSE:\n      return {\n        ...state,\n        enrolledCourseIds: [...state.enrolledCourseIds, action.payload]\n      };\n    default:\n      return state;\n  }\n}\n\n// Store dispatch: store.dispatch(enrollCourse('fullstack-web'));`,
+            keyPoints: [
+              "Redux state is immutable — reducers must always return fresh state copies using object spread {...state}.",
+              "Actions must have a 'type' property describing what happened, along with optional 'payload' data.",
+              "Unidirectional data flow: Action -> Dispatcher -> Reducer -> Store -> View."
+            ],
+            practiceTask: "Write a Redux action creator and pure reducer to toggle bookmarking a curriculum lesson."
+          },
+          {
+            id: "fs-m10-l2",
+            title: "Advanced Redux & Asynchronous Server Communication",
+            duration: "25 min",
+            content: "Reducers must be strictly pure functions with zero side effects. To perform asynchronous network requests (fetching API data from backends), Redux utilizes middleware such as 'Redux Thunk'. A Thunk is a function that wraps an expression to delay its evaluation. Async thunks allow dispatching multiple actions over time: e.g. dispatch('FETCH_START'), make an asynchronous HTTP fetch call, and dispatch('FETCH_SUCCESS') or dispatch('FETCH_ERROR').",
+            realWorldExample: "Loading syllabus lecture notes from the server while displaying a loading skeleton spinner.",
+            codeSnippet: `// Asynchronous Redux Thunk Action Creator\nexport const fetchSyllabusNotes = (unitId) => {\n  return async (dispatch) => {\n    dispatch({ type: 'NOTES_FETCH_REQUEST' });\n    try {\n      const response = await fetch(\`/api/syllabus/unit/\${unitId}\`);\n      const notes = await response.json();\n      dispatch({ type: 'NOTES_FETCH_SUCCESS', payload: notes });\n    } catch (error) {\n      dispatch({ type: 'NOTES_FETCH_FAILURE', payload: error.message });\n    }\n  };\n};`,
+            keyPoints: [
+              "Redux Thunk middleware intercepts dispatched functions before reaching reducers.",
+              "Always dispatch loading, success, and error actions to handle asynchronous network states cleanly.",
+              "Use Redux DevTools for time-travel debugging and inspecting dispatched action payloads."
+            ],
+            practiceTask: "Implement an asynchronous thunk action creator that fetches user profile data and dispatches success and failure actions."
+          }
         ]
       },
       {
         id: "fs-m11",
-        title: "Module 11 – Deployment & Production Optimization",
-        description: "Building production assets and hosting on cloud platforms.",
+        title: "Module 11 – Unit IV: Enterprise Java Web Development & Spring MVC",
+        description: "Enterprise Java backend principles, Model-View-Controller pattern, Spring Framework architecture, DispatcherServlet, and ViewResolvers.",
         lessons: [
-          { id: "fs-m11-l1", title: "Deploying to Vercel & Cloud Services", duration: "20 min", content: "Bundle frontend assets using Vite/Webpack and deploy serverless backend functions.", realWorldExample: "Shipping production web apps with continuous deployment git hooks.", codeSnippet: `# Build production static bundle\nnpm run build`, keyPoints: ["Configure environment variables securely.", "Enable HTTPS and CORS policy."], practiceTask: "Configure environment variables for database connection strings." }
+          {
+            id: "fs-m11-l1",
+            title: "Java Backend Basics & Object-Oriented Principles",
+            duration: "25 min",
+            content: "Java is an enterprise-grade, strongly typed, class-based object-oriented programming language executed on the Java Virtual Machine (JVM). Java applications follow strict OOP principles: Encapsulation (private fields with public getters/setters), Inheritance (class hierarchies via extends), Polymorphism (method overloading and overriding), and Abstraction (interfaces and abstract classes). Strong type safety and robust exception handling (try-catch-finally, custom checked/unchecked exceptions) make Java the global standard for high-throughput enterprise web backends.",
+            realWorldExample: "Creating student enrollment and course domain entities in enterprise university portals.",
+            codeSnippet: `// Enterprise Java Domain Entity\npackage com.velfire.model;\n\npublic class Course {\n    private String courseCode;\n    private String courseName;\n    private int credits;\n\n    public Course(String courseCode, String courseName, int credits) {\n        this.courseCode = courseCode;\n        this.courseName = courseName;\n        this.credits = credits;\n    }\n\n    // Getters and Setters (Encapsulation)\n    public String getCourseCode() { return courseCode; }\n    public void setCourseCode(String courseCode) { this.courseCode = courseCode; }\n    public String getCourseName() { return courseName; }\n    public int getCredits() { return credits; }\n}`,
+            keyPoints: [
+              "Java's 'Write Once, Run Anywhere' (WORA) philosophy relies on JVM bytecode compilation.",
+              "Encapsulation protects enterprise data models from unauthorized external modifications.",
+              "Packages organize Java classes into distinct namespaces preventing class collision."
+            ],
+            practiceTask: "Write a Java class 'Student' with private attributes, parameterized constructor, getters/setters, and a method computing GPA."
+          },
+          {
+            id: "fs-m11-l2",
+            title: "Model View Controller (MVC) Architecture & Spring MVC",
+            duration: "25 min",
+            content: "The Model-View-Controller (MVC) architectural pattern isolates business data (Model), user interface display (View), and input control logic (Controller) into distinct tiers. Spring MVC is an enterprise Java framework implementing this pattern. The workflow: 1. Client browser sends HTTP request -> 2. Spring's 'DispatcherServlet' (Front Controller) intercepts request -> 3. HandlerMapping locates matching '@Controller' -> 4. Controller processes business logic via Service layer and returns a 'ModelAndView' -> 5. 'ViewResolver' renders the appropriate HTML/JSP or JSON view back to client.",
+            realWorldExample: "Routing incoming HTTP web requests through Spring DispatcherServlet to render student exam results.",
+            codeSnippet: `package com.velfire.controller;\n\nimport org.springframework.stereotype.Controller;\nimport org.springframework.ui.Model;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\n\n@Controller\npublic class SyllabusController {\n\n    @GetMapping(\"/syllabus\")\n    public String getUnitDetails(@RequestParam(name=\"unit\", defaultValue=\"1\") int unitNo, Model model) {\n        // Attach data to Model\n        model.addAttribute(\"unitNumber\", unitNo);\n        model.addAttribute(\"unitTitle\", \"Unit \" + unitNo + \": Web Development Basics\");\n        \n        // Returns the view name resolved by ViewResolver (e.g., syllabus.jsp or syllabus.html)\n        return \"syllabusView\";\n    }\n}`,
+            keyPoints: [
+              "MVC architecture enforces separation of concerns between business logic and UI presentation.",
+              "DispatcherServlet acts as the unified front controller intercepting all HTTP requests.",
+              "@Controller classes handle web navigation and model population."
+            ],
+            practiceTask: "Implement a Spring MVC controller class mapping a GET request to render course syllabus information."
+          }
         ]
       },
       {
         id: "fs-m12",
-        title: "Module 12 – Capstone Full Stack App",
-        description: "Architect and build a complete interactive SaaS platform.",
+        title: "Module 12 – Unit IV: RESTful APIs with Spring & Maven Build Lifecycles",
+        description: "RESTful architecture, Spring Boot REST controllers, JSON marshaling, and Apache Maven build automation.",
         lessons: [
-          { id: "fs-m12-l1", title: "Full Stack Capstone Application", duration: "30 min", content: "Integrate React frontend with Express/FastAPI backend and SQL database into a unified SaaS product.", realWorldExample: "Delivering a production-grade web application to early real-world users.", codeSnippet: `// Full Stack Connection Verification\nconsole.log("Full Stack Pipeline Connected ✓");`, keyPoints: ["Combines all 12 modules into a centerpiece portfolio project.", "Demonstrates end-to-end engineering competence."], practiceTask: "Deploy a full stack application and verify database persistence." }
+          {
+            id: "fs-m12-l1",
+            title: "Building RESTful APIs with Spring Framework",
+            duration: "25 min",
+            content: "REST (Representational State Transfer) is a stateless client-server architectural style using standard HTTP verbs: GET (retrieve data), POST (create resource), PUT (update resource), and DELETE (remove resource). In modern Spring web applications, '@RestController' combines '@Controller' and '@ResponseBody', automatically serializing Java objects into JSON payloads. Useful annotations: '@GetMapping', '@PostMapping', '@PathVariable' (URL path parameter), '@RequestBody' (deserialize incoming JSON request body), and 'ResponseEntity<T>' (control HTTP status codes like 200 OK, 201 Created, 404 Not Found).",
+            realWorldExample: "Building REST API endpoints providing syllabus data to React and mobile frontends.",
+            codeSnippet: `package com.velfire.api;\n\nimport com.velfire.model.Course;\nimport org.springframework.http.HttpStatus;\nimport org.springframework.http.ResponseEntity;\nimport org.springframework.web.bind.annotation.*;\n\nimport java.util.*;\n\n@RestController\n@RequestMapping(\"/api/courses\")\npublic class CourseRestController {\n\n    @GetMapping(\"/{code}\")\n    public ResponseEntity<Course> getCourseByCode(@PathVariable String code) {\n        if (\"R20A0516\".equals(code)) {\n            Course course = new Course(\"R20A0516\", \"Full Stack Development\", 4);\n            return new ResponseEntity<>(course, HttpStatus.OK); // 200 OK\n        }\n        return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Not Found\n    }\n\n    @PostMapping\n    public ResponseEntity<String> createCourse(@RequestBody Course newCourse) {\n        // Save newCourse to database...\n        return new ResponseEntity<>(\"Course registered successfully\", HttpStatus.CREATED); // 201 Created\n    }\n}`,
+            keyPoints: [
+              "@RestController automatically converts Java returned objects into JSON using Jackson.",
+              "Always return appropriate HTTP status codes (200 OK, 201 Created, 400 Bad Request, 404 Not Found).",
+              "Use @PathVariable for specific resource IDs and @RequestBody for JSON payloads."
+            ],
+            practiceTask: "Write a Spring @RestController providing GET and POST endpoints for managing student course enrollments."
+          },
+          {
+            id: "fs-m12-l2",
+            title: "Apache Maven Build Automation & Dependency Management",
+            duration: "20 min",
+            content: "Apache Maven is an enterprise build automation and project management tool based on the Project Object Model (POM) defined in 'pom.xml'. Maven manages dependencies automatically by downloading JAR libraries from the central Maven repository. Coordinates: 'groupId' (organization), 'artifactId' (project name), and 'version'. The Maven build lifecycle follows standardized sequential phases: 1. validate, 2. compile (compiles .java to .class), 3. test (executes unit tests), 4. package (bundles code into JAR or WAR), 5. verify, 6. install (stores in local repository), and 7. deploy (publishes to remote repository).",
+            realWorldExample: "Automating dependency resolution and production JAR packaging for Spring web services.",
+            codeSnippet: `<!-- Maven pom.xml Configuration -->\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n    <modelVersion>4.0.0</modelVersion>\n    <groupId>com.velfire</groupId>\n    <artifactId>velfire-fullstack-backend</artifactId>\n    <version>1.0.0</version>\n\n    <dependencies>\n        <!-- Spring Boot Web Starter for REST APIs -->\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-web</artifactId>\n            <version>3.2.0</version>\n        </dependency>\n        <!-- Spring JDBC for Database Persistence -->\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-jdbc</artifactId>\n            <version>3.2.0</version>\n        </dependency>\n    </dependencies>\n</project>`,
+            keyPoints: [
+              "Maven's pom.xml eliminates manual JAR file downloading and classpath configuration.",
+              "Standard build commands: 'mvn clean compile', 'mvn test', 'mvn package'.",
+              "Transitive dependency management automatically pulls in libraries required by dependencies."
+            ],
+            practiceTask: "Construct a Maven pom.xml file declaring project coordinates, Spring Web starter dependency, and build packaging."
+          }
+        ]
+      },
+      {
+        id: "fs-m13",
+        title: "Module 13 – Unit V: Relational Databases, Normalization & Spring JDBC",
+        description: "Relational database schemas, 1NF to 3NF/BCNF normalization, Structured Query Language (SQL), and Spring JDBC persistence.",
+        lessons: [
+          {
+            id: "fs-m13-l1",
+            title: "Relational Schemas & Database Normalization (1NF, 2NF, 3NF, BCNF)",
+            duration: "25 min",
+            content: "Relational databases store structured data in tables linked by Primary Keys (unique entity identifier) and Foreign Keys (referential integrity constraints). Unnormalized tables suffer from data redundancy, leading to insertion, deletion, and update anomalies. Normalization decomposes relations into standardized forms: 1. First Normal Form (1NF: atomic values, no repeating groups), 2. Second Normal Form (2NF: in 1NF and no partial dependencies on candidate keys), 3. Third Normal Form (3NF: in 2NF and no transitive functional dependencies), and 4. Boyce-Codd Normal Form (BCNF: for every functional dependency X -> Y, X must be a super key).",
+            realWorldExample: "Structuring university enrollment schemas so updating a student's address does not require modifying dozens of course rows.",
+            codeSnippet: `-- Normalized Relational Tables Schema (3NF)\nCREATE TABLE students (\n    student_id VARCHAR(20) PRIMARY KEY,\n    name VARCHAR(100) NOT NULL,\n    email VARCHAR(100) UNIQUE NOT NULL\n);\n\nCREATE TABLE courses (\n    course_code VARCHAR(20) PRIMARY KEY,\n    title VARCHAR(150) NOT NULL,\n    credits INT NOT NULL CHECK (credits > 0)\n);\n\n-- Junction Table for Many-to-Many Relationship\nCREATE TABLE enrollments (\n    enrollment_id SERIAL PRIMARY KEY,\n    student_id VARCHAR(20) REFERENCES students(student_id) ON DELETE CASCADE,\n    course_code VARCHAR(20) REFERENCES courses(course_code),\n    enrollment_date DATE DEFAULT CURRENT_DATE,\n    UNIQUE(student_id, course_code)\n);`,
+            keyPoints: [
+              "1NF requires atomic values; 2NF removes partial key dependencies; 3NF removes transitive dependencies.",
+              "Foreign keys enforce referential integrity across related database tables.",
+              "Proper normalization prevents database anomalies and reduces storage redundancy."
+            ],
+            practiceTask: "Design a 3NF normalized schema for a Student, Course, and Faculty registration system with primary and foreign keys."
+          },
+          {
+            id: "fs-m13-l2",
+            title: "SQL Operations & Data Persistence with Spring JDBC",
+            duration: "25 min",
+            content: "SQL (Structured Query Language) comprises DDL (Data Definition Language: CREATE, ALTER, DROP), DML (Data Manipulation Language: INSERT, UPDATE, DELETE), and DQL (Data Query Language: SELECT with JOIN, WHERE, GROUP BY, HAVING). In Java web applications, Spring JDBC provides 'JdbcTemplate' which simplifies relational persistence by managing connections, preparing statements, catching exceptions, and releasing resources automatically. Object mapping is achieved using 'RowMapper<T>' to transform SQL ResultSet rows into Java entity instances.",
+            realWorldExample: "Persisting completed student quizzes and retrieving course enrollment lists using Spring JdbcTemplate.",
+            codeSnippet: `package com.velfire.repository;\n\nimport com.velfire.model.Course;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.jdbc.core.JdbcTemplate;\nimport org.springframework.jdbc.core.RowMapper;\nimport org.springframework.stereotype.Repository;\nimport java.util.List;\n\n@Repository\npublic class CourseJdbcRepository {\n\n    @Autowired\n    private JdbcTemplate jdbcTemplate;\n\n    // RowMapper maps SQL columns to Java Course object\n    private final RowMapper<Course> courseRowMapper = (rs, rowNum) -> new Course(\n        rs.getString(\"course_code\"),\n        rs.getString(\"title\"),\n        rs.getInt(\"credits\")\n    );\n\n    public List<Course> findAllCourses() {\n        String sql = \"SELECT course_code, title, credits FROM courses\";\n        return jdbcTemplate.query(sql, courseRowMapper);\n    }\n\n    public int insertCourse(Course course) {\n        String sql = \"INSERT INTO courses (course_code, title, credits) VALUES (?, ?, ?)\";\n        return jdbcTemplate.update(sql, course.getCourseCode(), course.getCourseName(), course.getCredits());\n    }\n}`,
+            keyPoints: [
+              "Spring JdbcTemplate eliminates tedious boilerplate JDBC code (try-catch, connection closing).",
+              "RowMapper<T> converts database result sets directly into strongly-typed Java domain models.",
+              "Use parameterized queries (?) to prevent SQL Injection attacks."
+            ],
+            practiceTask: "Write a Spring JDBC repository class using JdbcTemplate to insert and retrieve student records."
+          }
+        ]
+      },
+      {
+        id: "fs-m14",
+        title: "Module 14 – Unit V: Agile Engineering & Cloud Deployment",
+        description: "Agile principles, Scrum framework, sprints, packaging, containerization with Docker, and cloud web hosting pipelines.",
+        lessons: [
+          {
+            id: "fs-m14-l1",
+            title: "Agile Development Principles & Scrum Framework",
+            duration: "20 min",
+            content: "Agile software engineering values working software, customer collaboration, and responding to change over rigid documentation. Scrum is the leading Agile framework. Core components: 1. Roles (Product Owner managing requirements, Scrum Master facilitating velocity, Developers building solutions), 2. Artifacts (Product Backlog containing user stories, Sprint Backlog for active work, Increment delivering usable features), 3. Events (Sprint Planning, Sprints lasting 1-4 weeks, Daily Standup meetings answering 3 questions: What did I do yesterday? What will I do today? Are there any blockers?, Sprint Review with stakeholders, and Sprint Retrospectives to inspect and adapt).",
+            realWorldExample: "Organizing modern software engineering teams into two-week sprints to build and ship feature releases continuously.",
+            codeSnippet: `// Agile User Story Template & Sprint Task Schema\nconst sprintTask = {\n  userStory: \"As a B.Tech student, I want to view my unit-wise lecture notes so that I can prepare for semester exams.\",\n  acceptanceCriteria: [\n    \"User can navigate between Unit I to Unit V\",\n    \"Code snippets can be copied with one click\",\n    \"Progress is stored in local storage and database\"\n  ],\n  storyPoints: 5,\n  status: \"In Progress\" // Backlog -> Sprint -> In Progress -> Code Review -> Done\n};`,
+            keyPoints: [
+              "Agile delivers working software in short, iterative, incremental cycles called Sprints.",
+              "Daily standup meetings foster rapid communication and remove blockers immediately.",
+              "User stories capture feature requirements from the perspective of the end user."
+            ],
+            practiceTask: "Draft a complete Agile user story with acceptance criteria and estimate story points for a student login feature."
+          },
+          {
+            id: "fs-m14-l2",
+            title: "Cloud Deployment, Containerization & CI/CD Pipelines",
+            duration: "25 min",
+            content: "Modern full stack applications are packaged into self-contained container images using Docker or compiled into executable JARs and deployed to Cloud platforms (AWS, Microsoft Azure, Google Cloud, Vercel). Cloud hosting provides auto-scaling, high availability, and managed databases. Continuous Integration and Continuous Deployment (CI/CD) pipelines automate testing and deployment: on every 'git push' to the main branch, automated test runners execute unit tests, build production bundles, and push release containers to cloud servers with zero downtime.",
+            realWorldExample: "Deploying the VELFIRE full stack application with React frontend on Vercel and backend services on cloud compute.",
+            codeSnippet: `# Dockerfile for Containerizing Web Backend\nFROM eclipse-temurin:17-jdk-alpine\nWORKDIR /app\nCOPY target/velfire-backend.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\n# Cloud Build & Run Commands\n# 1. Package backend: mvn clean package -DskipTests\n# 2. Build Docker container: docker build -t velfire-backend:1.0 .\n# 3. Run container locally: docker run -p 8080:8080 velfire-backend:1.0`,
+            keyPoints: [
+              "Containerization packages code along with its runtime and dependencies, ensuring it runs identically everywhere.",
+              "CI/CD pipelines automate building, testing, and cloud deployment on every Git commit.",
+              "Store sensitive database passwords and API keys in cloud environment variables, never hardcoded in source."
+            ],
+            practiceTask: "Write a Dockerfile or deployment script for packaging and deploying a full stack web application to a cloud server."
+          }
         ]
       }
     ]

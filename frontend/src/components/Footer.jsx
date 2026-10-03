@@ -10,6 +10,21 @@ function Footer({ onAboutClick }) {
         <div className="footer-col footer-brand-col">
           <h3 className="footer-brand">VELFIRE</h3>
           <p className="footer-tagline">AI Career Operating System & Skill Mastery Platform</p>
+          {onAboutClick && (
+            <button 
+              type="button" 
+              className="footer-about-action-btn"
+              onClick={onAboutClick}
+              title="Learn more about VELFIRE OS"
+            >
+              <span>Explore Platform Story</span>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* CONTACT & LOCATION COLUMN */}

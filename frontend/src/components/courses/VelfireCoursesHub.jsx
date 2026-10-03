@@ -125,6 +125,7 @@ function VelfireCoursesHub({
           onSelectCourse={handleSelectCourse}
           onStartLearning={handleStartLearning}
           onSwitchToRoadmap={onSwitchToRoadmap}
+          onBackToChoice={onBackToChoice}
         />
       )}
 

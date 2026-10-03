@@ -2,6 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import "./Chatbot.css";
 
 function Chatbot({ user, onBackToDashboard, onLogout }) {
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("velfire_theme") === "dark";
+  });
+
+  const toggleTheme = () => {
+    const nextMode = !isDarkMode;
+    setIsDarkMode(nextMode);
+    localStorage.setItem("velfire_theme", nextMode ? "dark" : "light");
+  };
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedModel, setSelectedModel] = useState("VELFIRE GPT-4o"); // VELFIRE GPT-4o, VELFIRE GPT-4o Mini, VELFIRE Code Pro
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
@@ -348,7 +358,7 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
   };
 
   return (
-    <div className="gpt-layout">
+    <div className={`gpt-layout ${isDarkMode ? "dark-mode" : "light-mode"}`}>
       
       {/* LEFT SIDEBAR (ChatGPT Style) */}
       <aside className={`gpt-sidebar ${sidebarOpen ? "open" : "collapsed"}`}>
@@ -501,7 +511,15 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
             </div>
           </div>
 
-          <div className="nav-right">
+          <div className="nav-right" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <button
+              type="button"
+              className="btn-theme-toggle-chat"
+              onClick={toggleTheme}
+              title={`Switch to ${isDarkMode ? "Butter Cream (Light)" : "Dark Emerald"} Theme`}
+            >
+              {isDarkMode ? "🧈 Butter Mode" : "🌙 Dark Mode"}
+            </button>
             <button className="btn-back-os" onClick={onBackToDashboard}>
               ← OS Dashboard
             </button>

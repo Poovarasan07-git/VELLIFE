@@ -135,6 +135,7 @@ function App() {
           onLogout={handleLogout}
           onUpdateUser={handleUpdateUser}
           onOpenDashboard={handleOpenDashboard}
+          onOpenChatbot={handleOpenChatbot}
         />
       );
     }
