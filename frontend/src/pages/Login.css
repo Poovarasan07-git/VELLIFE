@@ -122,6 +122,35 @@
   margin-bottom: 8px;
 }
 
+.password-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.password-header-row label {
+  margin-bottom: 0;
+}
+
+.forgot-password-link {
+  background: none;
+  border: none;
+  color: #38bdf8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.forgot-password-link:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+  transform: translateY(-1px);
+}
+
 .input-wrapper {
   position: relative;
   display: flex;

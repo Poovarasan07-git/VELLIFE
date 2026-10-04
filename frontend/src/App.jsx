@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
 import TermsPolicy from "./pages/TermsPolicy";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -9,7 +10,7 @@ import SplashScreen from "./components/SplashScreen";
 import "./App.css";
 
 function App() {
-  const [currentView, setCurrentView] = useState("splash"); // splash, login, signup, terms_policy, home, dashboard, chatbot
+  const [currentView, setCurrentView] = useState("splash"); // splash, login, signup, forgot_password, terms_policy, home, dashboard, chatbot
   const [currentUser, setCurrentUser] = useState(null);
   const [createdEmail, setCreatedEmail] = useState("");
 
@@ -53,6 +54,10 @@ function App() {
     setCurrentView("signup");
   };
 
+  const handleNavigateToForgotPassword = () => {
+    setCurrentView("forgot_password");
+  };
+
   const handleSignupSuccess = (email) => {
     setCreatedEmail(email);
     setCurrentView("terms_policy");
@@ -83,6 +88,7 @@ function App() {
       return (
         <Login
           onNavigateToSignup={handleNavigateToSignup}
+          onNavigateToForgotPassword={handleNavigateToForgotPassword}
           onLoginSuccess={handleLoginSuccess}
           initialEmail={createdEmail}
         />
@@ -94,6 +100,15 @@ function App() {
         <Signup
           onNavigateToLogin={handleNavigateToLogin}
           onSignupSuccess={handleSignupSuccess}
+        />
+      );
+    }
+
+    if (currentView === "forgot_password") {
+      return (
+        <ForgotPassword
+          onNavigateToLogin={handleNavigateToLogin}
+          initialEmail={createdEmail}
         />
       );
     }

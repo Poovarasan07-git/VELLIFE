@@ -3,7 +3,7 @@ import "./Login.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
-function Login({ onNavigateToSignup, onLoginSuccess, initialEmail = "" }) {
+function Login({ onNavigateToSignup, onNavigateToForgotPassword, onLoginSuccess, initialEmail = "" }) {
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -114,7 +114,16 @@ function Login({ onNavigateToSignup, onLoginSuccess, initialEmail = "" }) {
           </div>
 
           <div className="input-group">
-            <label htmlFor="login-password">Password</label>
+            <div className="password-header-row">
+              <label htmlFor="login-password">Password</label>
+              <button
+                type="button"
+                className="forgot-password-link"
+                onClick={onNavigateToForgotPassword}
+              >
+                Forgot Password?
+              </button>
+            </div>
             <div className="input-wrapper">
               <input
                 id="login-password"
