@@ -75,7 +75,7 @@ function Login({ onNavigateToSignup, onNavigateToForgotPassword, onLoginSuccess,
     <div className="login-page">
       <div className="login-container">
         
-        <div className="login-logo">VELFIRE</div>
+        <div className="login-logo">VELLIFE</div>
 
         <h1>Welcome Back</h1>
         <p className="login-subtitle">

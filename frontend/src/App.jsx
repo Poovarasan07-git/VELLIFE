@@ -17,7 +17,7 @@ function App() {
   useEffect(() => {
     // Always show the login page before entering the website
     // Prefill the email if previously saved, but require logging in
-    const savedUser = localStorage.getItem("velfire_user");
+    const savedUser = localStorage.getItem("vellife_user");
     if (savedUser) {
       try {
         const userObj = JSON.parse(savedUser);
@@ -25,28 +25,28 @@ function App() {
           setCreatedEmail(userObj.email);
         }
       } catch (e) {
-        localStorage.removeItem("velfire_user");
+        localStorage.removeItem("vellife_user");
       }
     }
     // Clear user state so authentication is always required on entry
     setCurrentUser(null);
-    localStorage.removeItem("velfire_user");
+    localStorage.removeItem("vellife_user");
   }, []);
 
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
-    localStorage.setItem("velfire_user", JSON.stringify(user));
+    localStorage.setItem("vellife_user", JSON.stringify(user));
     setCurrentView("home");
   };
 
   const handleUpdateUser = (updatedUser) => {
     setCurrentUser(updatedUser);
-    localStorage.setItem("velfire_user", JSON.stringify(updatedUser));
+    localStorage.setItem("vellife_user", JSON.stringify(updatedUser));
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    localStorage.removeItem("velfire_user");
+    localStorage.removeItem("vellife_user");
     setCurrentView("login");
   };
 

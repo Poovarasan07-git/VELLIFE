@@ -38,9 +38,9 @@ export default function ResumeBuilderView({ onBack, defaultDomain = "Full Stack 
     projects: [
       {
         id: 1,
-        title: "VELFIRE Learning & Career Acceleration Portal",
+        title: "VELLIFE Learning & Career Acceleration Portal",
         techStack: "React, Node.js, SQLite, CSS3, Vite",
-        link: "github.com/alexrivera-tech/velfire-hub",
+        link: "github.com/alexrivera-tech/vellife-hub",
         description: "• Built an interactive full-stack learning platform featuring AI roadmaps, video lessons, and ATS tools.\n• Implemented responsive UI with sub-second page transitions and persistent progress tracking."
       },
       {

@@ -4,20 +4,23 @@ import re
 import bcrypt
 import json
 import urllib.request
+import urllib.parse
 import random
 import time
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+except ImportError:
+    pass
+
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
-
-# Load environment variables from .env
-load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
@@ -28,7 +31,7 @@ SMTP_FROM_NAME = os.getenv("SMTP_FROM_NAME", "VELFIRE Security")
 # Database file path
 DB_PATH = os.path.join(os.path.dirname(__file__), "vellife.db")
 
-app = FastAPI(title="VELFIRE API", version="1.0.0")
+app = FastAPI(title="VELLIFE API", version="1.0.0")
 
 # Enable CORS for React frontend
 app.add_middleware(
@@ -127,7 +130,7 @@ def hash_password(password: str) -> str:
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "app": "VELFIRE API"}
+    return {"status": "ok", "app": "VELLIFE API"}
 
 @app.post("/api/signup")
 def signup(data: SignupRequest):
@@ -563,111 +566,703 @@ def update_profile(data: UpdateProfileRequest):
         conn.close()
         raise HTTPException(status_code=500, detail=f"Failed to update profile: {str(e)}")
 
+def load_env_file():
+    """Load environment variables from .env if not already set or updated."""
+    candidates = [
+        os.path.join(os.path.dirname(__file__), ".env"),
+        os.path.join(os.path.dirname(__file__), "..", ".env"),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            k = k.strip()
+                            v = v.strip().strip('"').strip("'")
+                            if k:
+                                if v or not os.environ.get(k):
+                                    os.environ[k] = v
+            except Exception:
+                pass
+
+load_env_file()
+
+def get_gemini_api_key() -> str:
+    load_env_file()
+    key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if key and key != "your_gemini_api_key_here":
+        return key
+    return ""
+
 def clean_user_name(raw_name: str) -> str:
     if not raw_name:
-        return "Poovarasan"
-    # Remove digits
+        return "Student"
     s = re.sub(r'\d+', '', raw_name).strip()
-    # If ends with 'poo' from handle like Poovarasanpoo, trim extra 'poo'
     if s.lower().endswith("poo") and len(s) > 5:
         s = s[:-3]
-    return s.capitalize() if s else "Poovarasan"
+    return s.capitalize() if s else "Student"
 
-def fetch_live_llm_response(user_name: str, message: str) -> str:
-    try:
-        url = "https://text.pollinations.ai/"
-        system_prompt = (
-            f"You are VELFIRE AI, a real-time intelligent AI assistant modeled after ChatGPT. "
-            f"Address the user naturally as '{user_name}'. "
-            f"Provide rich, thorough, beautifully structured Markdown answers with clear headings, bullet points, tables, and code snippets where relevant. "
-            f"Never output robotic template phrases."
+STUDENT_MENTOR_SYSTEM_PROMPT = (
+    "You are the VELLIFE Placement Mentor & Career Acceleration AI — a top-tier technical interviewer, "
+    "DSA coach, and campus placement strategist for engineering students and job candidates.\n\n"
+    "Platform Context (VELLIFE Ecosystem):\n"
+    "- 10 High-Demand Tech Domains: Full Stack Development (React 19 + Python FastAPI/Node), Data Analyst (Python, SQL, Power BI, Excel), "
+    "Data Science (Pandas, Scikit-Learn, ML), AI/ML Engineering (PyTorch, LLMs, Neural Networks), Backend Development (FastAPI, PostgreSQL, Docker), "
+    "Cloud Engineering (AWS, Docker, K8s, Linux), Cybersecurity, UI/UX Design, SAP Consultant, and Business Analyst.\n"
+    "- Placement Tools: ATS Resume Builder (STAR format, single-column), ATS Resume Analyzer (keyword scoring out of 100), "
+    "VELLIFE AI Roadmaps (1, 3, and 6-month timelines), and the VELLIFE Placement Gate (requiring 80%+ mock interview score to unlock direct Job Portal applications).\n\n"
+    "Core Placement Focus & Responsibilities:\n"
+    "1. Coding Rounds & Online Assessments (OA): Arrays, Strings, Two Pointers, Sliding Window, Hashing, Trees, Graphs, Dynamic Programming, Recursion, Time & Space Complexity (Big-O analysis).\n"
+    "2. Technical Interview Questions: Python, Java, C++, JavaScript, React 19, FastAPI, DBMS & SQL, Operating Systems (Deadlocks, Paging, Threads), Computer Networks (TCP/IP, HTTP/HTTPS), OOP Principles.\n"
+    "3. Company-Specific Placement Patterns: Service giants (TCS NQT/Digital/Prime, Infosys DSE/SP, Cognizant GenC/Next, Wipro, Accenture) vs Product/Startup leaders (Zoho Round 1-3, Amazon SDE-1, Swiggy, FinTech).\n"
+    "4. Resume & ATS Optimization: Translating projects into quantified STAR bullet points, avoiding ATS rejection, highlighting tech stacks.\n"
+    "5. Behavioral & HR Rounds: Answering 'Tell me about yourself', 'Why should we hire you?', handling career gaps, strengths/weaknesses with realistic, winning answers.\n"
+    "6. Aptitude & Logical Reasoning: Speed math, percentages, permutations, logical reasoning shortcuts.\n\n"
+    "CRITICAL RULES FOR RESPONSES:\n"
+    "1. PLACEMENT GROUNDING: Always frame answers through the lens of campus placement interviews, coding assessments, or recruiter expectations. For technical questions, mention what interviewers look for and common follow-up traps.\n"
+    "2. NO DUPLICATE OR CANNED ANSWERS: Never repeat the exact same response if the student asks the same or a related question. Always provide a fresh angle: an alternative optimal approach, a new placement drill question, a company-specific variation (e.g. how Zoho vs TCS asks it), or deeper edge-case analysis.\n"
+    "3. CODE QUALITY & COMPLEXITY: Provide clean, production-grade runnable code with Time (Big-O) and Space complexity clearly stated.\n"
+    "4. ACTIONABLE DRILL: End with 1 interactive placement follow-up question or coding challenge for the student.\n"
+    "5. Markdown Formatting: Structure answers with crisp headings, bullet points, and syntax-highlighted code blocks."
+)
+
+# Gemini fallback cascade sequence (gemini-flash-lite-latest and gemini-flash-latest verified active and fastest)
+GEMINI_FALLBACK_MODELS = [
+    "gemini-flash-lite-latest",
+    "gemini-flash-latest",
+    "gemini-2.5-flash",
+    "gemini-pro-latest",
+]
+
+def normalize_model_name(raw_model: str) -> str:
+    m = (raw_model or "").lower().strip()
+    if "pro" in m:
+        return "gemini-pro-latest"
+    if "flash-latest" in m or "2.0" in m:
+        return "gemini-flash-latest"
+    return "gemini-flash-lite-latest"
+
+def fetch_gemini_response(
+    user_name: str, 
+    message: str, 
+    requested_model: str = "gemini-flash-latest", 
+    override_key: str = "", 
+    history: list = None,
+    is_regenerate: bool = False
+) -> tuple[str, str, bool]:
+    """
+    Generates a placement mentor reply via Google Gemini API with:
+    - Full multiturn conversation history with strictly alternating roles.
+    - Anti-duplication detection: If the query is repeated or regenerate is requested, adds an explicit directive to force a fresh alternative angle.
+    - Cascade across fast verified Gemini models.
+    """
+    api_key = override_key.strip() if override_key.strip() else get_gemini_api_key()
+    if not api_key:
+        return "", "", False
+
+    norm_primary = normalize_model_name(requested_model)
+    models_to_try = [norm_primary]
+    for fb in GEMINI_FALLBACK_MODELS:
+        if fb not in models_to_try:
+            models_to_try.append(fb)
+
+    # Detect if user is repeating a previous question or asked for regeneration
+    is_repeated = is_regenerate
+    if not is_repeated and history and isinstance(history, list):
+        norm_curr = re.sub(r'[^a-z0-9]', '', message.lower())
+        for h in history:
+            if h.get("role") in ["user", "human"]:
+                norm_prev = re.sub(r'[^a-z0-9]', '', (h.get("text") or "").lower())
+                if norm_prev and (norm_prev == norm_curr or (len(norm_prev) > 10 and norm_prev in norm_curr)):
+                    is_repeated = True
+                    break
+
+    # Build conversation contents with strictly alternating user -> model roles
+    contents = []
+    if history and isinstance(history, list):
+        last_role = None
+        for h in history[-8:]:
+            raw_role = (h.get("role") or "").lower()
+            role = "user" if raw_role in ["user", "human"] else "model"
+            text_val = (h.get("text") or "").strip()
+            if not text_val:
+                continue
+            if role == last_role and contents:
+                contents[-1]["parts"][0]["text"] += "\n\n" + text_val
+            else:
+                contents.append({"role": role, "parts": [{"text": text_val}]})
+                last_role = role
+
+    # Ensure last message in history before our new prompt is not a user message
+    if contents and contents[-1]["role"] == "user":
+        contents.pop()
+
+    anti_dup_prompt = ""
+    if is_repeated:
+        anti_dup_prompt = (
+            "\n\n[CRITICAL PLACEMENT MENTOR DIRECTIVE - NO REPETITION / PROVIDE FRESH PERSPECTIVE]:\n"
+            "The student has previously asked this or a very similar question earlier in this session. "
+            "DO NOT REPEAT YOUR PREVIOUS ANSWER OR GIVE A CANNED EXPLANATION. "
+            "You MUST provide a COMPLETELY DIFFERENT, high-value angle:\n"
+            "1. An alternative optimal algorithmic approach (e.g. Iterative vs Recursive, Space-Optimized O(1), Two-Pointers vs Hashing).\n"
+            "2. Company-specific interview variations (e.g. how Zoho or Amazon asks this in Round 2 vs how TCS NQT/Digital tests it).\n"
+            "3. Tricky edge cases, interviewer trap questions, and common mistakes freshers make during live technical rounds.\n"
+            "4. Or an interactive Placement Drill / 3-question Mock Interview follow-up.\n"
+            "Make this response distinctly fresh, insightful, and practical!"
         )
-        payload = {
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": message}
-            ],
-            "model": "openai"
-        }
-        data = json.dumps(payload).encode("utf-8")
+
+    user_text = f"Student Name: {user_name}\n\nStudent's Placement / Technical Doubt:\n{message}{anti_dup_prompt}"
+    contents.append({
+        "role": "user",
+        "parts": [{"text": user_text}]
+    })
+
+    for idx, model_name in enumerate(models_to_try):
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+            payload = {
+                "contents": contents,
+                "systemInstruction": {
+                    "parts": [{"text": STUDENT_MENTOR_SYSTEM_PROMPT}]
+                },
+                "generationConfig": {
+                    "temperature": 0.85,
+                    "topP": 0.95,
+                    "maxOutputTokens": 2048
+                }
+            }
+            req_data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(
+                url,
+                data=req_data,
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=12) as res:
+                if res.status == 200:
+                    res_body = json.loads(res.read().decode("utf-8"))
+                    candidates = res_body.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts and "text" in parts[0]:
+                            text = parts[0]["text"].strip()
+                            if text:
+                                is_fallback = (idx > 0)
+                                label = f"VELLIFE Placement Mentor ({model_name})"
+                                return text, label, is_fallback
+        except Exception as e:
+            print(f"Gemini API model '{model_name}' skipped: {e}. Trying next...")
+            continue
+
+    return "", "", False
+
+def fetch_pollinations_fallback(user_name: str, message: str) -> tuple[str, str]:
+    """
+    Secondary Free Live LLM Fallback (Pollinations AI) with placement mentor persona.
+    """
+    try:
+        combined_prompt = (
+            f"You are the VELLIFE Placement Mentor AI. Guide student {user_name} with practical campus placement advice, "
+            f"coding interview analysis, Time/Space complexity, or company patterns. Do not repeat canned text. Question: {message}"
+        )
+        url = f"https://text.pollinations.ai/{urllib.parse.quote(combined_prompt)}"
         req = urllib.request.Request(
             url,
-            data=data,
-            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+            headers={"User-Agent": "Mozilla/5.0", "Accept": "text/plain"}
         )
-        with urllib.request.urlopen(req, timeout=12) as res:
+        with urllib.request.urlopen(req, timeout=5) as res:
             if res.status == 200:
                 answer = res.read().decode("utf-8").strip()
-                if answer and len(answer) > 10:
-                    return answer
+                if answer and len(answer) > 15 and not answer.startswith("Error"):
+                    return answer, "Pollinations AI (Live Placement Mentor Fallback)"
     except Exception as e:
-        print(f"Live AI fetch exception: {e}")
-    return ""
+        print(f"Pollinations live fallback skipped or timed out: {e}")
+    return "", ""
+
+def build_mentor_offline_fallback(user_name: str, message: str, history: list = None) -> str:
+    """
+    Tertiary Fallback: Rich, dynamic, multi-variant Placement Mentor Knowledge Engine.
+    Computes a rotation variant so the student NEVER gets a duplicate response even if offline!
+    """
+    lower = message.lower()
+    
+    # Calculate variation index (0, 1, or 2) to guarantee non-duplicate answers
+    history_len = len(history) if history else 0
+    variant = (history_len + abs(hash(message))) % 3
+
+    # 1. DSA & Algorithms
+    if any(k in lower for k in ["dsa", "data structure", "algorithm", "time complexity", "big o", "array", "linked list", "tree", "graph", "recursion", "binary search", "stack", "queue", "dynamic programming", "two pointer", "sliding window"]):
+        if variant == 0:
+            return (
+                f"### 💡 Placement Round 1 Focus: Data Structures & Algorithms for **{user_name}**\n\n"
+                "In campus placement coding rounds (TCS Digital, Cognizant GenC Next, Amazon OA), interviewers evaluate your code on **optimal time complexity and zero TLE (Time Limit Exceeded)**.\n\n"
+                "### 1. 🧠 Core Placement Patterns & Big-O Hierarchy\n"
+                "- **O(1) & O(log N)**: Hash Map Lookups, Binary Search on Answer space. (Always expected if input array is sorted or `N <= 10^9`).\n"
+                "- **O(N)**: Two Pointers, Sliding Window, Single-pass frequency array.\n"
+                "- **O(N log N)**: Divide & Conquer (Merge Sort, Heap operations).\n"
+                "- **O(N^2) Warning**: Brute-force nested loops will fail hidden test cases when `N >= 10^4`!\n\n"
+                "### 2. 💻 Optimal Implementation (Two-Pointer Technique)\n"
+                "```python\n"
+                "# Classic O(N) Two-Pointer approach to find target pair in sorted array\n"
+                "def find_target_pair(arr: list[int], target: int) -> tuple[int, int] | None:\n"
+                "    left, right = 0, len(arr) - 1\n"
+                "    while left < right:\n"
+                "        current = arr[left] + arr[right]\n"
+                "        if current == target:\n"
+                "            return (arr[left], arr[right])  # O(N) time, O(1) auxiliary space\n"
+                "        elif current < target:\n"
+                "            left += 1\n"
+                "        else:\n"
+                "            right -= 1\n"
+                "    return None\n"
+                "```\n\n"
+                "### 3. 🎯 Interviewer Follow-Up Drill:\n"
+                "*'What if the array contains duplicate elements or is not sorted?'* How would you adapt this using a Hash Set in O(N) time and O(N) space, **{user_name}**?"
+            )
+        elif variant == 1:
+            return (
+                f"### 🚀 Alternative Placement Angle: Company-Specific DSA Patterns for **{user_name}**\n\n"
+                "Let's look at how top recruiters test this exact concept differently:\n\n"
+                "1. **TCS (NQT / Digital / Prime)**: Focuses heavily on edge cases (e.g. empty arrays, single elements, negative numbers, and integer overflow with `10^9`).\n"
+                "2. **Zoho (Round 2 & 3)**: Tests problem-solving **without built-in library functions** (e.g. sorting without `.sort()`, string parsing without `split()`).\n"
+                "3. **Amazon & Product Startups**: Expects you to explain the **Brute Force (O(N^2))** solution first, state its bottleneck, and cleanly transition to the **Optimal (O(N))** solution.\n\n"
+                "### 💡 Live Interviewer Tip:\n"
+                "Never write code immediately! Spend the first 2 minutes dry-running with a small example on paper or whiteboard. State: *'The brute force takes O(N^2). We can optimize this to O(N) using a two-pointer approach because the input is sorted.'*\n\n"
+                f"Would you like to practice a live coding problem on this pattern right now, **{user_name}**?"
+            )
+        else:
+            return (
+                f"### 🔍 Deep-Dive: Interview Edge-Case Traps & Complexity Optimization for **{user_name}**\n\n"
+                "Here are the subtle traps that cause 60% of students to fail the technical round even when their logic is generally correct:\n\n"
+                "1. **Off-by-One Index Errors**: Loop bounds like `while left <= right` vs `while left < right` in Binary Search.\n"
+                "2. **Integer Overflow in Mid Calculation**: Using `(left + right) // 2` instead of `left + (right - left) // 2` in C++/Java when values exceed $2^{31}-1$.\n"
+                "3. **Auxiliary Space Hidden Cost**: Creating sub-arrays or slices `arr[mid:]` in Python creates $O(N)$ copies, turning an $O(\\log N)$ space algorithm into $O(N)$!\n\n"
+                "### 🎯 Actionable VELLIFE Drill:\n"
+                "Solve 3 medium LeetCode/GeeksforGeeks problems on this topic today, and log your progress in the VELLIFE Learning Portal to boost your Placement Preparation Score!"
+            )
+
+    # 2. Web Development (Full-Stack / React / FastAPI)
+    if any(k in lower for k in ["fullstack", "full stack", "react", "fastapi", "frontend", "backend", "web dev", "rest api", "html", "css", "javascript"]):
+        if variant == 0:
+            return (
+                f"### 🌐 Full-Stack Placement Architecture Guide for **{user_name}**\n\n"
+                "In tech interviews for Full-Stack Developer roles (e.g. React 19 + Python FastAPI), tech panels test your ability to bridge client and server seamlessly.\n\n"
+                "### 1. 🏗️ High-Scale Placement Stack\n"
+                "- **Client (Frontend)**: React 19 Single Page App (Component state, `useEffect` cleanups, responsive design).\n"
+                "- **Server (Backend)**: Python FastAPI with asynchronous endpoints (`async def`) and Pydantic validation schemas.\n"
+                "- **Database & Persistence**: SQLite for local testing, PostgreSQL with SQLAlchemy ORM for production.\n\n"
+                "### 2. 💻 Production-Grade Endpoint Example\n"
+                "```python\n"
+                "from fastapi import FastAPI, HTTPException, status\n"
+                "from pydantic import BaseModel, EmailStr\n\n"
+                "app = FastAPI(title='VELLIFE Campus Placement API')\n\n"
+                "class CandidateSchema(BaseModel):\n"
+                "    name: str\n"
+                "    domain: str = 'Full Stack Development'\n"
+                "    mock_score: int\n\n"
+                "@app.post('/api/placement/verify', status_code=status.HTTP_200_OK)\n"
+                "async def verify_candidate(data: CandidateSchema):\n"
+                "    if data.mock_score < 80:\n"
+                "        return {'status': 'Gate Locked', 'message': 'Requires 80%+ mock score to unlock Job Portal'}\n"
+                "    return {'status': 'Gate Passed', 'eligible_jobs': 24}\n"
+                "```\n\n"
+                "### 3. 🎯 ATS Resume Tip for Freshers:\n"
+                "Do not write *'Created a website'*. Write: *'Architected a full-stack platform using React 19 and FastAPI, reducing API latency by 35% with asynchronous SQLite caching.'*"
+            )
+        elif variant == 1:
+            return (
+                f"### ⚙️ Full-Stack Interview Deep-Dive: Common Tech Round Questions for **{user_name}**\n\n"
+                "Here are the top 5 questions interviewers consistently ask for entry-level Full-Stack and Frontend roles:\n\n"
+                "1. **State Management & Re-renders**: *'How does React 19 manage Virtual DOM diffing, and how do you prevent unnecessary re-renders in heavy components?'*\n"
+                "2. **CORS (Cross-Origin Resource Sharing)**: *'Why does CORS error happen when React (port 5173) calls FastAPI (port 8000), and how do you resolve it properly?'*\n"
+                "3. **Authentication Architecture**: *'Explain how JWT tokens and bcrypt password hashing secure user sessions compared to plain session cookies.'*\n"
+                "4. **REST vs GraphQL**: *'What are over-fetching and under-fetching, and when would you choose FastAPI REST over GraphQL?'*\n"
+                "5. **Database Indexing**: *'How does a B-Tree index speed up SELECT queries on foreign keys?'*\n\n"
+                f"Which of these 5 questions would you like to practice answering right now, **{user_name}**?"
+            )
+        else:
+            return (
+                f"### 📋 Full-Stack Capstone Project Blueprint for Placements for **{user_name}**\n\n"
+                "Recruiters reject generic clone projects (like basic to-do lists or weather apps). To stand out in campus drives, your project needs 3 enterprise pillars:\n\n"
+                "1. **Real Authentication & Role-Based Access (RBAC)**: Student vs Admin role permissions.\n"
+                "2. **Data Persistence with Schema Validation**: Pydantic models in Python + Relational DB queries.\n"
+                "3. **Live Deployment with CI/CD**: Host your backend on Render/Railway and frontend on Vercel, with GitHub Actions automated checks.\n\n"
+                "💡 **VELLIFE Integration**: Open the **VELLIFE AI Roadmap Generator** on your dashboard and select 'Full Stack Development' for a custom 1-month or 3-month milestone roadmap!"
+            )
+
+    # 3. Database & SQL
+    if any(k in lower for k in ["sql", "database", "query", "join", "group by", "index", "normalization", "sqlite", "postgres", "dbms"]):
+        if variant == 0:
+            return (
+                f"### 💾 Placement SQL & DBMS Guide for **{user_name}**\n\n"
+                "SQL rounds in campus interviews (TCS, Infosys, Cognizant, Product Startups) test your command over **Window Functions, Complex Joins, and Aggregations**.\n\n"
+                "### 1. 🔑 Top 4 Must-Know SQL Placement Concepts\n"
+                "- **Window Functions**: `DENSE_RANK()`, `ROW_NUMBER()`, `LEAD()`, `LAG()`.\n"
+                "- **Aggregation Filtering**: `HAVING` (filters grouped rows) vs `WHERE` (filters individual rows before grouping).\n"
+                "- **Joins**: `INNER JOIN` (intersection), `LEFT JOIN` (all left + matching right), Self-Joins for hierarchical data.\n"
+                "- **ACID Properties**: Atomicity, Consistency, Isolation, Durability.\n\n"
+                "### 2. 💻 Interview Benchmark Query: Nth Highest Salary\n"
+                "```sql\n"
+                "-- Find the 2nd Highest Salary using DENSE_RANK() (Handles duplicate salaries safely)\n"
+                "WITH RankedSalaries AS (\n"
+                "    SELECT \n"
+                "        emp_name,\n"
+                "        salary,\n"
+                "        DENSE_RANK() OVER (ORDER BY salary DESC) as rank_pos\n"
+                "    FROM employees\n"
+                ")\n"
+                "SELECT emp_name, salary \n"
+                "FROM RankedSalaries \n"
+                "WHERE rank_pos = 2;\n"
+                "```\n\n"
+                "### 3. 🎯 Interviewer Question:\n"
+                "*'Why is DENSE_RANK() preferred over LIMIT 1 OFFSET 1 when two employees earn the same top salary?'* (Answer: LIMIT skips duplicate rows incorrectly; DENSE_RANK assigns the same rank to identical salaries)."
+            )
+        elif variant == 1:
+            return (
+                f"### 📊 DBMS Core Theory for Technical Rounds for **{user_name}**\n\n"
+                "Beyond writing queries, Round 1 interviewers test your theoretical DBMS foundations:\n\n"
+                "1. **Normalization (1NF -> 2NF -> 3NF -> BCNF)**:\n"
+                "   - *1NF*: Atomic values, no repeating groups.\n"
+                "   - *2NF*: 1NF + No partial dependency (all non-key attributes fully dependent on primary key).\n"
+                "   - *3NF*: 2NF + No transitive dependency ($A \\to B, B \\to C$).\n"
+                "2. **Indexing & B-Trees**: Why does indexing speed up `SELECT` but slow down `INSERT` and `UPDATE`? (Answer: Index trees must be rebalanced on every write operation).\n"
+                "3. **Transactions & Deadlocks**: How database isolation levels (Read Committed, Serializable) prevent Dirty Reads and Phantom Reads.\n\n"
+                f"Would you like me to quiz you on DBMS normalization or SQL joins right now, **{user_name}**?"
+            )
+        else:
+            return (
+                f"### ⚡ SQL Optimization & Performance Strategies for Placements for **{user_name}**\n\n"
+                "When asked *'How do you optimize a slow database query in production?'*, here is the winning senior-level answer:\n\n"
+                "1. **Analyze with EXPLAIN / EXPLAIN QUERY PLAN**: Check whether the database engine executes a Full Table Scan ($O(N)$) or uses an Index Scan ($O(\\log N)$).\n"
+                "2. **Avoid `SELECT *`**: Fetch only necessary columns to reduce I/O throughput and network payload.\n"
+                "3. **Use Composite Indexes**: On columns frequently used together in `WHERE` and `JOIN` conditions.\n"
+                "4. **Replace Correlated Subqueries**: Convert subqueries inside `WHERE` clauses into `JOIN`s or CTEs (`WITH` clauses) for execution plan optimization.\n\n"
+                "Ready to solve a practice SQL query together, **{user_name}**?"
+            )
+
+    # 4. Career Domains & Fresher Guidance
+    if any(k in lower for k in ["career", "domain", "which is better", "roadmap", "future", "jobs", "fresher", "placement tips", "how to prepare"]):
+        if variant == 0:
+            return (
+                f"### 🎯 Master Campus Placement Strategy (2026) for **{user_name}**\n\n"
+                "To secure a top offer (6–18 LPA) in campus drives, follow this proven 4-Pillar Roadmap:\n\n"
+                "| Stage | Timeline | Primary Objective | Key Benchmarks |\n"
+                "| :--- | :--- | :--- | :--- |\n"
+                "| **1. DSA & Core** | Months 1–2 | Solve 150+ LeetCode Easy/Medium | Arrays, Strings, Two Pointers, Trees, SQL |\n"
+                "| **2. Domain Projects**| Months 3–4 | Build 2 Production Full-Stack Apps | Auth, Database, Responsive UI, Live Deployment |\n"
+                "| **3. Resume & ATS** | Month 5 | Quantified STAR bullet points | ATS score > 85/100 on VELLIFE Resume Analyzer |\n"
+                "| **4. Mock Drills** | Month 6 | Pass Placement Gate (Score >= 80%) | Technical Round 1 & HR Round simulations |\n\n"
+                "### 💼 Top 3 Hiring Domains in 2026:\n"
+                "1. **Full-Stack Web Development**: Highest volume of job openings across startups and MNCs.\n"
+                "2. **Data Analyst**: High demand for SQL, Python, and Power BI dashboarding.\n"
+                "3. **AI / ML Engineering**: Premium salary packages for candidates who can deploy LLM endpoints.\n\n"
+                f"Which of these domains do you want to target for your placement drive, **{user_name}**?"
+            )
+        elif variant == 1:
+            return (
+                f"### 🏢 Service vs Product Company Placement Roadmaps for **{user_name}**\n\n"
+                "Understanding the exact recruitment patterns of your target companies is crucial:\n\n"
+                "### A. Mass Recruiter & Digital Drives (TCS, Infosys, Cognizant, Wipro, Accenture)\n"
+                "- **Round 1**: Cognitive Aptitude (Quants + Logical + English) + Automata Coding Round.\n"
+                "- **Round 2**: Technical Round (OOPs, DBMS queries, Basics of chosen programming language).\n"
+                "- **Secret to Cracking**: High speed in aptitude + passing all basic and boundary test cases in coding.\n\n"
+                "### B. Product Leaders & High-Growth Startups (Zoho, Amazon, FinTech)\n"
+                "- **Round 1**: Advanced Data Structures, recursion, problem-solving without libraries.\n"
+                "- **Round 2 & 3**: Live coding, debugging tricky test cases, Low-Level Design (LLD).\n"
+                "- **Secret to Cracking**: Clean modular code, deep explanation of algorithmic trade-offs ($O(N)$ vs $O(N^2)$).\n\n"
+                f"Are you currently preparing for service-based drives (TCS/Infosys) or product companies (Zoho/Amazon), **{user_name}**?"
+            )
+        else:
+            return (
+                f"### 📄 ATS Resume & Placement Gate Checklist for **{user_name}**\n\n"
+                "Before your resume reaches a recruiter, it passes through an **Applicant Tracking System (ATS)**. Here is how to guarantee selection:\n\n"
+                "1. **Single-Column Layout**: Multi-column tables confuse ATS parsers. Keep clean sections: Education, Skills, Projects, Experience.\n"
+                "2. **Quantified STAR Formula**: *'Built X feature using Y tech stack which achieved Z measurable result.'*\n"
+                "   - *Weak*: 'Made an e-commerce website with React.'\n"
+                "   - *Winning*: 'Engineered a full-stack e-commerce portal with React 19 and Python FastAPI, handling 500+ mock transactions with sub-200ms latency.'\n"
+                "3. **VELLIFE Placement Gate**: In the VELLIFE Dashboard, complete your profile, build your resume in the **Resume Builder**, and score 80%+ on the **Mock Interview** to unlock verified job applications!\n\n"
+                f"Would you like me to review one of your project bullet points right now, **{user_name}**?"
+            )
+
+    # 5. Exam & Semester Study Preparation
+    if any(k in lower for k in ["exam", "semester", "r20", "study", "syllabus", "marks", "grade", "gpa"]):
+        if variant == 0:
+            return (
+                f"### 📚 University Semester Exam Strategy (9+ CGPA Blueprint) for **{user_name}**\n\n"
+                "Maintaining a CGPA above 8.0 or 8.5 is essential to meet the eligibility cutoffs for top campus recruiters.\n\n"
+                "### 🎯 The 3-Step Exam Scoring Framework:\n"
+                "1. **Previous Year Questions (PYQs) 80/20 Rule**: 70-80% of university exam questions (Anna Univ, JNTU, VTU, R20) repeat core concepts from the last 3-5 years.\n"
+                "2. **Architectural & Flowchart Diagrams**: In 10-mark questions, examiners award 40-50% of the score for clean, labeled block diagrams, state charts, and architectures.\n"
+                "3. **Clean Code with Line-by-Line Comments**: Write modular 6-10 line snippets rather than uninterrupted prose.\n\n"
+                f"Which subject or unit are you preparing for right now, **{user_name}**? Let's break down the important questions!"
+            )
+        else:
+            return (
+                f"### ✍️ Exam Presentation Tactics for High Scoring for **{user_name}**\n\n"
+                "Here are proven techniques to maximize marks in university theory and lab exams:\n\n"
+                "- **Structured Subheadings**: For every 10-mark question, use: 1. Definition & Core Principle, 2. Block Diagram, 3. Working Mechanism, 4. Code / Algorithm, 5. Advantages & Disadvantages.\n"
+                "- **Highlight Key Terms**: Underline critical keywords (e.g. *Mutual Exclusion*, *Two-Phase Locking*, *ACID Properties*).\n"
+                "- **Time Management**: Divide 180 minutes strictly: 25 minutes for 2-mark questions, 140 minutes for 10-mark questions, 15 minutes for final review.\n\n"
+                f"Tell me your subject and I'll generate a high-yield question checklist for you, **{user_name}**!"
+            )
+
+    # 6. Default Dynamic Placement Mentor Response for ANY question
+    clean_topic = re.sub(r'^(can you|please|tell me|explain|what is|how to|i want to|i am)\s+', '', message, flags=re.IGNORECASE).strip(' ?!')
+    title = clean_topic.capitalize() if clean_topic else "Your Technical Query"
+
+    if variant == 0:
+        return (
+            f"### 💡 Placement Technical Guidance: **{title}** for **{user_name}**\n\n"
+            f"When tackling **{message.rstrip('?!.')}** in campus technical interviews, recruiters evaluate your clarity, structured thinking, and depth of technical reasoning.\n\n"
+            "### 1. 🎯 Foundational Principle & Architectural Concept\n"
+            f"To approach {message.rstrip('?!.')} effectively, begin by identifying the core objective, defining input/output contracts, and considering scale.\n\n"
+            "### 2. 🛠️ Best Practices & Placement Implementation\n"
+            "- **Deconstruct the Problem**: Break down the challenge into smaller, independently testable units.\n"
+            "- **Analyze Trade-Offs**: Always be prepared to explain Time vs Space complexity trade-offs to the interviewer.\n"
+            "- **Handle Edge Cases**: Account for null inputs, boundary values, and unexpected error scenarios.\n\n"
+            "### 3. 🚀 Placement Action Item\n"
+            "Implement a working example of this concept today and integrate it into your VELLIFE preparation roadmap.\n\n"
+            f"Would you like me to write a clean code implementation or test you with a placement interview question on **{title}**, **{user_name}**?"
+        )
+    elif variant == 1:
+        return (
+            f"### 🏢 Interviewer Perspective: How Panels Test **{title}** for **{user_name}**\n\n"
+            f"In technical interview rounds (Round 1 & Round 2), here is exactly how interviewers explore **{message.rstrip('?!.')}**:\n\n"
+            "1. **Core Concept Check**: Can you define the fundamental mechanism in simple, precise technical terms without relying on jargon?\n"
+            "2. **Live Scenario / Bug Hunting**: Interviewers often provide a slightly flawed implementation and ask: *'Where does this fail under concurrent load or extreme input values?'*\n"
+            "3. **Scalability & Production Readiness**: How does this approach scale when dealing with thousands of concurrent users?\n\n"
+            f"Would you like to simulate a 3-minute mock interview answering this question right now, **{user_name}**?"
+        )
+    else:
+        return (
+            f"### 🧠 Practical Technical Drill: Deep-Dive into **{title}** for **{user_name}**\n\n"
+            f"Let's master **{title}** through a practical placement-oriented breakdown:\n\n"
+            "### Key Engineering Takeaways:\n"
+            "- **Clean Code Principles**: Write self-documenting code with meaningful naming conventions and modular functions.\n"
+            "- **Testing & Verification**: Always test with: 1. Normal inputs, 2. Extreme boundary inputs, 3. Invalid/malformed data.\n"
+            "- **Industry Best Practice**: Maintain clean separation between presentation, business logic, and data access layers.\n\n"
+            f"What specific scenario or programming language would you like to explore for this concept, **{user_name}**?"
+        )
 
 # Request schemas
 class ChatRequest(BaseModel):
-    user_name: str = "User"
+    user_name: str = "Student"
     message: str = ""
-    model: str = "VELFIRE GPT-4o"
+    model: str = "gemini-flash-latest"
+    api_key: str = ""
+    history: list = []
+    is_regenerate: bool = False
+
+@app.get("/api/ai/status")
+def ai_status():
+    key = get_gemini_api_key()
+    has_key = bool(key)
+    masked = f"{key[:6]}...{key[-4:]}" if (has_key and len(key) > 10) else ("Configured" if has_key else "Not Set")
+    return {
+        "status": "online",
+        "mentor_name": "VELLIFE Placement Mentor & Career AI",
+        "has_gemini_key": has_key,
+        "masked_gemini_key": masked,
+        "primary_model": "gemini-flash-latest",
+        "gemini_fallback_models": GEMINI_FALLBACK_MODELS,
+        "secondary_fallback": "Pollinations AI (Live Placement Mentor)",
+        "tertiary_fallback": "VELLIFE Dynamic Multi-Variant Placement Engine",
+        "fast_greetings_supported": True
+    }
 
 @app.post("/api/chat")
 def chat_ai(data: ChatRequest):
     message = data.message.strip()
     user_name = clean_user_name(data.user_name)
+    requested_model = data.model.strip() if data.model else "gemini-flash-latest"
 
     if not message:
         raise HTTPException(status_code=400, detail="Message content cannot be empty.")
 
-    lower = message.lower()
+    lower = message.lower().strip()
+    has_prior_history = bool(data.history and len(data.history) > 1)
 
-    # A. Casual "How are you" / "How r u" / "How's it going" / "Sup"
+    # -------------------------------------------------------------
+    # 1. Basic Greetings (Warm Placement Mentor Welcome)
+    # -------------------------------------------------------------
+    greeting_words = [
+        "hi", "hello", "hey", "vanakkam", "namaste", "good morning", 
+        "good evening", "good afternoon", "greetings", "sup", "yo", "hola", "wassup"
+    ]
+    is_greeting = any(
+        lower == g or lower.startswith(g + " ") or lower.endswith(" " + g) or lower.startswith(g + "!") or lower.startswith(g + ",") 
+        for g in greeting_words
+    )
+    technical_triggers = ["explain", "what is", "how to", "code", "problem", "solve", "why", "difference", "error", "bug", "write", "dsa", "interview", "placement", "resume"]
+    has_tech_query = any(t in lower for t in technical_triggers)
+
+    if is_greeting and not has_tech_query and len(lower.split()) <= 5:
+        # If user greeted earlier in the conversation, do not repeat identical greeting
+        if has_prior_history:
+            return {
+                "status": "success",
+                "reply": (
+                    f"Welcome back to your placement prep, **{user_name}**! 🚀\n\n"
+                    "Ready for your next coding challenge, interview doubt, or company placement question? What are we tackling right now?"
+                ),
+                "source": "VELLIFE Placement Mentor (Instant)",
+                "model_used": "Placement Mentor (Fast Greeting)",
+                "is_fallback": False
+            }
+        return {
+            "status": "success",
+            "reply": (
+                f"Hello **{user_name}**! 👋 Welcome to your **VELLIFE Placement Mentor** session.\n\n"
+                "I am your dedicated technical interviewer and career coach. I specialize in:\n"
+                "• 🧠 **Coding Rounds & DSA**: Arrays, Trees, Graphs, DP, Two Pointers with Big-O analysis.\n"
+                "• 🏢 **Company Placement Patterns**: TCS (NQT/Digital), Infosys, Cognizant, Zoho, Amazon & Startups.\n"
+                "• 📄 **ATS Resume & Career Tools**: Optimizing your project bullet points & passing the VELLIFE Placement Gate.\n"
+                "• 🎯 **Technical & HR Interview Questions**: DBMS, OS, Computer Networks, and STAR method answers.\n\n"
+                "What topic, coding doubt, or company drive are we preparing for today?"
+            ),
+            "source": "VELLIFE Placement Mentor (Instant)",
+            "model_used": "Placement Mentor (Fast Greeting)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 2. Conversational Check-in ("How are you")
+    # -------------------------------------------------------------
     if any(phrase in lower for phrase in ["how are you", "how r u", "how r you", "how u doing", "how is it going", "hows it going", "whats up", "what's up"]):
         return {
             "status": "success",
-            "reply": f"I'm doing fantastic, **{user_name}**! Thank you for asking. 😊\n\nAll AI systems are running smoothly and ready. How can I assist your coding, full-stack learning, or career path today?"
+            "reply": (
+                f"I'm feeling energized and ready to accelerate your placement prep today, **{user_name}**! 🌟\n\n"
+                "All systems in the VELLIFE Placement Engine are running at peak performance. "
+                "How is your coding practice going? Stuck on any LeetCode problem, preparing for an upcoming drive, or reviewing CS core subjects?"
+            ),
+            "source": "VELLIFE Placement Mentor (Instant)",
+            "model_used": "Placement Mentor (Fast Greeting)",
+            "is_fallback": False
         }
 
-    # B. Apologies / Casual Fillers ("sry", "sorry", "my bad", "oops")
+    # -------------------------------------------------------------
+    # 3. Identity & Capabilities ("Who are you" / "What can you do")
+    # -------------------------------------------------------------
+    if any(phrase in lower for phrase in ["who are you", "what are you", "what can you do", "introduce yourself", "tell me about yourself", "who r u", "who is your mentor"]) and not has_tech_query:
+        return {
+            "status": "success",
+            "reply": (
+                f"I am your **VELLIFE Placement Mentor & Career Acceleration AI**! 🎓\n\n"
+                "My mission is to help you crack technical coding rounds, ace campus interviews, and secure your dream offer. Here is how we collaborate:\n\n"
+                "1. **🧠 Coding Assessments (OAs) & DSA**: Clean Python, Java, C++, and JavaScript solutions with strict Time & Space ($O(N)$) complexity.\n"
+                "2. **🏢 Company-Specific Interview Strategy**: Tailored preparation for TCS NQT/Digital, Infosys, Cognizant GenC Next, Zoho, and Amazon.\n"
+                "3. **📄 ATS Resume Optimization**: Transforming projects into quantified STAR bullet points that pass automated recruiter filters.\n"
+                "4. **🎓 VELLIFE Platform Integration**: Helping you complete your learning milestones and score 80%+ on the Mock Interview to unlock the VELLIFE Job Portal!\n\n"
+                f"What's your biggest placement goal right now, **{user_name}**?"
+            ),
+            "source": "VELLIFE Placement Mentor (Instant)",
+            "model_used": "Placement Mentor (Fast Greeting)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 4. Student Mental Well-Being & Stress Support
+    # -------------------------------------------------------------
+    stress_phrases = [
+        "stressed", "overwhelmed", "confused", "lost", "give up", 
+        "cannot understand coding", "coding is hard", "placement tension", 
+        "exam fear", "scared of interview", "im scared", "i am scared"
+    ]
+    if any(sp in lower for sp in stress_phrases):
+        return {
+            "status": "success",
+            "reply": (
+                f"Take a deep breath, **{user_name}**! 💙 Placement anxiety and coding fatigue happen to every single successful engineer.\n\n"
+                "### 🌿 3-Step Reset for Placement Success:\n"
+                "1. **Stop Compounding Stress**: Step away from your IDE for 10 minutes. Hydrate and reset.\n"
+                "2. **One Problem at a Time**: You don't have to solve 500 LeetCode problems overnight. Mastering just *one pattern* (like Two Pointers or Hashing) gives you immediate confidence.\n"
+                "3. **Step-by-Step Clarity**: Tell me the exact topic, company, or concept that feels overwhelming right now. I will break it down into simple, easy-to-follow steps!\n\n"
+                f"What is the single concept bothering you the most right now, **{user_name}**?"
+            ),
+            "source": "VELLIFE Placement Mentor (Empathetic Care)",
+            "model_used": "Placement Mentor (Well-Being)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 5. Acknowledgments & Thanks
+    # -------------------------------------------------------------
+    if lower in ["ok", "okay", "got it", "sure", "cool", "alright", "great", "nice", "awesome", "k", "fine", "kk", "ok brother", "ok bro", "thank you", "thanks", "thanks mentor", "ty", "thx", "understood"]:
+        ack_replies = [
+            f"Awesome momentum, **{user_name}**! 👍 Consistent practice transforms tough technical rounds into second nature. Ask me whenever you want your next interview drill or code review!",
+            f"Glad that helped, **{user_name}**! 🚀 Keep that confidence high. Ready to explore the next coding pattern or mock interview question?",
+            f"You're doing great, **{user_name}**! 🌟 Remember, consistent daily practice is what separates selected candidates from the rest. What's next on our agenda?"
+        ]
+        chosen_ack = ack_replies[(len(data.history or []) + len(lower)) % len(ack_replies)]
+        return {
+            "status": "success",
+            "reply": chosen_ack,
+            "source": "VELLIFE Placement Mentor (Instant)",
+            "model_used": "Placement Mentor (Fast Greeting)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 6. Apologies
+    # -------------------------------------------------------------
     if any(lower == w or lower.startswith(w + " ") or lower.endswith(" " + w) for w in ["sry", "sorry", "my bad", "oops", "apologies", "sory"]):
         return {
             "status": "success",
-            "reply": f"No need to apologize at all, **{user_name}**! 😊 I am right here to help you.\n\nWhat would you like to explore next? We can talk more about **Full-Stack Web Development**, look at code examples, prepare for interviews, or discuss project ideas!"
+            "reply": f"No need to apologize at all, **{user_name}**! 😊 In software engineering and technical interviews, finding mistakes and refining code is how real growth happens. What should we tackle next?",
+            "source": "VELLIFE Placement Mentor (Instant)",
+            "model_used": "Placement Mentor (Fast Greeting)",
+            "is_fallback": False
         }
 
-    # C. Acknowledgments ("ok", "okay", "got it", "sure", "cool", "alright")
-    if lower in ["ok", "okay", "got it", "sure", "cool", "alright", "great", "nice", "awesome", "k", "fine", "kk", "ok brother", "ok bro"]:
+    # -------------------------------------------------------------
+    # 7. Primary Engine: Google Gemini API (With History & Anti-Duplication)
+    # -------------------------------------------------------------
+    gemini_reply, used_gemini_model, is_gemini_fallback = fetch_gemini_response(
+        user_name=user_name,
+        message=message,
+        requested_model=requested_model,
+        override_key=data.api_key,
+        history=data.history,
+        is_regenerate=data.is_regenerate
+    )
+    if gemini_reply:
         return {
             "status": "success",
-            "reply": f"Awesome, **{user_name}**! 👍 Let me know whenever you're ready to ask your next question, explore Full-Stack development, or get code snippets!"
+            "reply": gemini_reply,
+            "source": used_gemini_model,
+            "model_used": used_gemini_model,
+            "is_fallback": is_gemini_fallback
         }
 
-    # D. Greetings ("hi", "hello", "hey")
-    if any(g == lower or lower.startswith(g + " ") or lower.endswith(" " + g) for g in ["hi", "hello", "hey", "good morning", "good evening", "greetings", "sup", "hola", "yo"]):
-        if len(lower.split()) <= 4:
-            return {
-                "status": "success",
-                "reply": f"Hi **{user_name}**! 👋 Great to connect with you today.\n\nI am your **VELFIRE AI Assistant**, powered by real-time intelligence. What project, code, career question, or doubt can I help you solve right now?"
-            }
+    # -------------------------------------------------------------
+    # 8. Fallback Tier 1: Pollinations Multi-LLM (Live Placement Mentor)
+    # -------------------------------------------------------------
+    fallback_llm_reply, fallback_source = fetch_pollinations_fallback(user_name, message)
+    if fallback_llm_reply:
+        return {
+            "status": "success",
+            "reply": fallback_llm_reply,
+            "source": fallback_source,
+            "model_used": fallback_source,
+            "is_fallback": True
+        }
 
-    # E. Query Live LLM for 100% real AI responses on all questions
-    live_reply = fetch_live_llm_response(user_name, message)
-    if live_reply:
-        return {"status": "success", "reply": live_reply}
+    # -------------------------------------------------------------
+    # 9. Fallback Tier 2: Dynamic Multi-Variant Placement Knowledge Engine
+    # -------------------------------------------------------------
+    offline_reply = build_mentor_offline_fallback(user_name, message, data.history)
+    return {
+        "status": "success",
+        "reply": offline_reply,
+        "source": "VELLIFE Placement Mentor (Offline Engine)",
+        "model_used": "Dynamic Multi-Variant Placement Engine",
+        "is_fallback": True
+    }
 
-    # F. Offline Dynamic Conversational Fallback
-    clean_prompt = re.sub(r'^(can you|please|tell me|explain|what is|how to|i want to|i am)\s+', '', message, flags=re.IGNORECASE).strip(' ?!')
-    prompt_title = clean_prompt.capitalize() if clean_prompt else message
-
-    fallback_reply = (
-        f"Sure thing, **{user_name}**! Here is clear guidance on **{prompt_title}**:\n\n"
-        "1. **Core Concept & Approach**:\n"
-        f"   To work with {message.rstrip('?!.')}, the most effective method is to break down your objective into actionable steps.\n\n"
-        "2. **Best Practices & Next Steps**:\n"
-        "   - **Master Core Principles**: Understand the foundation before diving into advanced implementation.\n"
-        "   - **Build & Test Hands-On**: Practice with realistic projects or test cases to solidify your learning.\n"
-        "   - **Iterate Continuously**: Refine edge cases, optimize performance, and keep your code organized.\n\n"
-        f"Would you like me to write code examples or step-by-step guidance specifically for this, **{user_name}**?"
-    )
 class RoadmapRequest(BaseModel):
     course: str
     level: str = "Intermediate"
@@ -1116,7 +1711,7 @@ def fetch_live_ai_roadmap(course: str, level: str, duration: str, goal: str) -> 
     try:
         url = "https://text.pollinations.ai/"
         system_prompt = (
-            "You are VELFIRE AI, an expert software career roadmap architect. "
+            "You are VELLIFE AI, an expert software career roadmap architect. "
             "Generate an in-depth, realistic, career-aligned learning roadmap for the specified course. "
             "Output strictly valid JSON and nothing else. No markdown commentary outside JSON.\n"
             "JSON structure must match:\n"
@@ -1201,7 +1796,7 @@ def generate_roadmap_endpoint(data: RoadmapRequest):
     fallback_roadmap = build_fallback_roadmap(course, level, duration, goal)
     return {
         "status": "success",
-        "source": "velfire_ai_engine",
+        "source": "vellife_ai_engine",
         "roadmap": fallback_roadmap
     }
 

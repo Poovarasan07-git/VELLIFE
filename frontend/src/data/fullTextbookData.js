@@ -31,16 +31,16 @@ export const TEXTBOOK_COURSES = {
                 overview: "Understand how web browsers communicate with backend servers over HTTP/HTTPS protocols.",
                 explanation: `The World Wide Web operates on a Client-Server computing model. A client (typically a web browser like Chrome or Firefox) initiates requests for resources, while a server (a remote computer running software like NGINX, Express, or FastAPI) listens for requests, processes business logic, and returns responses.
 
-When a user enters a Web URL (e.g., https://velfire.com/courses), the following steps occur:
-1. **DNS Lookup**: The browser contacts a Domain Name System (DNS) server to translate the human-readable domain name (velfire.com) into a machine IP address (e.g., 192.0.2.1).
+When a user enters a Web URL (e.g., https://vellife.com/courses), the following steps occur:
+1. **DNS Lookup**: The browser contacts a Domain Name System (DNS) server to translate the human-readable domain name (vellife.com) into a machine IP address (e.g., 192.0.2.1).
 2. **TCP/TLS Handshake**: The browser establishes a secure Transmission Control Protocol (TCP) connection and executes a TLS handshake for HTTPS encryption.
 3. **HTTP Request**: The client sends an HTTP GET request containing headers (User-Agent, Authorization, Accept) and payload.
 4. **Server Processing**: The backend server receives the request, queries databases if needed, and formulates an HTTP response.
 5. **HTTP Response**: The server sends back a status code (e.g., 200 OK), response headers (Content-Type: application/json), and payload body (HTML/CSS/JS or JSON).
 6. **Browser Rendering**: The browser parses the HTML markup, builds the Document Object Model (DOM), fetches linked CSS/JS assets, and renders the visual interface.`,
                 whyWeUseIt: "Understanding the request-response lifecycle allows developers to optimize network performance, implement secure authentication, debug API errors, and select proper architectural patterns.",
-                syntax: `// Standard HTTP Request Structure:\nGET /api/v1/courses HTTP/1.1\nHost: api.velfire.com\nUser-Agent: Mozilla/5.0\nAccept: application/json\n\n// Standard HTTP Response Structure:\nHTTP/1.1 200 OK\nContent-Type: application/json\nCache-Control: max-age=3600\n\n{"status": "success", "data": []}`,
-                codeExample: `// Fetching data from a REST API endpoint using Modern Async JavaScript\nasync function fetchCoursePayload() {\n  try {\n    const response = await fetch('https://api.velfire.com/v1/courses', {\n      method: 'GET',\n      headers: {\n        'Content-Type': 'application/json',\n        'Authorization': 'Bearer token_secret_123'\n      }\n    });\n    \n    if (!response.ok) {\n      throw new Error(\`HTTP Error! Status: \${response.status}\`);\n    }\n    \n    const data = await response.json();\n    console.log("Successfully retrieved courses:", data);\n    return data;\n  } catch (error) {\n    console.error("Failed to fetch courses:", error.message);\n  }\n}\n\nfetchCoursePayload();`,
+                syntax: `// Standard HTTP Request Structure:\nGET /api/v1/courses HTTP/1.1\nHost: api.vellife.com\nUser-Agent: Mozilla/5.0\nAccept: application/json\n\n// Standard HTTP Response Structure:\nHTTP/1.1 200 OK\nContent-Type: application/json\nCache-Control: max-age=3600\n\n{"status": "success", "data": []}`,
+                codeExample: `// Fetching data from a REST API endpoint using Modern Async JavaScript\nasync function fetchCoursePayload() {\n  try {\n    const response = await fetch('https://api.vellife.com/v1/courses', {\n      method: 'GET',\n      headers: {\n        'Content-Type': 'application/json',\n        'Authorization': 'Bearer token_secret_123'\n      }\n    });\n    \n    if (!response.ok) {\n      throw new Error(\`HTTP Error! Status: \${response.status}\`);\n    }\n    \n    const data = await response.json();\n    console.log("Successfully retrieved courses:", data);\n    return data;\n  } catch (error) {\n    console.error("Failed to fetch courses:", error.message);\n  }\n}\n\nfetchCoursePayload();`,
                 lineByLineExplanation: [
                   "async function fetchCoursePayload(): Declares an asynchronous function that handles non-blocking network operations.",
                   "await fetch(...): Initiates an HTTP GET request to the specified API endpoint and waits for network response headers.",
@@ -115,7 +115,7 @@ JSON is the lightweight text format used for API data exchange. It consists of K
 - **SessionStorage**: Cleared automatically when the browser tab is closed.`,
                 whyWeUseIt: "REST APIs decouple frontend user interfaces from backend database servers, enabling iOS, Android, and Web clients to consume a single backend server API.",
                 syntax: `// Standard RESTful JSON Payload Response:\n{\n  "status": "success",\n  "count": 2,\n  "data": [\n    { "id": 1, "title": "HTML5 & Web Architecture" },\n    { "id": 2, "title": "Modern CSS & Flexbox" }\n  ]\n}`,
-                codeExample: `// Working with JSON parsing and LocalStorage persistence\nconst userSession = {\n  username: "Alex_Dev",\n  role: "Student",\n  token: "jwt_signed_secret_xyz"\n};\n\n// 1. Serialize object to JSON string & save to LocalStorage\nlocalStorage.setItem("velfire_session", JSON.stringify(userSession));\n\n// 2. Retrieve JSON string & parse back to JavaScript Object\nconst savedSessionString = localStorage.getItem("velfire_session");\nif (savedSessionString) {\n  const parsedSession = JSON.parse(savedSessionString);\n  console.log("Logged in user:", parsedSession.username);\n}`,
+                codeExample: `// Working with JSON parsing and LocalStorage persistence\nconst userSession = {\n  username: "Alex_Dev",\n  role: "Student",\n  token: "jwt_signed_secret_xyz"\n};\n\n// 1. Serialize object to JSON string & save to LocalStorage\nlocalStorage.setItem("vellife_session", JSON.stringify(userSession));\n\n// 2. Retrieve JSON string & parse back to JavaScript Object\nconst savedSessionString = localStorage.getItem("vellife_session");\nif (savedSessionString) {\n  const parsedSession = JSON.parse(savedSessionString);\n  console.log("Logged in user:", parsedSession.username);\n}`,
                 lineByLineExplanation: [
                   "JSON.stringify(userSession): Converts a live JavaScript object into a formatted JSON string for storage.",
                   "localStorage.setItem(key, value): Persists the string key-value pair in browser storage.",
@@ -162,7 +162,7 @@ JSON is the lightweight text format used for API data exchange. It consists of K
                     "Cookies are deleted"
                   ],
                   correctAnswer: 0,
-                  explanation: "DNS translates hostnames (velfire.com) into numerical IP addresses."
+                  explanation: "DNS translates hostnames (vellife.com) into numerical IP addresses."
                 },
                 {
                   id: "mt-2",
@@ -224,7 +224,7 @@ Every valid HTML5 web document begins with a DOCTYPE declaration followed by nes
 - **<h1> to <h6>**: Heading tags representing hierarchical outline levels. \`<h1>\` is the primary topic heading (use only once per page for SEO).`,
                 whyWeUseIt: "HTML provides the raw structural foundation for web browsers to render content. Without clean HTML, search engines cannot index your site and screen readers cannot read content to visually impaired users.",
                 syntax: `<h1>Primary Page Heading (h1)</h1>\n<h2>Section Subheading (h2)</h2>\n<h3>Subsection Heading (h3)</h3>\n<p>Paragraph element wrapping detailed body text.</p>`,
-                codeExample: `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>VELFIRE HTML Textbook</title>\n</head>\n<body>\n  <header>\n    <h1>Welcome to Full Stack Web Development</h1>\n    <p>Build real production web applications from scratch.</p>\n  </header>\n  \n  <main>\n    <section>\n      <h2>Module 1: Web Fundamentals</h2>\n      <p>Understand browsers, DNS, and HTTP protocols.</p>\n    </section>\n  </main>\n</body>\n</html>`,
+                codeExample: `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>VELLIFE HTML Textbook</title>\n</head>\n<body>\n  <header>\n    <h1>Welcome to Full Stack Web Development</h1>\n    <p>Build real production web applications from scratch.</p>\n  </header>\n  \n  <main>\n    <section>\n      <h2>Module 1: Web Fundamentals</h2>\n      <p>Understand browsers, DNS, and HTTP protocols.</p>\n    </section>\n  </main>\n</body>\n</html>`,
                 lineByLineExplanation: [
                   "<!DOCTYPE html>: Signals modern HTML5 parsing engine.",
                   "<head>: Contains non-visual metadata, title, and CSS link imports.",
@@ -270,19 +270,19 @@ Every valid HTML5 web document begins with a DOCTYPE declaration followed by nes
 Hyperlinks connect web documents using the \`<a>\` tag and \`href\` attribute:
 \`\`\`html
 <!-- External Link (opens in new tab) -->
-<a href="https://velfire.com" target="_blank" rel="noopener noreferrer">Visit VELFIRE</a>
+<a href="https://vellife.com" target="_blank" rel="noopener noreferrer">Visit VELLIFE</a>
 
 <!-- Internal Page Link -->
 <a href="/courses.html">View Courses</a>
 
 <!-- Email Link -->
-<a href="mailto:support@velfire.com">Contact Support</a>
+<a href="mailto:support@vellife.com">Contact Support</a>
 \`\`\`
 
 ### 2. Images
 Images are embedded using the self-closing \`<img>\` tag. The \`alt\` attribute is mandatory for accessibility screen readers and image fallback:
 \`\`\`html
-<img src="logo.png" alt="VELFIRE Platform Logo" width="200" height="60" />
+<img src="logo.png" alt="VELLIFE Platform Logo" width="200" height="60" />
 \`\`\`
 
 ### 3. Lists
@@ -366,7 +366,7 @@ Tables display structured data grids using \`<table>\`, \`<tr>\` (row), \`<th>\`
 <form action="/login" method="POST">
   <div>
     <label for="user-email">Email Address:</label>
-    <input type="email" id="user-email" name="email" required placeholder="name@velfire.com" />
+    <input type="email" id="user-email" name="email" required placeholder="name@vellife.com" />
   </div>
   
   <div>
@@ -389,7 +389,7 @@ Semantic tags explicitly declare the meaning of page sections:
 - **<footer>**: Page footer (copyright, policy links).`,
                 whyWeUseIt: "Semantic tags improve Search Engine Optimization (SEO) ranking significantly and allow screen reader software to navigate page structures effortlessly.",
                 syntax: `<form action="url" method="POST">\n  <label for="id">Name:</label>\n  <input type="text" id="id" required />\n  <button type="submit">Submit</button>\n</form>`,
-                codeExample: `<!DOCTYPE html>\n<html lang="en">\n<head><title>Registration</title></head>\n<body>\n  <header>\n    <nav><a href="/">Home</a> | <a href="/courses">Courses</a></nav>\n  </header>\n  \n  <main>\n    <section>\n      <h2>Student Registration</h2>\n      <form action="/api/register" method="POST">\n        <label for="fullname">Full Name:</label>\n        <input type="text" id="fullname" name="fullname" required />\n        \n        <label for="domain">Career Domain:</label>\n        <select id="domain" name="domain">\n          <option value="fullstack">Full Stack Development</option>\n          <option value="data">Data Analytics</option>\n        </select>\n        \n        <button type="submit">Complete Registration</button>\n      </form>\n    </section>\n  </main>\n  \n  <footer><p>&copy; 2026 VELFIRE Platform</p></footer>\n</body>\n</html>`,
+                codeExample: `<!DOCTYPE html>\n<html lang="en">\n<head><title>Registration</title></head>\n<body>\n  <header>\n    <nav><a href="/">Home</a> | <a href="/courses">Courses</a></nav>\n  </header>\n  \n  <main>\n    <section>\n      <h2>Student Registration</h2>\n      <form action="/api/register" method="POST">\n        <label for="fullname">Full Name:</label>\n        <input type="text" id="fullname" name="fullname" required />\n        \n        <label for="domain">Career Domain:</label>\n        <select id="domain" name="domain">\n          <option value="fullstack">Full Stack Development</option>\n          <option value="data">Data Analytics</option>\n        </select>\n        \n        <button type="submit">Complete Registration</button>\n      </form>\n    </section>\n  </main>\n  \n  <footer><p>&copy; 2026 VELLIFE Platform</p></footer>\n</body>\n</html>`,
                 lineByLineExplanation: [
                   "<label for='fullname'>: Binds label text to input id='fullname' so clicking label focuses the input field.",
                   "<select id='domain'>: Creates a native dropdown options menu.",
@@ -737,7 +737,7 @@ Example:
 3. Does not break when columns are inserted or deleted in source tables.`,
                 whyWeUseIt: "XLOOKUP automates table merging across multiple sheets without manual copy-paste errors.",
                 syntax: `=XLOOKUP(Lookup_Val, Lookup_Range, Return_Range, "Not Found")\n=SUMIFS(Sum_Range, Criteria_Range, "Criteria")`,
-                codeExample: `// Formula Example in Excel Grid Sheet:\nCell B2 (Customer ID): 1045\nCell C2 (Formula): =XLOOKUP(B2, Customers[ID], Customers[Email], "No Email Found")\nResult: priya.sharma@velfire.com\n\nCell D2 (Total Spend Formula): =SUMIFS(Orders[Amount], Orders[CustomerID], B2, Orders[Status], "Completed")\nResult: \$4,250.00`,
+                codeExample: `// Formula Example in Excel Grid Sheet:\nCell B2 (Customer ID): 1045\nCell C2 (Formula): =XLOOKUP(B2, Customers[ID], Customers[Email], "No Email Found")\nResult: priya.sharma@vellife.com\n\nCell D2 (Total Spend Formula): =SUMIFS(Orders[Amount], Orders[CustomerID], B2, Orders[Status], "Completed")\nResult: \$4,250.00`,
                 lineByLineExplanation: [
                   "B2: Lookup customer ID value to match.",
                   "Customers[ID]: Array range containing customer keys.",

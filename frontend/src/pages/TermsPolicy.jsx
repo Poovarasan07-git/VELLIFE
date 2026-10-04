@@ -16,7 +16,7 @@ function TermsPolicy({ createdEmail, onAcceptTerms }) {
         
         {/* Header */}
         <div className="terms-header">
-          <div className="terms-logo">VELFIRE</div>
+          <div className="terms-logo">VELLIFE</div>
           <h1>Terms of Service & Privacy Policy</h1>
           <p className="terms-subtitle">
             Please read and accept our policies to finalize your account creation for {createdEmail || "your account"}.
@@ -28,14 +28,14 @@ function TermsPolicy({ createdEmail, onAcceptTerms }) {
           <section className="terms-section">
             <h3>1. Introduction & Acceptance</h3>
             <p>
-              Welcome to <strong>VELFIRE</strong>. By creating an account and using our platform, you agree to be bound by these Terms of Service and Privacy Policy. If you do not agree to these terms, please do not proceed with account usage.
+              Welcome to <strong>VELLIFE</strong>. By creating an account and using our platform, you agree to be bound by these Terms of Service and Privacy Policy. If you do not agree to these terms, please do not proceed with account usage.
             </p>
           </section>
 
           <section className="terms-section">
             <h3>2. Account Registration & Security</h3>
             <p>
-              You are responsible for maintaining the confidentiality of your account credentials (email and password). You agree to notify VELFIRE immediately of any unauthorized access or security breaches concerning your account.
+              You are responsible for maintaining the confidentiality of your account credentials (email and password). You agree to notify VELLIFE immediately of any unauthorized access or security breaches concerning your account.
             </p>
           </section>
 
@@ -49,14 +49,14 @@ function TermsPolicy({ createdEmail, onAcceptTerms }) {
           <section className="terms-section">
             <h3>4. Acceptable Code of Conduct</h3>
             <p>
-              Users must refrain from attempting unauthorized access, disrupting service integrity, or deploying harmful software against the VELFIRE platform. Any violation may result in immediate account suspension.
+              Users must refrain from attempting unauthorized access, disrupting service integrity, or deploying harmful software against the VELLIFE platform. Any violation may result in immediate account suspension.
             </p>
           </section>
 
           <section className="terms-section">
             <h3>5. Service Updates & Amendments</h3>
             <p>
-              VELFIRE reserves the right to update these terms at any time. Continued use of our application following updates constitutes acceptance of the modified terms.
+              VELLIFE reserves the right to update these terms at any time. Continued use of our application following updates constitutes acceptance of the modified terms.
             </p>
           </section>
         </div>

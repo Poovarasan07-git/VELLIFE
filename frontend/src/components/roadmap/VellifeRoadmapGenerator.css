@@ -1,9 +1,9 @@
 /* ==========================================================================
-   VELFIRE ULTRA-PREMIUM OBSIDIAN DARK AI ROADMAP GENERATOR
+   VELLIFE ULTRA-PREMIUM OBSIDIAN DARK AI ROADMAP GENERATOR
    ========================================================================== */
 
 /* Outer Root Canvas: Deep Obsidian Abyss */
-.velfire-roadmap-root {
+.vellife-roadmap-root {
   display: flex;
   flex-direction: column;
   gap: 36px;
@@ -978,7 +978,7 @@
 }
 
 /* Toast Message */
-.velfire-toast {
+.vellife-toast {
   position: fixed;
   bottom: 28px;
   right: 28px;

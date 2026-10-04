@@ -79,8 +79,8 @@ function CurriculumMainView({
       {/* Top Banner Header with Quick Resume Box */}
       <div className="curriculum-hero-banner">
         <div className="hero-text-block">
-          <div className="hero-pill">⚡ VELFIRE Interactive Course Hub</div>
-          <h1 className="hero-heading">VELFIRE Courses</h1>
+          <div className="hero-pill">⚡ VELLIFE Interactive Course Hub</div>
+          <h1 className="hero-heading">VELLIFE Courses</h1>
           <p className="hero-subheading">
             Learn with high-speed interactive modules, step-by-step textbook lessons, and real-world placement projects.
           </p>

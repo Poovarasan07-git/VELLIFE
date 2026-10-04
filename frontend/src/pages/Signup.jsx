@@ -95,11 +95,11 @@ function Signup({ onNavigateToLogin, onSignupSuccess }) {
     <div className="signup-page">
       <div className="signup-container">
         
-        <div className="signup-logo">VELFIRE</div>
+        <div className="signup-logo">VELLIFE</div>
 
         <h1>Create Account</h1>
         <p className="signup-subtitle">
-          Join VELFIRE today to get started
+          Join VELLIFE today to get started
         </p>
 
         {error && (

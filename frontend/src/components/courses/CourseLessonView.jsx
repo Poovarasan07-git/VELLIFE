@@ -88,7 +88,7 @@ function CourseLessonView({
   };
 
   return (
-    <div className="velfire-lesson-interface-container">
+    <div className="vellife-lesson-interface-container">
       {/* Top Header Bar */}
       <div className="lesson-top-header">
         <button className="btn-return-details" onClick={onBackToCourseDetails}>

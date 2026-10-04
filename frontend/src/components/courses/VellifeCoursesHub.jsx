@@ -1,4 +1,4 @@
-// src/components/courses/VelfireCoursesHub.jsx
+// src/components/courses/VellifeCoursesHub.jsx
 import React, { useState, useEffect } from 'react';
 import CoursesMainView from './CoursesMainView';
 import CourseDetailsView from './CourseDetailsView';
@@ -6,7 +6,7 @@ import CourseLessonView from './CourseLessonView';
 import { COURSES_DATA } from '../../data/coursesData';
 import './Courses.css';
 
-function VelfireCoursesHub({ 
+function VellifeCoursesHub({ 
   selectedDomain, 
   onSwitchToRoadmap,
   onBackToChoice 
@@ -22,7 +22,7 @@ function VelfireCoursesHub({
   // Load progress state from localStorage
   const [userProgress, setUserProgress] = useState(() => {
     try {
-      const saved = localStorage.getItem('velfire_course_progress');
+      const saved = localStorage.getItem('vellife_course_progress');
       return saved ? JSON.parse(saved) : {};
     } catch (e) {
       return {};
@@ -32,7 +32,7 @@ function VelfireCoursesHub({
   // Save progress state to localStorage whenever updated
   useEffect(() => {
     try {
-      localStorage.setItem('velfire_course_progress', JSON.stringify(userProgress));
+      localStorage.setItem('vellife_course_progress', JSON.stringify(userProgress));
     } catch (e) {
       console.error('Failed to save progress to localStorage', e);
     }
@@ -117,7 +117,7 @@ function VelfireCoursesHub({
   };
 
   return (
-    <div className="velfire-courses-hub-wrapper">
+    <div className="vellife-courses-hub-wrapper">
       {viewMode === 'main' && (
         <CoursesMainView
           selectedDomain={selectedDomain}
@@ -155,4 +155,4 @@ function VelfireCoursesHub({
   );
 }
 
-export default VelfireCoursesHub;
+export default VellifeCoursesHub;

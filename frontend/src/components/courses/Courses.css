@@ -1,9 +1,9 @@
 /* src/components/courses/Courses.css */
 
 /* ========================================================================= */
-/* --- VELFIRE COURSES HUB WRAPPER (GREEN & BUTTER COLOR MIX) --- */
+/* --- VELLIFE COURSES HUB WRAPPER (GREEN & BUTTER COLOR MIX) --- */
 /* ========================================================================= */
-.velfire-courses-hub-wrapper {
+.vellife-courses-hub-wrapper {
   width: 100%;
   height: 100%;
   display: flex;
@@ -24,7 +24,7 @@
 /* ========================================================================= */
 /* --- MAIN VIEW: HERO BANNER --- */
 /* ========================================================================= */
-.velfire-courses-main-container {
+.vellife-courses-main-container {
   padding: 24px 32px 48px 32px;
   max-width: 1400px;
   margin: 0 auto;
@@ -349,7 +349,7 @@
   gap: 24px;
 }
 
-.velfire-course-card {
+.vellife-course-card {
   background: linear-gradient(145deg, rgba(2, 44, 34, 0.95) 0%, rgba(6, 78, 59, 0.97) 100%);
   border: 2px solid rgba(253, 224, 71, 0.4);
   border-radius: 22px;
@@ -360,7 +360,7 @@
   box-shadow: 0 15px 35px rgba(4, 120, 87, 0.3);
 }
 
-.velfire-course-card:hover {
+.vellife-course-card:hover {
   transform: translateY(-6px);
   border-color: #fde047;
   box-shadow: 0 22px 45px rgba(4, 120, 87, 0.45), 0 0 25px rgba(254, 240, 138, 0.25);
@@ -655,7 +655,7 @@
 /* ========================================================================= */
 /* --- COURSE DETAILS VIEW --- */
 /* ========================================================================= */
-.velfire-course-details-container {
+.vellife-course-details-container {
   padding: 24px 32px 48px 32px;
   max-width: 1400px;
   margin: 0 auto;
@@ -1155,7 +1155,7 @@
 /* ========================================================================= */
 /* --- LESSON INTERFACE VIEW --- */
 /* ========================================================================= */
-.velfire-lesson-interface-container {
+.vellife-lesson-interface-container {
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -1746,8 +1746,8 @@
   .lesson-sidebar {
     display: none;
   }
-  .velfire-courses-main-container,
-  .velfire-course-details-container {
+  .vellife-courses-main-container,
+  .vellife-course-details-container {
     padding: 16px;
   }
   .lesson-content-scroll {
