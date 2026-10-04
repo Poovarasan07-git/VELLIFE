@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
 import VelfireRoadmapGenerator from "../components/roadmap/VelfireRoadmapGenerator";
+import VelfireCoursePlatform from "../components/courses/VelfireCoursePlatform";
 
 function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -688,21 +689,22 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
 
                   {/* CARD 2: VELFIRE COURSE */}
                   <div className="choice-card card-course-choice" onClick={() => { setLearningMode("course"); }}>
-                    <div className="choice-badge badge-course">⏳ Work Starts Soon</div>
+                    <div className="choice-badge badge-course">🎓 Interactive Courses</div>
                     <div className="choice-icon-hero">📚</div>
                     <h3>2. VELFIRE Course</h3>
                     <p>
-                      Work starts soon. Comprehensive domain courses and curriculum modules are under development.
+                      Master <strong>{selectedDomain}</strong> with structured Text Lessons, Recorded Masterclasses, Live Sessions, and Career Tools.
                     </p>
 
                     <div className="choice-bullet-list">
-                      <span>🚀 Launching Soon</span>
-                      <span>📖 Full Syllabus & Notes</span>
-                      <span>💡 Interactive Learning Experience</span>
+                      <span>📖 Structured Text & Code Modules</span>
+                      <span>🎬 Recorded Video Masterclasses</span>
+                      <span>🔴 Live Interactive Sessions</span>
+                      <span>💼 Resume Builder & ATS Analyzer</span>
                     </div>
 
                     <button className="btn-choice-action btn-course-choice">
-                      <span>Open VELFIRE Courses</span>
+                      <span>Open VELFIRE Course</span>
                       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -726,106 +728,17 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
               </div>
             )}
 
-            {/* VELFIRE COURSES - WORK STARTS SOON */}
+            {/* VELFIRE COURSES - FULL INTERACTIVE LEARNING PLATFORM */}
             {learningMode === "course" && (
               <div className="learning-tab-content">
-                <div 
-                  className="velfire-coming-soon-card" 
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minHeight: "52vh",
-                    textAlign: "center",
-                    padding: "48px 24px",
-                    borderRadius: "20px",
-                    background: "linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)",
-                    margin: "24px auto",
-                    maxWidth: "720px"
+                <VelfireCoursePlatform
+                  selectedDomain={selectedDomain}
+                  onSwitchToRoadmap={() => {
+                    setLearningMode("roadmap");
+                    setLearningTab("roadmap");
                   }}
-                >
-                  <div 
-                    style={{
-                      width: "84px",
-                      height: "84px",
-                      borderRadius: "50%",
-                      background: "rgba(255, 107, 0, 0.12)",
-                      border: "1px solid rgba(255, 107, 0, 0.35)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "38px",
-                      marginBottom: "20px",
-                      boxShadow: "0 0 35px rgba(255, 107, 0, 0.25)"
-                    }}
-                  >
-                    🚀
-                  </div>
-                  <h2 
-                    style={{
-                      fontSize: "2.2rem",
-                      fontWeight: 700,
-                      letterSpacing: "-0.5px",
-                      color: "#ffffff",
-                      marginBottom: "12px"
-                    }}
-                  >
-                    work starts soon
-                  </h2>
-                  <p 
-                    style={{
-                      fontSize: "1.05rem",
-                      color: "rgba(255, 255, 255, 0.65)",
-                      maxWidth: "480px",
-                      lineHeight: "1.6",
-                      marginBottom: "28px"
-                    }}
-                  >
-                    Our team is crafting structured, industry-grade modules for this domain. Explore our AI Career Roadmap in the meantime!
-                  </p>
-                  <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
-                    <button
-                      style={{
-                        padding: "12px 24px",
-                        borderRadius: "12px",
-                        background: "linear-gradient(135deg, #ff6b00 0%, #ff8800 100%)",
-                        color: "#fff",
-                        fontWeight: 600,
-                        border: "none",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        fontSize: "0.95rem"
-                      }}
-                      onClick={() => setLearningMode("roadmap")}
-                    >
-                      <span>🗺️ Explore AI Roadmap</span>
-                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                      </svg>
-                    </button>
-                    <button
-                      style={{
-                        padding: "12px 24px",
-                        borderRadius: "12px",
-                        background: "rgba(255, 255, 255, 0.06)",
-                        color: "rgba(255, 255, 255, 0.85)",
-                        fontWeight: 600,
-                        border: "1px solid rgba(255, 255, 255, 0.12)",
-                        cursor: "pointer",
-                        fontSize: "0.95rem"
-                      }}
-                      onClick={() => setLearningMode("choice")}
-                    >
-                      ← Back to Pathways
-                    </button>
-                  </div>
-                </div>
+                  onBackToChoice={() => setLearningMode("choice")}
+                />
               </div>
             )}
       </div>
