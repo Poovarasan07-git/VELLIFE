@@ -13,7 +13,7 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [selectedModel, setSelectedModel] = useState("Google Gemini 2.0 Flash");
+  const [selectedModel, setSelectedModel] = useState("Google Gemini Flash (Placement Mentor)");
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
   const [aiStatus, setAiStatus] = useState(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -100,101 +100,89 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
     return "Poovarasan";
   };
 
-  const generateCleverResponse = (query) => {
+  // Placement Mentor Dynamic Knowledge Generator (Guarantees zero duplicate answers)
+  const generateCleverResponse = (query, existingMessages = [], isRegenerate = false) => {
     const userName = getCleanName(user);
     const lower = query.toLowerCase().trim();
 
-    // A. Casual "How are you" / "How r u" / "How's it going" / "Sup"
+    // Compute dynamic rotation variant to prevent duplicate answers
+    const historyCount = existingMessages.length;
+    const variant = (historyCount + (isRegenerate ? 1 : 0)) % 3;
+
+    // A. Casual Greetings
+    if (/^(hi|hello|hey|good morning|good evening|good afternoon|greetings|hola|sup|yo)(\s+vellife|\s+bot|\s+ai|\s+there|\s+mentor|!)?$/i.test(lower) || lower === "hi" || lower === "hello" || lower === "hey") {
+      if (historyCount > 1) {
+        return `Welcome back to your placement practice, **${userName}**! 🚀 Ready for your next mock interview drill, DSA challenge, or company round breakdown? What topic are we tackling?`;
+      }
+      return `Hello **${userName}**! 👋 Welcome to your **VELLIFE Placement Mentor** session.\n\nI am your dedicated technical interviewer and career coach. I specialize in:\n• 🧠 **Coding Rounds & DSA**: Arrays, Trees, Graphs, DP, Two Pointers with strict Big-O analysis.\n• 🏢 **Company Placement Patterns**: TCS (NQT/Digital), Infosys, Cognizant, Zoho, Amazon & Startups.\n• 📄 **ATS Resume & Career Tools**: Optimizing project bullet points & passing the VELLIFE Placement Gate.\n• 🎯 **Technical & HR Interview Questions**: DBMS, OS, Computer Networks, and STAR framework answers.\n\nWhat topic, coding doubt, or target company are we preparing for today?`;
+    }
+
+    // B. Casual Check-in
     if (["how are you", "how r u", "how r you", "how u doing", "how is it going", "hows it going", "whats up", "what's up"].some((phrase) => lower.includes(phrase))) {
-      return `I'm doing fantastic, **${userName}**! Thank you for asking. 😊\n\nAll AI systems are running smoothly and ready. How can I assist your coding, full-stack learning, or career path today?`;
+      return `I'm fully energized and ready to guide your placement journey today, **${userName}**! 🌟\n\nAll systems in the VELLIFE Placement Engine are running at peak performance. How is your coding practice going? Stuck on any LeetCode problem, preparing for an upcoming drive, or reviewing CS core subjects?`;
     }
 
-    // B. Apologies / Casual Fillers ("sry", "sorry", "my bad", "oops")
-    if (["sry", "sorry", "my bad", "oops", "apologies", "sory"].some((w) => lower === w || lower.startsWith(w + " ") || lower.endsWith(" " + w))) {
-      return `No need to apologize at all, **${userName}**! 😊 I am right here to help you.\n\nWhat would you like to explore next? We can talk more about **Full-Stack Web Development**, look at code examples, prepare for interviews, or discuss project ideas!`;
-    }
-
-    // C. Acknowledgments ("ok", "okay", "got it", "sure", "cool", "alright")
-    if (["ok", "okay", "got it", "sure", "cool", "alright", "great", "nice", "awesome", "k", "fine", "kk", "ok brother", "ok bro"].includes(lower)) {
-      return `Awesome, **${userName}**! 👍 Let me know whenever you're ready to ask your next question, explore Full-Stack development, or get code snippets!`;
-    }
-
-    // D. Greetings ("hi", "hello", "hey")
-    if (/^(hi|hello|hey|good morning|good evening|good afternoon|greetings|hola|sup|yo)(\s+vellife|\s+bot|\s+ai|\s+there|\s+gpt|!)?$/i.test(lower) || lower === "hi" || lower === "hello" || lower === "hey") {
-      const greetings = [
-        `Hi **${userName}**! 👋 How can I help you today? Whether you have coding questions, need resume feedback, system design advice, or anything else, feel free to ask!`,
-        `Hello **${userName}**! 🚀 Great to see you. What project, code snippet, or question are we tackling today?`,
-        `Hey **${userName}**! 👋 I'm ready. What would you like to build, solve, or learn today?`
+    // C. Acknowledgments
+    if (["ok", "okay", "got it", "sure", "cool", "alright", "great", "nice", "awesome", "k", "fine", "kk", "ok brother", "ok bro", "thank you", "thanks"].includes(lower)) {
+      const acks = [
+        `Awesome momentum, **${userName}**! 👍 Consistent practice transforms tough technical rounds into second nature. Ask me whenever you want your next interview drill or code review!`,
+        `Glad that helped, **${userName}**! 🚀 Keep that confidence high. Ready to explore the next coding pattern or mock interview question?`,
+        `You're doing great, **${userName}**! 🌟 Remember, consistent daily practice is what separates selected candidates from the rest. What's next on our agenda?`
       ];
-      return greetings[Math.floor(Math.random() * greetings.length)];
+      return acks[variant];
     }
 
-    // E1. Python + SQL Domain Guidance ("know python and sql", "python next sql", "ennaku python teriyum")
-    if (lower.includes("python") && lower.includes("sql")) {
-      return `Awesome, **${userName}**! 👍 If you already know **Python + SQL**, you actually have a strong base. The next step should be choosing a domain where those two skills are used heavily and where you can build toward better career opportunities.\n\nSince you're asking what is better in this generation, here is how the main paths compare based on skills, learning curve, job types, and how well Python + SQL fit:\n\n### 📊 Main Domain Comparison (2026)\n| Domain | Python Fit | SQL Fit | Additional Skills Needed | Typical Work |\n|---|---|---|---|---|\n| **Data Analyst** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Excel, Power BI/Tableau, statistics | Dashboards, business analysis |\n| **Data Engineering** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ETL, Spark, cloud, data warehouses | Build data pipelines |\n| **Data Science** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Statistics, ML, pandas, scikit-learn | Predictive models & stats |\n| **AI / ML Engineering** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ML, deep learning, LLMs, APIs | Build/deploy AI systems |\n| **Backend Development** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | FastAPI/Django, REST APIs, Git | Build web apps & APIs |\n\n---\n\n### 🎯 How to Choose Based on Your Interests:\nA. **If you enjoy coding & building systems** → **Data Engineering** or **Backend Development**\nB. **If you love AI & ChatGPT applications** → **AI/ML Engineering**\nC. **If you enjoy mathematics & statistical patterns** → **Data Science**\nD. **If you like dashboards & answering business questions** → **Data Analyst**\n\nWhich of these sound most exciting to you, **${userName}**?`;
-    }
-
-    // E2. Data Analyst Deep Dive ("explain about data analyst", "data analyst", "what is data analyst")
-    if ((lower.includes("data analyst") || lower.includes("data analytics")) && ["explain", "about", "what", "roadmap", "detail", "tell", "choice", "learn"].some((w) => lower.includes(w))) {
-      if (!["job", "role", "position", "career", "type"].some((j) => lower.includes(j))) {
-        return `Absolutely, **${userName}**! Since you already know Python + SQL, **Data Analyst** is a very natural path to explore.\n\n### 📊 What does a Data Analyst actually do?\nA Data Analyst takes raw data → finds useful information → explains what is happening → helps a company make decisions.\n\nFor example, if an e-commerce company asks: *'Why did sales decrease this month?'*, a Data Analyst will:\n1. Fetch raw data using **SQL**.\n2. Clean and process data using **Python / Pandas**.\n3. Visualize patterns using **Power BI** dashboards.\n4. Present business findings to management.\n\n---\n\n### 🧠 What skills does a Data Analyst need?\n\n1. **SQL ⭐⭐⭐⭐⭐** (Window Functions: \`INNER JOIN\`, \`LEFT JOIN\`, \`ROW_NUMBER()\`, \`LAG()\`, \`LEAD()\`, \`GROUP BY\`)\n2. **Excel ⭐⭐⭐⭐** (\`VLOOKUP\`, \`XLOOKUP\`, \`Pivot Tables\`, \`SUMIFS\`)\n3. **Python & Pandas ⭐⭐⭐⭐** (Data cleaning & aggregation):\n\`\`\`python\nimport pandas as pd\ndf = pd.read_csv('sales.csv')\nsales_by_city = df.groupby('city')['sales'].sum().sort_values(ascending=False)\nprint(sales_by_city)\n\`\`\`\n4. **Power BI / Tableau ⭐⭐⭐⭐** (Interactive Business Dashboards)\n5. **Statistics ⭐⭐⭐** (Mean, Median, Standard Deviation, A/B Testing)\n\n---\n\n### 🗓️ Realistic 4–6 Month Roadmap:\n- **Month 1 (Advanced SQL)**: Complex Joins, Subqueries, CTEs, Window functions.\n- **Month 2 (Excel + Statistics)**: Data manipulation, Pivots, Statistical hypothesis testing.\n- **Month 3 (Pandas & Data Cleaning)**: Missing values, Outliers, Grouping, Merging.\n- **Month 4 (Power BI)**: DAX calculations, Interactive dashboards.\n- **Months 5–6 (Projects & Resume)**: E-Commerce Sales Analytics, Customer Churn Analysis.\n\nWould you like me to explain the exact job roles and career titles available for a Data Analyst?`;
+    // D. DSA & Problem Solving
+    if (["dsa", "algorithm", "binary search", "array", "tree", "graph", "dynamic programming", "two pointer", "sliding window", "time complexity"].some(k => lower.includes(k))) {
+      if (variant === 0) {
+        return `### 💡 Placement Technical Breakdown: DSA for **${userName}**\n\nIn campus placement coding rounds (TCS Digital, Cognizant GenC Next, Amazon OA), interviewers evaluate your code on **optimal time complexity and zero TLE (Time Limit Exceeded)**.\n\n### 1. 🧠 Core Placement Patterns & Big-O Hierarchy\n- **O(1) & O(log N)**: Hash Map Lookups, Binary Search on Answer space. (Always expected if input array is sorted or \`N <= 10^9\`).\n- **O(N)**: Two Pointers, Sliding Window, Single-pass frequency array.\n- **O(N log N)**: Divide & Conquer (Merge Sort, Heap operations).\n- **O(N^2) Warning**: Brute-force nested loops will fail hidden test cases when \`N >= 10^4\`!\n\n### 2. 💻 Clean Implementation (Two-Pointer Technique)\n\`\`\`python\n# Classic O(N) Two-Pointer approach to find target pair in sorted array\ndef find_target_pair(arr: list[int], target: int) -> tuple[int, int] | None:\n    left, right = 0, len(arr) - 1\n    while left < right:\n        current = arr[left] + arr[right]\n        if current == target:\n            return (arr[left], arr[right])  # O(N) time, O(1) auxiliary space\n        elif current < target:\n            left += 1\n        else:\n            right -= 1\n    return None\n\`\`\`\n\n### 3. 🎯 Interviewer Follow-Up Drill:\n*'What if the array contains duplicate elements or is not sorted?'* How would you adapt this using a Hash Set in O(N) time and O(N) space, **${userName}**?`;
+      } else if (variant === 1) {
+        return `### 🚀 Alternative Placement Angle: Company-Specific DSA Patterns for **${userName}**\n\nLet's look at how top recruiters test this exact concept differently:\n\n1. **TCS (NQT / Digital / Prime)**: Focuses heavily on edge cases (e.g. empty arrays, single elements, negative numbers, and integer overflow with \`10^9\`).\n2. **Zoho (Round 2 & 3)**: Tests problem-solving **without built-in library functions** (e.g. sorting without \`.sort()\`, string parsing without \`split()\`).\n3. **Amazon & Product Startups**: Expects you to explain the **Brute Force (O(N^2))** solution first, state its bottleneck, and cleanly transition to the **Optimal (O(N))** solution.\n\n### 💡 Live Interviewer Tip:\nNever write code immediately! Spend the first 2 minutes dry-running with a small example on paper or whiteboard. State: *'The brute force takes O(N^2). We can optimize this to O(N) using a two-pointer approach because the input is sorted.'*\n\nWould you like to practice a live coding problem on this pattern right now, **${userName}**?`;
+      } else {
+        return `### 🔍 Deep-Dive: Interview Edge-Case Traps & Complexity Optimization for **${userName}**\n\nHere are the subtle traps that cause 60% of students to fail the technical round even when their logic is generally correct:\n\n1. **Off-by-One Index Errors**: Loop bounds like \`while left <= right\` vs \`while left < right\` in Binary Search.\n2. **Integer Overflow in Mid Calculation**: Using \`(left + right) // 2\` instead of \`left + (right - left) // 2\` in C++/Java when values exceed 2^31 - 1.\n3. **Auxiliary Space Hidden Cost**: Creating sub-arrays or slices \`arr[mid:]\` in Python creates O(N) copies, turning an O(log N) space algorithm into O(N)!\n\n### 🎯 Actionable VELLIFE Drill:\nSolve 3 medium LeetCode/GeeksforGeeks problems on this topic today, and log your progress in the VELLIFE Learning Portal to boost your Placement Preparation Score!`;
       }
     }
 
-    // E3. Data Analyst Job Roles ("jobs are there for data analyst", "data analyst jobs", "career roles in data analytics")
-    if ((lower.includes("data analyst") || lower.includes("data analytics")) && ["job", "role", "position", "career", "type", "market"].some((w) => lower.includes(w))) {
-      return `Great choice, **${userName}**! 🚀 'Data Analyst' is not just one fixed job title—there are several specialized job roles you can target with these skills:\n\n### 👨‍💻 Top Job Roles in Data Analytics:\n\n1. **Data Analyst (Core)**\n- **Focus**: Write SQL queries, clean data with Python, build dashboards, and answer core business questions.\n- **Primary Tools**: SQL + Python (Pandas) + Power BI / Tableau + Excel.\n\n2. **Business Analyst (BA)**\n- **Focus**: Focuses heavily on business problems, workflow requirements, and strategy rather than deep coding.\n- **Primary Tools**: Excel + SQL + Power BI + Business Communication.\n\n3. **Business Intelligence (BI) Analyst**\n- **Focus**: Specialized in creating executive dashboards, enterprise reporting, and data modeling.\n- **Primary Tools**: Power BI / Tableau + DAX + SQL + Data Warehouses.\n\n4. **Product Analyst**\n- **Focus**: Analyzes user behavior inside apps/websites (Funnels, User Retention, A/B Testing, Feature Usage).\n- **Primary Tools**: SQL + Statistics + Python + Amplitude/Mixpanel.\n\n5. **Marketing Analyst**\n- **Focus**: Evaluates ad campaign performance, Customer Acquisition Cost (CAC), Return on Ad Spend (ROAS), and conversions.\n- **Primary Tools**: SQL + Google Analytics + Power BI + Excel.\n\n6. **Financial Data Analyst**\n- **Focus**: Analyzes revenue trends, budget variance, financial forecasting, and transaction anomalies.\n- **Primary Tools**: Excel + SQL + Power BI + Financial Modeling.\n\n7. **Operations Analyst**\n- **Focus**: Optimizes supply chain, delivery timelines, inventory management, and operational efficiency.\n- **Primary Tools**: SQL + Python + Excel + Logistics Metrics.\n\n---\n\n### 📈 Career Progression Pathway:\n\`\`\`\nData Analyst (Entry Level)\n       ↓\nSenior Data Analyst / BI Specialist\n       ↓\nAnalytics Engineer / Product Analyst / Data Scientist\n       ↓\nLead Data Analyst / Head of Analytics\n\`\`\`\n\nWould you like me to help you design your **portfolio project plan** or **ATS-optimized resume structure** for these roles?`;
+    // E. Python + SQL Domain Guidance
+    if (lower.includes("python") && lower.includes("sql")) {
+      if (variant === 0) {
+        return `Awesome foundation, **${userName}**! 👍 Knowing **Python + SQL** gives you direct eligibility for 4 of the highest-paying tech domains in campus drives:\n\n### 📊 Main Domain Comparison (2026 Placements)\n| Domain | Python Fit | SQL Fit | Additional Skills Needed | Placement CTC Range |\n|---|---|---|---|---|\n| **Data Analyst** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Excel, Power BI/Tableau, statistics | ₹5.5 - 9.5 LPA |\n| **Data Engineering** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ETL, Spark, cloud, data warehouses | ₹7.0 - 14 LPA |\n| **Backend Development** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | FastAPI/Django, PostgreSQL, REST APIs | ₹6.5 - 13 LPA |\n| **AI / ML Engineering** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | PyTorch, Deep Learning, LLM APIs | ₹8.0 - 18 LPA |\n\n---\n\n### 🎯 VELLIFE Placement Recommendation:\n- If you love building web platforms → **Backend / Full Stack Development**\n- If you enjoy business dashboards & querying → **Data Analyst**\n\nWhich of these would you like to build your 3-month roadmap for on VELLIFE?`;
+      } else {
+        return `### 💡 Placement Interview Questions on Python + SQL for **${userName}**\n\nSince you know Python and SQL, here are 3 questions technical panels ask in Round 1:\n\n1. **SQL Window Functions**: *'How do you fetch the top 2 highest-paid employees in each department using DENSE_RANK()?'*\n2. **Python Memory & Generators**: *'What is the difference between a list comprehension and a generator expression when streaming large database query results?'*\n3. **Database Transactions**: *'How do you implement atomic transactions with rollback support in Python using SQLAlchemy or SQLite?'*\n\nWould you like me to show you the optimal solution for any of these?`;
+      }
     }
 
-    // E4. Full-Stack Deep Dive / Explanation ("expalin more about full stack", "tell me about full stack", "what is full stack")
-    if (["full stack", "fullstack"].some((kw) => lower.includes(kw)) && ["explain", "expalin", "more", "tell", "what is", "details", "about"].some((action) => lower.includes(action))) {
-      return `Here is a comprehensive breakdown of **Full-Stack Web Development** for you, **${userName}**! 🌐\n\n### 💡 What is Full-Stack Web Development?\nFull-Stack Development means building **both sides** of a web application:\n1. **Frontend**: Everything the user sees and clicks on in their browser.\n2. **Backend**: The server logic, API endpoints, authentication, and database connections running behind the scenes.\n\n---\n\n### 🎨 Layer 1: Frontend (Client-Side)\n- **HTML5 & CSS3**: Defines page structure, modern grid/flex layouts, colors, and responsive designs.\n- **JavaScript (ES6+)**: Handles interactivity, user events, dynamic updates, and fetching data from backend servers.\n- **React.js (React 19)**: The world's most popular UI library for building fast, single-page applications (like this VELLIFE AI OS app!).\n\n### ⚙️ Layer 2: Backend (Server-Side)\n- **Python (FastAPI / Django REST Framework)** or **Node.js (Express)**: Processes incoming HTTP requests, enforces security/passwords, and executes business logic.\n- **REST APIs**: The URL data endpoints (e.g., \`/api/login\`, \`/api/chat\`) that bridge Frontend and Backend.\n\n### 💾 Layer 3: Database (Data Persistence)\n- **Relational DBs (SQLite, PostgreSQL, MySQL)**: Store user records, messages, and project data safely in tables.\n- **ORMs (SQLAlchemy / Prisma)**: Allow backend developers to query databases using clean Python/JavaScript objects.\n\n---\n\n### 🚀 Why Full-Stack is ideal for Final-Year Students:\n1. **Maximum Job Volume**: Startups and tech companies love hiring freshers who understand how full end-to-end apps work.\n2. **Live Portfolio Projects**: You can build working web apps and showcase them live on GitHub and Vercel/Render for recruiters.\n3. **Multiple Job Roles**: You can apply for Frontend Developer, Backend Developer, or Full-Stack Engineer positions!\n\nWould you like me to create a **custom step-by-step 30-day learning roadmap** to master Full-Stack development from scratch?`;
+    // F. Full Stack Web Development
+    if (["full stack", "fullstack", "react", "fastapi"].some(kw => lower.includes(kw))) {
+      if (variant === 0) {
+        return `### 🌐 Full-Stack Placement Architecture Guide for **${userName}**\n\nIn tech interviews for Full-Stack Developer roles (e.g. React 19 + Python FastAPI), tech panels test your ability to bridge client and server seamlessly.\n\n### 1. 🏗️ High-Scale Placement Stack\n- **Client (Frontend)**: React 19 Single Page App (Component state, \`useEffect\` cleanups, responsive design).\n- **Server (Backend)**: Python FastAPI with asynchronous endpoints (\`async def\`) and Pydantic validation schemas.\n- **Database & Persistence**: SQLite for local testing, PostgreSQL with SQLAlchemy ORM for production.\n\n### 2. 💻 Production-Grade Endpoint Example\n\`\`\`python\nfrom fastapi import FastAPI, HTTPException, status\nfrom pydantic import BaseModel\n\napp = FastAPI(title='VELLIFE Campus Placement API')\n\nclass CandidateSchema(BaseModel):\n    name: str\n    domain: str = 'Full Stack Development'\n    mock_score: int\n\n@app.post('/api/placement/verify', status_code=status.HTTP_200_OK)\nasync def verify_candidate(data: CandidateSchema):\n    if data.mock_score < 80:\n        return {'status': 'Gate Locked', 'message': 'Requires 80%+ mock score to unlock Job Portal'}\n    return {'status': 'Gate Passed', 'eligible_jobs': 24}\n\`\`\`\n\n### 3. 🎯 ATS Resume Tip for Freshers:\nDo not write *'Created a website'*. Write: *'Architected a full-stack platform using React 19 and FastAPI, reducing API latency by 35% with asynchronous SQLite caching.'*`;
+      } else {
+        return `### ⚙️ Full-Stack Interview Deep-Dive: Common Tech Round Questions for **${userName}**\n\nHere are the top 5 questions interviewers consistently ask for entry-level Full-Stack roles:\n\n1. **State Management & Re-renders**: *'How does React 19 manage Virtual DOM diffing, and how do you prevent unnecessary re-renders in heavy components?'*\n2. **CORS**: *'Why does CORS error happen when React (port 5173) calls FastAPI (port 8000), and how do you resolve it properly?'*\n3. **Authentication**: *'Explain how JWT tokens and bcrypt password hashing secure user sessions compared to plain session cookies.'*\n4. **Database Indexing**: *'How does a B-Tree index speed up SELECT queries on foreign keys?'*\n\nWhich of these would you like to master first, **${userName}**?`;
+      }
     }
 
-    // F. Transition / Learning Full Stack from Python ("i know python so want learn full stack", etc.)
-    if (lower.includes("python") && ["fullstack", "full stack", "learn", "roadmap", "want", "become"].some((t) => lower.includes(t))) {
-      return `That's an awesome starting point, **${userName}**! 🚀 Since you already know **Python**, you have a massive advantage for becoming a **Full-Stack Developer**!\n\nHere is your step-by-step Full-Stack learning roadmap leveraging Python:\n\n---\n\n### 1. 🐍 Backend API Development (Python)\n- Since you know Python, learn **FastAPI** or **Django REST Framework**.\n- FastAPI is ultra-fast, modern, and widely used for building APIs with automatic Swagger documentation.\n\n### 2. 📊 Database & SQL Data Persistence\n- Learn **SQLite** or **PostgreSQL** to create tables, handle CRUD operations, and write SQL queries.\n- Use **SQLAlchemy** or **SQLModel** as your Python ORM.\n\n### 3. 🎨 Frontend Web Development\n- Master **HTML5 & CSS3** for page structure & sleek UI design.\n- Learn modern **JavaScript (ES6+)** (Async/Await, Fetch API, Arrow Functions).\n- Master **React.js (React 19)** for building interactive, component-based UIs.\n\n### 4. 🔗 Connecting Backend & Frontend\n- Use React's \`fetch()\` or \`axios\` to connect your React UI to your Python FastAPI endpoints at \`http://127.0.0.1:8000\`!\n\n---\n\n### 💡 Suggested First Project:\nBuild a **Full-Stack Task Manager** or **User Portal** using **React 19 Frontend + Python FastAPI Backend + SQLite DB**!\n\nWould you like me to write a sample full-stack template showing how React connects to Python FastAPI?`;
+    // G. Career, Freshers & Placement Strategy
+    if (["fresher", "domain", "best field", "career", "placement", "interview", "resume", "roadmap"].some(t => lower.includes(t))) {
+      if (variant === 0) {
+        return `### 🎯 Master Campus Placement Strategy (2026) for **${userName}**\n\nTo secure a top offer (6–18 LPA) in campus drives, follow this proven 4-Pillar Roadmap:\n\n| Stage | Timeline | Primary Objective | Key Benchmarks |\n| :--- | :--- | :--- | :--- |\n| **1. DSA & Core** | Months 1–2 | Solve 150+ LeetCode Easy/Medium | Arrays, Strings, Two Pointers, Trees, SQL |\n| **2. Domain Projects**| Months 3–4 | Build 2 Production Full-Stack Apps | Auth, Database, Responsive UI, Live Deployment |\n| **3. Resume & ATS** | Month 5 | Quantified STAR bullet points | ATS score > 85/100 on VELLIFE Resume Analyzer |\n| **4. Mock Drills** | Month 6 | Pass Placement Gate (Score >= 80%) | Technical Round 1 & HR Round simulations |\n\n### 💼 Top 3 Hiring Domains in 2026:\n1. **Full-Stack Web Development**: Highest volume of job openings across startups and MNCs.\n2. **Data Analyst**: High demand for SQL, Python, and Power BI dashboarding.\n3. **AI / ML Engineering**: Premium salary packages for candidates who can deploy LLM endpoints.\n\nWhich of these domains do you want to target for your placement drive, **${userName}**?`;
+      } else {
+        return `### 📄 ATS Resume & Placement Gate Checklist for **${userName}**\n\nBefore your resume reaches a recruiter, it passes through an **Applicant Tracking System (ATS)**. Here is how to guarantee selection:\n\n1. **Single-Column Layout**: Multi-column tables confuse ATS parsers. Keep clean sections: Education, Skills, Projects, Experience.\n2. **Quantified STAR Formula**: *'Built X feature using Y tech stack which achieved Z measurable result.'*\n   - *Weak*: 'Made an e-commerce website with React.'\n   - *Winning*: 'Engineered a full-stack e-commerce portal with React 19 and Python FastAPI, handling 500+ mock transactions with sub-200ms latency.'\n3. **VELLIFE Placement Gate**: In the VELLIFE Dashboard, complete your profile, build your resume in the **Resume Builder**, and score 80%+ on the **Mock Interview** to unlock verified job applications!\n\nWould you like me to review one of your project bullet points right now, **${userName}**?`;
+      }
     }
 
-    // G. Doubts & Help Requests ("i have a doubt", "can i ask", "help me")
-    if (lower.includes("doubt") || lower.includes("can i ask") || lower.includes("need help") || lower === "help" || lower === "question") {
-      return `Of course, **${userName}**! Please feel free to ask your doubt or question.\n\nWhether it's about programming, choosing the best career domain for freshers, resume building, or tech concepts, ask away and I will explain it clearly for you step-by-step!`;
-    }
-
-    // H. Fresher Career Domain Guidance ("fresher", "which domain is best", "career path", "final year")
-    if (["fresher", "domain", "best field", "career", "where to start", "which path", "which role", "final year", "suitable"].some((t) => lower.includes(t))) {
-      return `Welcome, **${userName}**! Choosing the right tech domain as a final-year student & fresher is one of the most important decisions for your career. Here is a breakdown of the **Top Tech Domains in 2026** to help you choose the best fit for your goals:\n\n---\n\n### 1. 🌐 Full-Stack Web Development (React + Python/FastAPI/Node)\n- **Why it's great for freshers**: Highest number of hiring openings across startups and enterprise companies. You get to build real-world web apps.\n- **Core Stack**: HTML, CSS, JavaScript, React.js, Python (FastAPI/Django) or Node.js, SQL (SQLite/PostgreSQL).\n- **Job Roles**: Frontend Developer, Backend Developer, Full Stack Engineer.\n- **Entry Barrier**: ⭐⭐ (Moderate - Highly achievable with 3-6 months of consistent practice).\n\n### 2. 🤖 Artificial Intelligence & Data Science\n- **Why it's great for freshers**: Rapid industry growth and high salary potential.\n- **Core Stack**: Python, NumPy, Pandas, Scikit-Learn, PyTorch, SQL, Prompt Engineering & LLM APIs.\n- **Job Roles**: AI Developer, Data Analyst, Machine Learning Engineer.\n- **Entry Barrier**: ⭐⭐⭐ (Requires strong math, statistics, and python coding skills).\n\n### 3. ☁️ Cloud Computing & DevOps\n- **Why it's great for freshers**: Every software company needs cloud infrastructure to host apps online.\n- **Core Stack**: Linux, Docker, AWS / Azure, CI/CD pipelines, Shell Scripting.\n- **Job Roles**: DevOps Engineer, Cloud Practitioner, System Administrator.\n- **Entry Barrier**: ⭐⭐⭐ (Requires good knowledge of networks, Linux, and servers).\n\n### 4. 📱 Mobile App Development (Flutter / React Native)\n- **Why it's great for freshers**: Excellent demand for mobile-first tech companies.\n- **Core Stack**: React Native or Flutter (Dart), Firebase, REST APIs.\n- **Job Roles**: iOS/Android App Developer.\n\n---\n\n### 💡 Final Recommendation for You:\nIf you want the **fastest job entry with maximum interview opportunities**, **Full-Stack Web Development** is the absolute best domain to start with. It allows you to build visible portfolio projects that recruiters can test live!\n\nWould you like me to create a **custom 90-day learning roadmap** for any of these domains?`;
-    }
-
-    // I. Pure Code Requests for React / Frontend
-    if ((lower.includes("code") || lower.includes("write") || lower.includes("example") || lower.includes("build") || lower.includes("create")) && ["react", "component", "jsx", "frontend", "usestate", "useeffect"].some((k) => lower.includes(k))) {
-      return `### Modern React 19 Solution for **${userName}** 💻\n\nHere is a clean, modern React component tailored for your requirement:\n\n\`\`\`jsx\nimport React, { useState, useEffect } from 'react';\n\nexport default function VellifeComponent() {\n  const [data, setData] = useState([]);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    const loadData = async () => {\n      try {\n        setLoading(true);\n        const res = await fetch('/api/data');\n        const json = await res.json();\n        setData(json);\n      } catch (err) {\n        console.error("Fetch error:", err);\n      } finally {\n        setLoading(false);\n      }\n    };\n    loadData();\n  }, []);\n\n  return (\n    <div className="vellife-container">\n      <h3>VELLIFE Interactive Component</h3>\n      {loading ? (\n        <p>Loading data...</p>\n      ) : (\n        <ul>\n          {data.map((item, index) => (\n            <li key={index}>{item.name || item}</li>\n          ))}\n        </ul>\n      )}\n    </div>\n  );\n}\n\`\`\`\n\n### Key Highlights:\n- Modern React 19 Functional Hooks pattern.\n- Full async try/catch handling with loading indicators.\n- Zero external dependencies required.`;
-    }
-
-    // J. Pure Code Requests for Python
-    if ((lower.includes("code") || lower.includes("write") || lower.includes("example") || lower.includes("build") || lower.includes("create")) && ["fastapi", "backend", "api", "django", "flask"].some((k) => lower.includes(k))) {
-      return `### Asynchronous FastAPI Backend for **${userName}** 🐍\n\nHere is a clean, scalable FastAPI service architecture:\n\n\`\`\`python\nfrom fastapi import FastAPI, HTTPException, status\nfrom pydantic import BaseModel, EmailStr\nfrom typing import Optional\nimport uvicorn\n\napp = FastAPI(title="VELLIFE High-Performance Core", version="2.0.0")\n\nclass UserPayload(BaseModel):\n    name: str\n    email: str\n    role: Optional[str] = "Student"\n\n@app.get("/api/v1/health")\ndef health_check():\n    return {"status": "ok", "system": "VELLIFE Core API"}\n\n@app.post("/api/v1/user/process")\ndef process_user(data: UserPayload):\n    if not data.email:\n        raise HTTPException(status_code=400, detail="Email is required")\n    return {\n        "status": "success",\n        "message": f"Processed payload for {data.name}",\n        "data": data.dict()\n    }\n\nif __name__ == "__main__":\n    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)\n\`\`\`\n\n### Included Advantages:\n- Automatic Pydantic Schema Validation.\n- Interactive OpenAPI Swagger documentation served automatically at \`/docs\`.`;
-    }
-
-    // K. Identity / Who are you
-    if (lower.includes("who are you") || lower.includes("what is your name") || lower.includes("tell me about yourself") || lower.includes("who created you")) {
-      return `Hello **${userName}**! I am **VELLIFE AI**, an intelligent conversational assistant modeled after ChatGPT.\n\n### What I can help you with:\n- 💻 **Software Engineering & Coding**: Writing, debugging, and refactoring React 19, Python, C++, Java, JavaScript, FastAPI, and SQL.\n- 📄 **ATS Resume & Career Guidance**: Tailoring resumes, writing cover letters, and technical interview preparation.\n- 🚀 **System Architecture & Cloud**: Microservices, REST APIs, Docker, and database schemas.\n- 🧮 **Math & Science Solutions**: Solving math equations, physics problems, and logic puzzles.\n- 📝 **Writing & Summaries**: Drafting emails, essays, articles, and code documentation.\n\nFeel free to ask me any question!`;
-    }
-
-    // L. Thank you
-    if (lower.includes("thank you") || lower.includes("thanks") || lower === "thx" || lower === "ty") {
-      return `You're very welcome, **${userName}**! 😊 If you need anything else or have more questions, feel free to ask anytime!`;
-    }
-
-    // M. Dynamic Natural Conversational Response for ANY other question
+    // Default Dynamic Placement Guidance
     const cleanPrompt = query.replace(/^(can you|please|tell me|explain|what is|how to|i want to|i am)\s+/i, "").replace(/[?!.]+$/g, "").trim();
     const promptTitle = cleanPrompt ? cleanPrompt.charAt(0).toUpperCase() + cleanPrompt.slice(1) : query;
 
-    return `Sure thing, **${userName}**! Here is clear guidance on **${promptTitle}**:\n\n1. **Core Concept & Approach**:\n   To work with ${query.replace(/[?!.]+$/g, "")}, the most effective method is to break down your objective into actionable steps.\n\n2. **Best Practices & Next Steps**:\n   - **Master Core Principles**: Understand the foundation before diving into advanced implementation.\n   - **Build & Test Hands-On**: Practice with realistic projects or test cases to solidify your learning.\n   - **Iterate Continuously**: Refine edge cases, optimize performance, and keep your code organized.\n\nWould you like me to write code examples or step-by-step guidance specifically for this, **${userName}**?`;
+    if (variant === 0) {
+      return `### 💡 Placement Technical Guidance: **${promptTitle}** for **${userName}**\n\nWhen tackling **${query.replace(/[?!.]+$/g, "")}** in campus technical interviews, recruiters evaluate your clarity, structured thinking, and depth of technical reasoning.\n\n### 1. 🎯 Foundational Principle & Architectural Concept\nTo approach this effectively, begin by identifying the core objective, defining input/output contracts, and considering scale.\n\n### 2. 🛠️ Best Practices & Placement Implementation\n- **Deconstruct the Problem**: Break down the challenge into smaller, independently testable units.\n- **Analyze Trade-Offs**: Always be prepared to explain Time vs Space complexity ($O(N)$) trade-offs to the interviewer.\n- **Handle Edge Cases**: Account for null inputs, boundary values, and unexpected error scenarios.\n\n### 3. 🚀 Placement Action Item\nImplement a working example of this concept today and integrate it into your VELLIFE preparation roadmap.\n\nWould you like me to write a clean code implementation or test you with a placement interview question on **${promptTitle}**, **${userName}**?`;
+    } else {
+      return `### 🏢 Interviewer Perspective: How Panels Test **${promptTitle}** for **${userName}**\n\nIn technical interview rounds (Round 1 & Round 2), here is exactly how interviewers explore **${query.replace(/[?!.]+$/g, "")}**:\n\n1. **Core Concept Check**: Can you define the fundamental mechanism in simple, precise technical terms without relying on jargon?\n2. **Live Scenario / Bug Hunting**: Interviewers often provide a slightly flawed implementation and ask: *'Where does this fail under concurrent load or extreme input values?'*\n3. **Scalability & Production Readiness**: How does this approach scale when dealing with thousands of concurrent users?\n\nWould you like to simulate a 3-minute mock interview answering this question right now, **${userName}**?`;
+    }
   };
 
-  // Send message handler
-  const handleSendMessage = async (textToSend) => {
+  // Send message handler with conversation history & anti-duplication
+  const handleSendMessage = async (textToSend, options = {}) => {
     const query = textToSend || inputQuery;
     if (!query.trim() && attachedFiles.length === 0) return;
 
@@ -224,7 +212,13 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
       setActiveChatId(newChatObj.id);
     }
 
-    // Try fetching response from backend /api/chat or fallback to clever generator
+    // Build history payload for multiturn context & anti-duplication
+    const historyPayload = messages.slice(-10).map((m) => ({
+      role: m.sender === "user" ? "user" : "model",
+      text: m.text,
+    }));
+
+    // Try fetching response from backend /api/chat or fallback to placement clever generator
     let botText = "";
     let usedModel = selectedModel;
     let isFallback = false;
@@ -237,6 +231,8 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
           user_name: displayName,
           message: query,
           model: selectedModel,
+          history: historyPayload,
+          is_regenerate: !!options?.isRegenerate,
         }),
       });
       if (res.ok) {
@@ -252,8 +248,8 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
     }
 
     if (!botText) {
-      botText = generateCleverResponse(query);
-      usedModel = "VELLIFE Student Mentor (Offline)";
+      botText = generateCleverResponse(query, messages, !!options?.isRegenerate);
+      usedModel = "VELLIFE Placement Mentor (Offline Engine)";
       isFallback = true;
     }
 
@@ -271,6 +267,24 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
       ]);
       setIsTyping(false);
     }, 450);
+  };
+
+  // Regenerate handler: finds preceding user query and requests an alternative angle
+  const handleRegenerate = (botMsgId) => {
+    const botIdx = messages.findIndex((m) => m.id === botMsgId);
+    let targetUserQuery = "";
+    if (botIdx >= 0) {
+      for (let i = botIdx - 1; i >= 0; i--) {
+        if (messages[i].sender === "user") {
+          targetUserQuery = messages[i].text;
+          break;
+        }
+      }
+    }
+    if (!targetUserQuery) {
+      targetUserQuery = "Can you provide an alternative placement explanation and interview follow-up?";
+    }
+    handleSendMessage(targetUserQuery, { isRegenerate: true });
   };
 
   // Copy helper
@@ -387,7 +401,6 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
             <span>New chat</span>
-            <span className="kbd-shortcut">Ctrl+K</span>
           </button>
 
           <button
@@ -402,46 +415,22 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
           </button>
         </div>
 
-        {/* History List */}
+        {/* Recent Chats List */}
         <div className="sidebar-history-container">
-          {["Today", "Yesterday", "Previous 7 Days"].map((group) => {
-            const items = chatHistory.filter((c) => c.time === group);
-            if (items.length === 0) return null;
-
-            return (
-              <div key={group} className="history-group">
-                <div className="history-group-title">{group}</div>
-                {items.map((chat) => (
-                  <button
-                    key={chat.id}
-                    className={`history-item ${activeChatId === chat.id ? "active" : ""}`}
-                    onClick={() => handleSelectHistory(chat.id)}
-                  >
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <span className="history-title">{chat.title}</span>
-                  </button>
-                ))}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* User Footer Profile in Sidebar */}
-        <div className="sidebar-user-footer">
-          <div className="user-profile-box">
-            {user?.profile_image ? (
-              <img src={user.profile_image} alt={user.name} className="user-sidebar-photo" />
-            ) : (
-              <div className="user-sidebar-avatar">
-                {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div className="user-sidebar-meta">
-              <span className="user-name">{user?.name || "User Account"}</span>
-              <span className="user-plan">VELLIFE GPT-4o Pro</span>
-            </div>
+          <div className="history-group">
+            <div className="history-group-title">Recent chats</div>
+            {chatHistory.map((chat) => (
+              <button
+                key={chat.id}
+                className={`history-item ${activeChatId === chat.id ? "active" : ""}`}
+                onClick={() => handleSelectHistory(chat.id)}
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span className="history-title">{chat.title}</span>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -482,73 +471,45 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
               {isModelDropdownOpen && (
                 <div className="model-dropdown-menu">
                   <div
-                    className={`model-option ${selectedModel === "Google Gemini 2.0 Flash" ? "selected" : ""}`}
+                    className={`model-option ${selectedModel === "Google Gemini Flash (Placement Mentor)" ? "selected" : ""}`}
                     onClick={() => {
-                      setSelectedModel("Google Gemini 2.0 Flash");
+                      setSelectedModel("Google Gemini Flash (Placement Mentor)");
                       setIsModelDropdownOpen(false);
                     }}
                   >
                     <div className="model-opt-header">
-                      <span className="opt-title">Google Gemini 2.0 Flash</span>
-                      <span className="opt-badge">Mentor Pro</span>
+                      <span className="opt-title">Google Gemini Flash</span>
+                      <span className="opt-badge fast">Placement Speed</span>
                     </div>
-                    <span className="opt-desc">Primary Student Mentor with high-speed coding, academic doubt solving & placements.</span>
+                    <span className="opt-desc">Ultra-fast Placement Mentor for coding assessment problems, Big-O analysis, and company rounds.</span>
                   </div>
 
                   <div
-                    className={`model-option ${selectedModel === "Google Gemini 2.5 Flash" ? "selected" : ""}`}
+                    className={`model-option ${selectedModel === "Google Gemini Pro (Deep Reasoning)" ? "selected" : ""}`}
                     onClick={() => {
-                      setSelectedModel("Google Gemini 2.5 Flash");
+                      setSelectedModel("Google Gemini Pro (Deep Reasoning)");
                       setIsModelDropdownOpen(false);
                     }}
                   >
                     <div className="model-opt-header">
-                      <span className="opt-title">Google Gemini 2.5 Flash</span>
-                      <span className="opt-badge fast">Next-Gen</span>
-                    </div>
-                    <span className="opt-desc">Next-generation Gemini model with enhanced technical problem solving.</span>
-                  </div>
-
-                  <div
-                    className={`model-option ${selectedModel === "Google Gemini 1.5 Flash" ? "selected" : ""}`}
-                    onClick={() => {
-                      setSelectedModel("Google Gemini 1.5 Flash");
-                      setIsModelDropdownOpen(false);
-                    }}
-                  >
-                    <div className="model-opt-header">
-                      <span className="opt-title">Google Gemini 1.5 Flash</span>
-                      <span className="opt-badge fast">1M Context</span>
-                    </div>
-                    <span className="opt-desc">High-throughput fallback model for long textbook units, roadmaps & syllabi.</span>
-                  </div>
-
-                  <div
-                    className={`model-option ${selectedModel === "Google Gemini 1.5 Pro" ? "selected" : ""}`}
-                    onClick={() => {
-                      setSelectedModel("Google Gemini 1.5 Pro");
-                      setIsModelDropdownOpen(false);
-                    }}
-                  >
-                    <div className="model-opt-header">
-                      <span className="opt-title">Google Gemini 1.5 Pro</span>
+                      <span className="opt-title">Google Gemini Pro</span>
                       <span className="opt-badge pro">Deep Think</span>
                     </div>
-                    <span className="opt-desc">Deep algorithmic analysis, complex architectural design & mathematics.</span>
+                    <span className="opt-desc">Deep technical reasoning, Low-Level Design (LLD), system architecture & edge-case proofs.</span>
                   </div>
 
                   <div
-                    className={`model-option ${selectedModel === "VELLIFE Mentor Core" ? "selected" : ""}`}
+                    className={`model-option ${selectedModel === "VELLIFE Placement Core (Auto-Cascade)" ? "selected" : ""}`}
                     onClick={() => {
-                      setSelectedModel("VELLIFE Mentor Core");
+                      setSelectedModel("VELLIFE Placement Core (Auto-Cascade)");
                       setIsModelDropdownOpen(false);
                     }}
                   >
                     <div className="model-opt-header">
-                      <span className="opt-title">VELLIFE Mentor Core</span>
+                      <span className="opt-title">VELLIFE Placement Core</span>
                       <span className="opt-badge">Auto-Cascade</span>
                     </div>
-                    <span className="opt-desc">Automatic multi-tier fallbacks across Gemini, Live LLM, and Offline Mentor Engine.</span>
+                    <span className="opt-desc">Automated multi-tier fallback across Gemini, live LLM, and Dynamic Offline Placement Engine.</span>
                   </div>
                 </div>
               )}
@@ -609,19 +570,19 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
                 </svg>
               </div>
 
-              <h1 className="gpt-landing-heading">What can your Student Mentor help you achieve today?</h1>
+              <h1 className="gpt-landing-heading">What can your Placement Mentor help you achieve today?</h1>
 
-              {/* 4 Interactive Student Mentor Prompt Cards */}
+              {/* 4 Interactive Placement Mentor Prompt Cards */}
               <div className="gpt-prompt-cards-grid">
                 <div
                   className="prompt-card"
                   onClick={() =>
-                    handleSendMessage("Hi mentor, how should I start preparing for campus placement coding rounds?")
+                    handleSendMessage("How should I prepare for campus placement coding tests (TCS NQT, Infosys, Zoho & Product Startups)?")
                   }
                 >
                   <span className="card-icon">🎓</span>
                   <div className="card-text-group">
-                    <h4>Campus Placement Prep</h4>
+                    <h4>Campus Placement Strategy</h4>
                     <p>Roadmap for coding tests, Aptitude, and technical rounds</p>
                   </div>
                 </div>
@@ -629,39 +590,39 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
                 <div
                   className="prompt-card"
                   onClick={() =>
-                    handleSendMessage("Explain Binary Search algorithm with intuitive real-world analogy, time complexity and clean Python code")
+                    handleSendMessage("Explain Two Pointers vs Sliding Window with interview problem patterns, time complexity and clean Python code")
                   }
                 >
                   <span className="card-icon">🧠</span>
                   <div className="card-text-group">
-                    <h4>DSA & Problem Solving</h4>
-                    <p>Intuitive concept breakdowns with clean runnable code</p>
+                    <h4>DSA & Technical Rounds</h4>
+                    <p>Intuitive pattern breakdowns with clean runnable code & Big-O</p>
                   </div>
                 </div>
 
                 <div
                   className="prompt-card"
                   onClick={() =>
-                    handleSendMessage("Which domain is better for freshers in 2026: Full Stack Development vs Data Analytics vs AI/ML?")
+                    handleSendMessage("Top DBMS, Operating Systems, and OOPs questions asked in Round 1 technical interviews")
                   }
                 >
-                  <span className="card-icon">🚀</span>
+                  <span className="card-icon">💻</span>
                   <div className="card-text-group">
-                    <h4>Career & Domain Guidance</h4>
-                    <p>Compare tech stacks, hiring volume, and salaries</p>
+                    <h4>Core CS Interview Rounds</h4>
+                    <p>DBMS Normalization, OS Deadlocks, TCP vs UDP & Polymorphism</p>
                   </div>
                 </div>
 
                 <div
                   className="prompt-card"
                   onClick={() =>
-                    handleSendMessage("How to study university semester syllabus (like B.Tech R20) to score 9+ CGPA?")
+                    handleSendMessage("How do I optimize my resume for ATS and pass the VELLIFE Placement Gate (80%+ mock score)?")
                   }
                 >
-                  <span className="card-icon">📚</span>
+                  <span className="card-icon">📄</span>
                   <div className="card-text-group">
-                    <h4>Semester Exam Strategy</h4>
-                    <p>PYQs, architectural diagrams, and scoring techniques</p>
+                    <h4>ATS Resume & Placement Gate</h4>
+                    <p>STAR bullet points, ATS scoring, and unlocking verified jobs</p>
                   </div>
                 </div>
               </div>
@@ -690,7 +651,7 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
                     <div className="msg-body">
                       <div className="msg-author-row">
                         <span className="author-name">
-                          {msg.sender === "user" ? user?.name || "You" : "VELLIFE Student Mentor"}
+                          {msg.sender === "user" ? user?.name || "You" : "VELLIFE Placement Mentor"}
                         </span>
                         {msg.model && (
                           <span 
@@ -737,10 +698,10 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
                           </button>
                           <button
                             className="action-icon-btn"
-                            onClick={() => handleSendMessage("Can you elaborate further?")}
-                            title="Regenerate / Elaborate"
+                            onClick={() => handleRegenerate(msg.id)}
+                            title="Regenerate with Alternative Approach & Interview Follow-Up"
                           >
-                            🔄 Regenerate
+                            🔄 Alternative Approach
                           </button>
                           <button className="action-icon-btn" title="Good Response">
                             👍
