@@ -38,7 +38,7 @@ function CourseDetailsView({
   const isLessonCompleted = (lessonId) => completedLessons.includes(lessonId);
 
   return (
-    <div className="velfire-course-details-container">
+    <div className="vellife-course-details-container">
       {/* Back Button */}
       <button className="btn-back-courses" onClick={onBack}>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">

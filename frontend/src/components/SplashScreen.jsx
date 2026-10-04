@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import "./SplashScreen.css";
 
-const LETTERS = ["V", "E", "L", "F", "I", "R", "E"];
+const LETTERS = ["V", "E", "L", "L", "I", "F", "E"];
 
 export default function SplashScreen({ onComplete }) {
   const [isExiting, setIsExiting] = useState(false);
@@ -49,7 +49,7 @@ export default function SplashScreen({ onComplete }) {
 
   return (
     <div
-      className={`velfire-splash-root ${isExiting ? "exiting" : ""}`}
+      className={`vellife-splash-root ${isExiting ? "exiting" : ""}`}
       onClick={handleFinish}
       title="Click anywhere to continue"
     >

@@ -88,12 +88,12 @@ function CoursesMainView({
   };
 
   return (
-    <div className="velfire-courses-main-container">
+    <div className="vellife-courses-main-container">
       {/* Top Banner Header */}
       <div className="courses-hero-banner">
         <div className="hero-content">
-          <div className="hero-badge">🎓 VELFIRE Full Curriculum</div>
-          <h1 className="hero-title">velfire Courses</h1>
+          <div className="hero-badge">🎓 VELLIFE Full Curriculum</div>
+          <h1 className="hero-title">vellife Courses</h1>
           <p className="hero-subtitle">
             "Build the skills you need for your career, one step at a time."
           </p>

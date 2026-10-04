@@ -169,7 +169,7 @@ export default function ResumeAnalyzerView({ onBack, defaultDomain = "Full Stack
             </button>
           )}
           <div>
-            <h1 className="analyzer-title">🔍 VELFIRE Resume Analyzer & ATS Auditor</h1>
+            <h1 className="analyzer-title">🔍 VELLIFE Resume Analyzer & ATS Auditor</h1>
             <p className="analyzer-subtitle">
               Upload your CV or technical resume to evaluate ATS readability, keyword matching, and section quality.
             </p>

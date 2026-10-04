@@ -4,6 +4,7 @@ import re
 import bcrypt
 import json
 import urllib.request
+import urllib.parse
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,7 +14,7 @@ import uvicorn
 # Database file path
 DB_PATH = os.path.join(os.path.dirname(__file__), "vellife.db")
 
-app = FastAPI(title="VELFIRE API", version="1.0.0")
+app = FastAPI(title="VELLIFE API", version="1.0.0")
 
 # Enable CORS for React frontend
 app.add_middleware(
@@ -95,7 +96,7 @@ def hash_password(password: str) -> str:
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "app": "VELFIRE API"}
+    return {"status": "ok", "app": "VELLIFE API"}
 
 @app.post("/api/signup")
 def signup(data: SignupRequest):
@@ -253,111 +254,506 @@ def update_profile(data: UpdateProfileRequest):
         conn.close()
         raise HTTPException(status_code=500, detail=f"Failed to update profile: {str(e)}")
 
+def load_env_file():
+    """Load environment variables from .env if not already set or updated."""
+    candidates = [
+        os.path.join(os.path.dirname(__file__), ".env"),
+        os.path.join(os.path.dirname(__file__), "..", ".env"),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            k = k.strip()
+                            v = v.strip().strip('"').strip("'")
+                            if k:
+                                if v or not os.environ.get(k):
+                                    os.environ[k] = v
+            except Exception:
+                pass
+
+load_env_file()
+
+def get_gemini_api_key() -> str:
+    load_env_file()
+    key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if key and key != "your_gemini_api_key_here":
+        return key
+    return ""
+
 def clean_user_name(raw_name: str) -> str:
     if not raw_name:
-        return "Poovarasan"
-    # Remove digits
+        return "Student"
     s = re.sub(r'\d+', '', raw_name).strip()
-    # If ends with 'poo' from handle like Poovarasanpoo, trim extra 'poo'
     if s.lower().endswith("poo") and len(s) > 5:
         s = s[:-3]
-    return s.capitalize() if s else "Poovarasan"
+    return s.capitalize() if s else "Student"
 
-def fetch_live_llm_response(user_name: str, message: str) -> str:
+STUDENT_MENTOR_SYSTEM_PROMPT = (
+    "You are the VELLIFE AI Student Mentor — a warm, inspiring, and deeply knowledgeable academic and career mentor "
+    "dedicated to helping engineering students, college learners, and early-career developers succeed.\n\n"
+    "Your Mission:\n"
+    "- Demystify challenging subjects (Data Structures & Algorithms, Full-Stack Web Development, Python, JavaScript, "
+    "React 19, Databases & SQL, Operating Systems, Computer Networks, AI/ML, System Architecture).\n"
+    "- Guide students through university semester exams (like B.Tech R20, Anna University, VTU, JNTU), coding contests, "
+    "and campus placement drives (TCS, Infosys, Zoho, Wipro, Amazon, Google, Startups).\n"
+    "- Offer practical, step-by-step guidance so students build real confidence.\n\n"
+    "Mentoring Principles:\n"
+    "1. Warmth & Encouragement: Address the student warmly by name. Celebrate their curiosity, reassure them when "
+    "they feel stuck, and maintain a friendly, empowering mentor-mentee relationship.\n"
+    "2. Intuitive Deconstruction: Break concepts into 3 clear components: 'The Why' (Intuition & Real-World Analogy), "
+    "'The How' (Step-by-step technical mechanism), and 'Common Mistakes to Avoid'.\n"
+    "3. Runnable Code & Best Practices: Provide clean, idiomatic code examples with concise inline comments explaining "
+    "why we do it this way. Always mention Time and Space Complexity (Big-O) for algorithms.\n"
+    "4. Campus Placement & Interview Relevance: Connect theory to real placement interview questions, coding rounds, and production engineering.\n"
+    "5. Actionable Next Steps: Wrap up with 1 concrete practice problem or a thoughtful check-in question for the student to try today.\n"
+    "6. Markdown Formatting: Structure your responses with clean GitHub-flavored markdown: headers, bullet points, concise tables, and syntax-highlighted code blocks."
+)
+
+# Gemini fallback cascade sequence
+GEMINI_FALLBACK_MODELS = [
+    "gemini-flash-latest",
+    "gemini-flash-lite-latest",
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-2.0-flash-lite",
+    "gemini-1.5-pro",
+]
+
+def normalize_model_name(raw_model: str) -> str:
+    m = (raw_model or "").lower().strip()
+    if "lite" in m:
+        return "gemini-flash-lite-latest"
+    if "pro" in m:
+        return "gemini-pro-latest"
+    if "flash" in m or "gemini" in m or "2.0" in m or "2.5" in m or "1.5" in m:
+        return "gemini-flash-latest"
+    return "gemini-flash-latest"
+
+def fetch_gemini_response(user_name: str, message: str, requested_model: str = "gemini-2.0-flash", override_key: str = "") -> tuple[str, str, bool]:
+    """
+    Attempts to generate a student mentor reply via Google Gemini API.
+    Supports automatic fallback across multiple Gemini models if the primary model fails or encounters quota limits.
+    Returns: (reply_text, model_name_used, was_fallback_used)
+    """
+    api_key = override_key.strip() if override_key.strip() else get_gemini_api_key()
+    if not api_key:
+        return "", "", False
+
+    norm_primary = normalize_model_name(requested_model)
+    models_to_try = [norm_primary]
+    for fb in GEMINI_FALLBACK_MODELS:
+        if fb not in models_to_try:
+            models_to_try.append(fb)
+
+    for idx, model_name in enumerate(models_to_try):
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+            payload = {
+                "contents": [
+                    {
+                        "role": "user",
+                        "parts": [
+                            {"text": f"Student Name: {user_name}\n\nStudent's Doubt / Question:\n{message}"}
+                        ]
+                    }
+                ],
+                "systemInstruction": {
+                    "parts": [{"text": STUDENT_MENTOR_SYSTEM_PROMPT}]
+                },
+                "generationConfig": {
+                    "temperature": 0.7,
+                    "maxOutputTokens": 2048
+                }
+            }
+            req_data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(
+                url,
+                data=req_data,
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=18) as res:
+                if res.status == 200:
+                    res_body = json.loads(res.read().decode("utf-8"))
+                    candidates = res_body.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts and "text" in parts[0]:
+                            text = parts[0]["text"].strip()
+                            if text:
+                                is_fallback = (idx > 0)
+                                label = f"Google {model_name}" + (" (Fallback Model)" if is_fallback else "")
+                                return text, label, is_fallback
+        except Exception as e:
+            print(f"Gemini API attempt failed on model '{model_name}': {e}. Cascading to next fallback model...")
+            continue
+
+    return "", "", False
+
+def fetch_pollinations_fallback(user_name: str, message: str) -> tuple[str, str]:
+    """
+    Secondary Free Live LLM Fallback (Pollinations AI) with student mentor persona.
+    Uses a fast 4s timeout so students never experience lag when cascading to offline engine.
+    """
     try:
-        url = "https://text.pollinations.ai/"
-        system_prompt = (
-            f"You are VELFIRE AI, a real-time intelligent AI assistant modeled after ChatGPT. "
-            f"Address the user naturally as '{user_name}'. "
-            f"Provide rich, thorough, beautifully structured Markdown answers with clear headings, bullet points, tables, and code snippets where relevant. "
-            f"Never output robotic template phrases."
-        )
-        payload = {
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": message}
-            ],
-            "model": "openai"
-        }
-        data = json.dumps(payload).encode("utf-8")
+        combined_prompt = f"You are VELLIFE Student Mentor. Address {user_name} warmly. Question: {message}"
+        url = f"https://text.pollinations.ai/{urllib.parse.quote(combined_prompt)}"
         req = urllib.request.Request(
             url,
-            data=data,
-            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+            headers={"User-Agent": "Mozilla/5.0", "Accept": "text/plain"}
         )
-        with urllib.request.urlopen(req, timeout=12) as res:
+        with urllib.request.urlopen(req, timeout=4) as res:
             if res.status == 200:
                 answer = res.read().decode("utf-8").strip()
-                if answer and len(answer) > 10:
-                    return answer
+                if answer and len(answer) > 15 and not answer.startswith("Error"):
+                    return answer, "Pollinations AI (Live Mentor Fallback)"
     except Exception as e:
-        print(f"Live AI fetch exception: {e}")
-    return ""
+        print(f"Pollinations live fallback skipped or timed out: {e}")
+    return "", ""
+
+def build_mentor_offline_fallback(user_name: str, message: str) -> str:
+    """
+    Tertiary Fallback: Rich domain mentor knowledge base for offline situations or when all external APIs are unreachable.
+    """
+    lower = message.lower()
+    
+    # 1. DSA & Algorithms
+    if any(k in lower for k in ["dsa", "data structure", "algorithm", "time complexity", "big o", "array", "linked list", "tree", "graph", "recursion", "binary search", "stack", "queue", "dynamic programming"]):
+        return (
+            f"Great technical question, **{user_name}**! 💡 Here is your mentor breakdown for **Data Structures & Algorithms**:\n\n"
+            "### 1. 🧠 Core Concept & Intuition\n"
+            "DSA is fundamentally about choosing the most time-efficient and memory-conscious way to organize and manipulate data.\n"
+            "- **Time Complexity (Big-O)**: Measures how execution time scales as input size `N` grows.\n"
+            "- **Rule of Thumb for Interviews**:\n"
+            "  - `O(1)`: Hash Maps, Direct Array Indexing.\n"
+            "  - `O(log N)`: Binary Search, Balanced BST operations.\n"
+            "  - `O(N)`: Single-pass algorithms, Two-Pointer technique.\n"
+            "  - `O(N log N)`: Merge Sort, Quick Sort.\n\n"
+            "### 2. 💻 Clean Practice Example (Two-Pointer Technique)\n"
+            "```python\n"
+            "# Classic O(N) Two-Pointer approach to find target sum in a sorted array\n"
+            "def has_pair_with_sum(arr: list[int], target: int):\n"
+            "    left, right = 0, len(arr) - 1\n"
+            "    while left < right:\n"
+            "        current_sum = arr[left] + arr[right]\n"
+            "        if current_sum == target:\n"
+            "            return True, (left, right)  # Found indices in O(N) time, O(1) space\n"
+            "        elif current_sum < target:\n"
+            "            left += 1  # Need larger sum, advance left\n"
+            "        else:\n"
+            "            right -= 1  # Need smaller sum, decrease right\n"
+            "    return False, None\n"
+            "```\n\n"
+            "### 3. 🎯 Placement & Exam Strategy\n"
+            "- Practice 2 problems daily on LeetCode/GeeksforGeeks (Start with Array & String, then Hashing & Two Pointers).\n"
+            "- In campus interviews, always explain your brute-force `O(N^2)` idea first, then optimize to `O(N)` before coding.\n\n"
+            f"Would you like me to walk through a specific DSA problem or give you today's practice challenge, **{user_name}**?"
+        )
+
+    # 2. Web Development (Full-Stack / React / FastAPI)
+    if any(k in lower for k in ["fullstack", "full stack", "react", "fastapi", "frontend", "backend", "web dev", "rest api", "html", "css", "javascript"]):
+        return (
+            f"Awesome focus on Web Development, **{user_name}**! 🌐 Here is your mentor roadmap for modern Full-Stack mastery:\n\n"
+            "### 1. 🏗️ The 3 Modern Web Layers\n"
+            "1. **Frontend (Client-Side)**: React 19 + Vanilla CSS / Tailwind. Handles state, UI interactions, and calling REST APIs.\n"
+            "2. **Backend (Server-Side)**: Python FastAPI or Node Express. Handles route schemas, JWT authentication, and business logic.\n"
+            "3. **Database (Persistence)**: SQLite for rapid local prototyping, PostgreSQL for scalable production deployments.\n\n"
+            "### 2. 💻 Standard REST API Architecture\n"
+            "```python\n"
+            "from fastapi import FastAPI, HTTPException\n"
+            "from pydantic import BaseModel\n\n"
+            "app = FastAPI(title='Student Learning API')\n\n"
+            "class DoubtPayload(BaseModel):\n"
+            "    topic: str\n"
+            "    difficulty: str = 'Medium'\n\n"
+            "@app.post('/api/doubts/solve')\n"
+            "def solve_doubt(data: DoubtPayload):\n"
+            "    return {'status': 'success', 'guidance': f'Detailed explanation for {data.topic}'}\n"
+            "```\n\n"
+            "### 3. 🚀 Placement Checklist:\n"
+            "- Build **2 full-stack projects** featuring user authentication (JWT/bcrypt) and a database.\n"
+            "- Deploy them live on GitHub and Vercel/Render so recruiters can test them directly.\n\n"
+            f"What specific part of full-stack would you like to build right now, **{user_name}**?"
+        )
+
+    # 3. Database & SQL
+    if any(k in lower for k in ["sql", "database", "query", "join", "group by", "index", "normalization", "sqlite", "postgres"]):
+        return (
+            f"SQL is one of the highest-ROI skills for tech careers, **{user_name}**! 💾 Here is your mentor guide:\n\n"
+            "### 1. 🔑 Core Commands Every Fresher Must Master\n"
+            "- **`JOIN` Types**: `INNER JOIN` (matching rows only), `LEFT JOIN` (all left rows + matching right rows).\n"
+            "- **`GROUP BY` with `HAVING`**: Aggregate metrics per category, filtering after aggregation.\n"
+            "- **Window Functions**: `ROW_NUMBER()`, `RANK()`, `DENSE_RANK()`, `LEAD()`, `LAG()`.\n\n"
+            "### 2. 💻 Interview SQL Template (Second Highest Salary)\n"
+            "```sql\n"
+            "-- Common campus interview question: Find 2nd highest salary\n"
+            "SELECT DISTINCT salary \n"
+            "FROM employees \n"
+            "ORDER BY salary DESC \n"
+            "LIMIT 1 OFFSET 1;\n"
+            "```\n\n"
+            "### 3. 🎯 Practice Recommendation:\n"
+            "Complete the SQL 50 study plan on LeetCode. It will cover 95% of questions asked in campus coding rounds.\n\n"
+            f"Do you want me to explain any specific SQL topic like Joins, Indexing, or Window Functions, **{user_name}**?"
+        )
+
+    # 4. Domain & Career Guidance
+    if ("python" in lower and "sql" in lower) or any(k in lower for k in ["career", "domain", "which is better", "roadmap", "future", "jobs"]):
+        return (
+            f"You're in a great position, **{user_name}**! 🚀 As your mentor, here is how you can leverage your skills for top career paths:\n\n"
+            "### 📊 High-Demand Domains for Freshers (2026)\n"
+            "| Domain | Primary Stack | Best For | Hiring Trend |\n"
+            "| :--- | :--- | :--- | :--- |\n"
+            "| **Full-Stack Development** | React 19 + Python FastAPI + SQLite/Postgres | Those who love building complete web apps | Very High Hiring Volume |\n"
+            "| **Data Analyst** | Python (Pandas) + SQL + Power BI / Tableau | Those who love finding business insights | High Corporate Demand |\n"
+            "| **AI / ML Engineer** | Python + PyTorch + LLM APIs + Vector DBs | Those excited by GenAI and smart automation | High Premium Salaries |\n\n"
+            "### 🎯 Mentor Action Plan:\n"
+            "1. **Build 2 Capstone Projects**: Host them on GitHub with live demo URLs in your resume.\n"
+            "2. **Sharpen Core Fundamentals**: 1 hour of DSA + 1 hour of project coding daily.\n\n"
+            f"Which of these domains excites you the most, **{user_name}**? Let's build a dedicated roadmap for it!"
+        )
+
+    # 5. Exam & Semester Study Preparation
+    if any(k in lower for k in ["exam", "semester", "r20", "study", "syllabus", "marks", "grade", "gpa"]):
+        return (
+            f"Let's tackle your exams systematically, **{user_name}**! 📚 Here is the proven university exam strategy:\n\n"
+            "### 🎯 3-Step Exam Mastery Blueprint:\n"
+            "1. **80/20 Rule on Previous Year Questions (PYQs)**: 70-80% of university exam questions repeat core themes from the last 3-5 years. Solve them first!\n"
+            "2. **Neat Architectural Diagrams**: In university exams (like R20/Anna Univ), diagrams, flowcharts, and block diagrams earn 40-50% of the marks in 10-mark questions.\n"
+            "3. **Modular Code Snippets**: Write short, clean 5-10 line code blocks with comments rather than unbroken text paragraphs.\n\n"
+            f"Which subject or unit are you preparing for right now, **{user_name}**? Let's break down the important questions!"
+        )
+
+    clean_topic = re.sub(r'^(can you|please|tell me|explain|what is|how to|i want to|i am)\s+', '', message, flags=re.IGNORECASE).strip(' ?!')
+    title = clean_topic.capitalize() if clean_topic else "Your Topic"
+    return (
+        f"I'm glad you brought this up, **{user_name}**! 🌟 Here is my step-by-step mentor guidance on **{title}**:\n\n"
+        "### 1. 🎯 Foundational Understanding\n"
+        f"When approaching *{message.rstrip('?!.')}*, always clarify the core objective and break down the problem into smaller milestones.\n\n"
+        "### 2. 🛠️ Practical Best Practices\n"
+        "- **Deconstruct the Concept**: Master the fundamental building blocks before diving into complex edge cases.\n"
+        "- **Hands-On Experimentation**: Write small test scripts or prototypes to observe outputs directly.\n"
+        "- **Clean Code & Documentation**: Use descriptive variable names and document design decisions.\n\n"
+        "### 3. 🚀 Next Action Item\n"
+        "Spend 15 minutes today building a minimal runnable example of this concept to solidify your understanding.\n\n"
+        f"Would you like me to generate a tailored code template or quiz you on this concept, **{user_name}**?"
+    )
 
 # Request schemas
 class ChatRequest(BaseModel):
-    user_name: str = "User"
+    user_name: str = "Student"
     message: str = ""
-    model: str = "VELFIRE GPT-4o"
+    model: str = "gemini-2.0-flash"
+    api_key: str = ""
+
+@app.get("/api/ai/status")
+def ai_status():
+    key = get_gemini_api_key()
+    has_key = bool(key)
+    masked = f"{key[:6]}...{key[-4:]}" if (has_key and len(key) > 10) else ("Configured" if has_key else "Not Set")
+    return {
+        "status": "online",
+        "mentor_name": "VELLIFE AI Student Mentor",
+        "has_gemini_key": has_key,
+        "masked_gemini_key": masked,
+        "primary_model": "gemini-2.0-flash",
+        "gemini_fallback_models": GEMINI_FALLBACK_MODELS,
+        "secondary_fallback": "Pollinations AI (Multi-LLM)",
+        "tertiary_fallback": "VELLIFE Offline Student Mentor Knowledge Engine",
+        "fast_greetings_supported": True
+    }
 
 @app.post("/api/chat")
 def chat_ai(data: ChatRequest):
     message = data.message.strip()
     user_name = clean_user_name(data.user_name)
+    requested_model = data.model.strip() if data.model else "gemini-2.0-flash"
 
     if not message:
         raise HTTPException(status_code=400, detail="Message content cannot be empty.")
 
-    lower = message.lower()
+    lower = message.lower().strip()
 
-    # A. Casual "How are you" / "How r u" / "How's it going" / "Sup"
+    # -------------------------------------------------------------
+    # 1. Basic Greetings (Ultra-fast, warm student mentor answers)
+    # -------------------------------------------------------------
+    greeting_words = [
+        "hi", "hello", "hey", "vanakkam", "namaste", "good morning", 
+        "good evening", "good afternoon", "greetings", "sup", "yo", "hola", "wassup"
+    ]
+    is_greeting = any(
+        lower == g or lower.startswith(g + " ") or lower.endswith(" " + g) or lower.startswith(g + "!") or lower.startswith(g + ",") 
+        for g in greeting_words
+    )
+    # Only treat as basic greeting if not asking a technical question in the same sentence
+    technical_triggers = ["explain", "what is", "how to", "code", "problem", "solve", "why", "difference", "error", "bug", "write"]
+    has_tech_query = any(t in lower for t in technical_triggers)
+
+    if is_greeting and not has_tech_query and len(lower.split()) <= 5:
+        return {
+            "status": "success",
+            "reply": (
+                f"Hello **{user_name}**! 👋 Welcome to your **VELLIFE Student Mentor** session.\n\n"
+                "I'm here to guide you through coding challenges, academic doubts, project architecture, and campus placement prep. "
+                "What topic or goal are we focusing on today?"
+            ),
+            "source": "VELLIFE Student Mentor (Instant)",
+            "model_used": "Student Mentor (Fast Greetings)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 2. Conversational Check-in ("How are you")
+    # -------------------------------------------------------------
     if any(phrase in lower for phrase in ["how are you", "how r u", "how r you", "how u doing", "how is it going", "hows it going", "whats up", "what's up"]):
         return {
             "status": "success",
-            "reply": f"I'm doing fantastic, **{user_name}**! Thank you for asking. 😊\n\nAll AI systems are running smoothly and ready. How can I assist your coding, full-stack learning, or career path today?"
+            "reply": (
+                f"I'm doing wonderful and fully charged to guide you today, **{user_name}**! 🌟\n\n"
+                "How are your studies and coding practice going? Whether you're stuck on a bug, preparing for semester exams, or exploring a new tech stack, I'm right here with you!"
+            ),
+            "source": "VELLIFE Student Mentor (Instant)",
+            "model_used": "Student Mentor (Fast Greetings)",
+            "is_fallback": False
         }
 
-    # B. Apologies / Casual Fillers ("sry", "sorry", "my bad", "oops")
+    # -------------------------------------------------------------
+    # 3. Identity & Capabilities ("Who are you" / "What can you do")
+    # -------------------------------------------------------------
+    if any(phrase in lower for phrase in ["who are you", "what are you", "what can you do", "introduce yourself", "tell me about yourself", "who r u", "who is your mentor"]):
+        return {
+            "status": "success",
+            "reply": (
+                f"I am your **VELLIFE AI Student Mentor**! 🎓\n\n"
+                "Think of me as your dedicated 24/7 senior mentor and career guide. Here's what we can achieve together:\n\n"
+                "1. **📚 Academic & Subject Doubts**: Demystify algorithms, operating systems, DBMS, data structures, and computer science theory.\n"
+                "2. **💻 Hands-On Coding & Debugging**: Write clean Python, JavaScript, React, SQL, and backend code with step-by-step guidance.\n"
+                "3. **🗺️ Career & Placement Roadmaps**: Craft tailored 30/60/90-day learning schedules for Web Dev, AI/ML, Data Analytics, or Cloud.\n"
+                "4. **📄 Resume & Interview Prep**: Polish resume bullet points, review project architectures, and practice technical interview questions.\n\n"
+                f"What's your current goal or biggest doubt right now, **{user_name}**?"
+            ),
+            "source": "VELLIFE Student Mentor (Instant)",
+            "model_used": "Student Mentor (Fast Greetings)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 4. Student Mental Well-Being & Stress Support
+    # -------------------------------------------------------------
+    stress_phrases = [
+        "stressed", "overwhelmed", "confused", "lost", "give up", 
+        "cannot understand coding", "coding is hard", "placement tension", 
+        "exam fear", "scared of interview", "im scared", "i am scared"
+    ]
+    if any(sp in lower for sp in stress_phrases):
+        return {
+            "status": "success",
+            "reply": (
+                f"Take a deep breath, **{user_name}**! 💙 It is completely normal to feel this way. "
+                "Every great engineer has felt overwhelmed or stuck on confusing concepts at some point.\n\n"
+                "### 🌿 3-Step Reset for You:\n"
+                "1. **Stop Compounding Stress**: Step away from the screen for 10 minutes. Hydrate and clear your mind.\n"
+                "2. **One Small Step**: We don't need to conquer the whole syllabus or build an entire app in one afternoon. Master just *one concept* or fix *one line of code* at a time.\n"
+                "3. **I'm With You**: Tell me the exact topic or bug that's bothering you right now. I will break it down into simple, painless steps!\n\n"
+                f"What is the single thing feeling the hardest right now, **{user_name}**?"
+            ),
+            "source": "VELLIFE Student Mentor (Empathetic Care)",
+            "model_used": "Student Mentor (Well-Being)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 5. Quick Starters ("How to start coding" / "Placement tips")
+    # -------------------------------------------------------------
+    if any(q in lower for q in ["how to start coding", "how to prepare for placement", "placement tips", "fresher tips", "how to study"]):
+        return {
+            "status": "success",
+            "reply": (
+                f"Great question, **{user_name}**! 🚀 Here is the ultimate **Mentor Blueprint for Tech Freshers**:\n\n"
+                "### 📌 4 Golden Pillars:\n"
+                "1. **Pick One Core Language First**: Master Python, Java, or C++ deeply (Loops, Functions, OOPs, Collections).\n"
+                "2. **DSA Consistency**: Solve 1-2 easy/medium problems daily on LeetCode or GeeksforGeeks.\n"
+                "3. **Build 2 Real Capstone Projects**: Instead of basic clones, build an app that solves a real problem with authentication and a database.\n"
+                "4. **Git & Portfolio**: Push your code to GitHub with clean README documentation.\n\n"
+                f"Which programming language or tech stack are you most comfortable with, **{user_name}**?"
+            ),
+            "source": "VELLIFE Student Mentor (Guidance)",
+            "model_used": "Student Mentor (Fast Guidance)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 6. Acknowledgments & Thanks
+    # -------------------------------------------------------------
+    if lower in ["ok", "okay", "got it", "sure", "cool", "alright", "great", "nice", "awesome", "k", "fine", "kk", "ok brother", "ok bro", "thank you", "thanks", "thanks mentor", "ty", "thx", "understood"]:
+        return {
+            "status": "success",
+            "reply": f"Awesome, **{user_name}**! 👍 Keep up that great momentum. Remember, steady practice turns tough concepts into second nature. Ask me anytime you hit your next question!",
+            "source": "VELLIFE Student Mentor (Instant)",
+            "model_used": "Student Mentor (Fast Greetings)",
+            "is_fallback": False
+        }
+
+    # -------------------------------------------------------------
+    # 7. Apologies
+    # -------------------------------------------------------------
     if any(lower == w or lower.startswith(w + " ") or lower.endswith(" " + w) for w in ["sry", "sorry", "my bad", "oops", "apologies", "sory"]):
         return {
             "status": "success",
-            "reply": f"No need to apologize at all, **{user_name}**! 😊 I am right here to help you.\n\nWhat would you like to explore next? We can talk more about **Full-Stack Web Development**, look at code examples, prepare for interviews, or discuss project ideas!"
+            "reply": f"No need to apologize at all, **{user_name}**! 😊 Mistakes are the absolute best learning opportunities in engineering. What would you like to explore next?",
+            "source": "VELLIFE Student Mentor (Instant)",
+            "model_used": "Student Mentor (Fast Greetings)",
+            "is_fallback": False
         }
 
-    # C. Acknowledgments ("ok", "okay", "got it", "sure", "cool", "alright")
-    if lower in ["ok", "okay", "got it", "sure", "cool", "alright", "great", "nice", "awesome", "k", "fine", "kk", "ok brother", "ok bro"]:
+    # -------------------------------------------------------------
+    # 8. Primary Engine: Google Gemini API (With Fallback Models)
+    # -------------------------------------------------------------
+    gemini_reply, used_gemini_model, is_gemini_fallback = fetch_gemini_response(
+        user_name=user_name,
+        message=message,
+        requested_model=requested_model,
+        override_key=data.api_key
+    )
+    if gemini_reply:
         return {
             "status": "success",
-            "reply": f"Awesome, **{user_name}**! 👍 Let me know whenever you're ready to ask your next question, explore Full-Stack development, or get code snippets!"
+            "reply": gemini_reply,
+            "source": used_gemini_model,
+            "model_used": used_gemini_model,
+            "is_fallback": is_gemini_fallback
         }
 
-    # D. Greetings ("hi", "hello", "hey")
-    if any(g == lower or lower.startswith(g + " ") or lower.endswith(" " + g) for g in ["hi", "hello", "hey", "good morning", "good evening", "greetings", "sup", "hola", "yo"]):
-        if len(lower.split()) <= 4:
-            return {
-                "status": "success",
-                "reply": f"Hi **{user_name}**! 👋 Great to connect with you today.\n\nI am your **VELFIRE AI Assistant**, powered by real-time intelligence. What project, code, career question, or doubt can I help you solve right now?"
-            }
+    # -------------------------------------------------------------
+    # 9. Fallback Tier 1: Pollinations Multi-LLM (Live Mentor)
+    # -------------------------------------------------------------
+    fallback_llm_reply, fallback_source = fetch_pollinations_fallback(user_name, message)
+    if fallback_llm_reply:
+        return {
+            "status": "success",
+            "reply": fallback_llm_reply,
+            "source": fallback_source,
+            "model_used": fallback_source,
+            "is_fallback": True
+        }
 
-    # E. Query Live LLM for 100% real AI responses on all questions
-    live_reply = fetch_live_llm_response(user_name, message)
-    if live_reply:
-        return {"status": "success", "reply": live_reply}
+    # -------------------------------------------------------------
+    # 10. Fallback Tier 2: Offline Domain Knowledge Mentor Engine
+    # -------------------------------------------------------------
+    offline_reply = build_mentor_offline_fallback(user_name, message)
+    return {
+        "status": "success",
+        "reply": offline_reply,
+        "source": "VELLIFE Student Mentor (Offline Engine)",
+        "model_used": "Offline Knowledge Engine",
+        "is_fallback": True
+    }
 
-    # F. Offline Dynamic Conversational Fallback
-    clean_prompt = re.sub(r'^(can you|please|tell me|explain|what is|how to|i want to|i am)\s+', '', message, flags=re.IGNORECASE).strip(' ?!')
-    prompt_title = clean_prompt.capitalize() if clean_prompt else message
-
-    fallback_reply = (
-        f"Sure thing, **{user_name}**! Here is clear guidance on **{prompt_title}**:\n\n"
-        "1. **Core Concept & Approach**:\n"
-        f"   To work with {message.rstrip('?!.')}, the most effective method is to break down your objective into actionable steps.\n\n"
-        "2. **Best Practices & Next Steps**:\n"
-        "   - **Master Core Principles**: Understand the foundation before diving into advanced implementation.\n"
-        "   - **Build & Test Hands-On**: Practice with realistic projects or test cases to solidify your learning.\n"
-        "   - **Iterate Continuously**: Refine edge cases, optimize performance, and keep your code organized.\n\n"
-        f"Would you like me to write code examples or step-by-step guidance specifically for this, **{user_name}**?"
-    )
 class RoadmapRequest(BaseModel):
     course: str
     level: str = "Intermediate"
@@ -806,7 +1202,7 @@ def fetch_live_ai_roadmap(course: str, level: str, duration: str, goal: str) -> 
     try:
         url = "https://text.pollinations.ai/"
         system_prompt = (
-            "You are VELFIRE AI, an expert software career roadmap architect. "
+            "You are VELLIFE AI, an expert software career roadmap architect. "
             "Generate an in-depth, realistic, career-aligned learning roadmap for the specified course. "
             "Output strictly valid JSON and nothing else. No markdown commentary outside JSON.\n"
             "JSON structure must match:\n"
@@ -891,7 +1287,7 @@ def generate_roadmap_endpoint(data: RoadmapRequest):
     fallback_roadmap = build_fallback_roadmap(course, level, duration, goal)
     return {
         "status": "success",
-        "source": "velfire_ai_engine",
+        "source": "vellife_ai_engine",
         "roadmap": fallback_roadmap
     }
 

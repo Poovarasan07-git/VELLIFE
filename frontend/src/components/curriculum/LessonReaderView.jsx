@@ -95,7 +95,7 @@ function LessonReaderView({
   };
 
   return (
-    <div className="velfire-textbook-reader-container">
+    <div className="vellife-textbook-reader-container">
       {/* Top Header Bar */}
       <div className="reader-top-header">
         <button className="btn-back-overview" onClick={onBackToOverview}>
@@ -246,7 +246,7 @@ function LessonReaderView({
                     ) : (
                       <span className="gfg-in-progress-chip">📖 Active Topic</span>
                     )}
-                    <span className="gfg-author-chip">✍️ Verified by Velfire Tech Experts</span>
+                    <span className="gfg-author-chip">✍️ Verified by Vellife Tech Experts</span>
                   </div>
                 </div>
 

@@ -8,7 +8,7 @@ function CourseCard({ course, progress = 0, onSelectCourse, onStartLearning }) {
   const totalLessonsCount = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
 
   return (
-    <div className="velfire-course-card">
+    <div className="vellife-course-card">
       <div 
         className="course-card-header" 
         style={{ background: course.bannerGradient || "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)" }}

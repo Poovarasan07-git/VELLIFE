@@ -3,18 +3,27 @@ import "./Chatbot.css";
 
 function Chatbot({ user, onBackToDashboard, onLogout }) {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem("velfire_theme") === "dark";
+    return localStorage.getItem("vellife_theme") === "dark";
   });
 
   const toggleTheme = () => {
     const nextMode = !isDarkMode;
     setIsDarkMode(nextMode);
-    localStorage.setItem("velfire_theme", nextMode ? "dark" : "light");
+    localStorage.setItem("vellife_theme", nextMode ? "dark" : "light");
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [selectedModel, setSelectedModel] = useState("VELFIRE GPT-4o"); // VELFIRE GPT-4o, VELFIRE GPT-4o Mini, VELFIRE Code Pro
+  const [selectedModel, setSelectedModel] = useState("Google Gemini 2.0 Flash");
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
+  const [aiStatus, setAiStatus] = useState(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/ai/status")
+      .then((res) => res.json())
+      .then((data) => setAiStatus(data))
+      .catch(() => {});
+  }, []);
   
   // Chat History Threads
   const [chatHistory, setChatHistory] = useState([
@@ -73,7 +82,7 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
       {
         id: "msg-2",
         sender: "bot",
-        text: `Here is the complete analysis for **${item?.title}**:\n\n1. **Core Concept**: Efficient architecture tailored for high-scale applications.\n2. **Best Practices**: Use modular component breakdown, typed schemas, and structured state persistence.\n\n\`\`\`javascript\n// Example implementation snippet\nimport { useState, useEffect } from 'react';\n\nexport function ${item?.title.replace(/[^a-zA-Z]/g, "") || "Module"}() {\n  const [data, setData] = useState(null);\n  useEffect(() => {\n    console.log("VELFIRE AI Engine Active");\n  }, []);\n  return <div>{data || "Ready"}</div>;\n}\n\`\`\`\n\nIs there a specific detail you would like to explore further?`,
+        text: `Here is the complete analysis for **${item?.title}**:\n\n1. **Core Concept**: Efficient architecture tailored for high-scale applications.\n2. **Best Practices**: Use modular component breakdown, typed schemas, and structured state persistence.\n\n\`\`\`javascript\n// Example implementation snippet\nimport { useState, useEffect } from 'react';\n\nexport function ${item?.title.replace(/[^a-zA-Z]/g, "") || "Module"}() {\n  const [data, setData] = useState(null);\n  useEffect(() => {\n    console.log("VELLIFE AI Engine Active");\n  }, []);\n  return <div>{data || "Ready"}</div>;\n}\n\`\`\`\n\nIs there a specific detail you would like to explore further?`,
         time: "10:31 AM",
       },
     ]);
@@ -111,7 +120,7 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
     }
 
     // D. Greetings ("hi", "hello", "hey")
-    if (/^(hi|hello|hey|good morning|good evening|good afternoon|greetings|hola|sup|yo)(\s+velfire|\s+bot|\s+ai|\s+there|\s+gpt|!)?$/i.test(lower) || lower === "hi" || lower === "hello" || lower === "hey") {
+    if (/^(hi|hello|hey|good morning|good evening|good afternoon|greetings|hola|sup|yo)(\s+vellife|\s+bot|\s+ai|\s+there|\s+gpt|!)?$/i.test(lower) || lower === "hi" || lower === "hello" || lower === "hey") {
       const greetings = [
         `Hi **${userName}**! 👋 How can I help you today? Whether you have coding questions, need resume feedback, system design advice, or anything else, feel free to ask!`,
         `Hello **${userName}**! 🚀 Great to see you. What project, code snippet, or question are we tackling today?`,
@@ -139,7 +148,7 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
 
     // E4. Full-Stack Deep Dive / Explanation ("expalin more about full stack", "tell me about full stack", "what is full stack")
     if (["full stack", "fullstack"].some((kw) => lower.includes(kw)) && ["explain", "expalin", "more", "tell", "what is", "details", "about"].some((action) => lower.includes(action))) {
-      return `Here is a comprehensive breakdown of **Full-Stack Web Development** for you, **${userName}**! 🌐\n\n### 💡 What is Full-Stack Web Development?\nFull-Stack Development means building **both sides** of a web application:\n1. **Frontend**: Everything the user sees and clicks on in their browser.\n2. **Backend**: The server logic, API endpoints, authentication, and database connections running behind the scenes.\n\n---\n\n### 🎨 Layer 1: Frontend (Client-Side)\n- **HTML5 & CSS3**: Defines page structure, modern grid/flex layouts, colors, and responsive designs.\n- **JavaScript (ES6+)**: Handles interactivity, user events, dynamic updates, and fetching data from backend servers.\n- **React.js (React 19)**: The world's most popular UI library for building fast, single-page applications (like this VELFIRE AI OS app!).\n\n### ⚙️ Layer 2: Backend (Server-Side)\n- **Python (FastAPI / Django REST Framework)** or **Node.js (Express)**: Processes incoming HTTP requests, enforces security/passwords, and executes business logic.\n- **REST APIs**: The URL data endpoints (e.g., \`/api/login\`, \`/api/chat\`) that bridge Frontend and Backend.\n\n### 💾 Layer 3: Database (Data Persistence)\n- **Relational DBs (SQLite, PostgreSQL, MySQL)**: Store user records, messages, and project data safely in tables.\n- **ORMs (SQLAlchemy / Prisma)**: Allow backend developers to query databases using clean Python/JavaScript objects.\n\n---\n\n### 🚀 Why Full-Stack is ideal for Final-Year Students:\n1. **Maximum Job Volume**: Startups and tech companies love hiring freshers who understand how full end-to-end apps work.\n2. **Live Portfolio Projects**: You can build working web apps and showcase them live on GitHub and Vercel/Render for recruiters.\n3. **Multiple Job Roles**: You can apply for Frontend Developer, Backend Developer, or Full-Stack Engineer positions!\n\nWould you like me to create a **custom step-by-step 30-day learning roadmap** to master Full-Stack development from scratch?`;
+      return `Here is a comprehensive breakdown of **Full-Stack Web Development** for you, **${userName}**! 🌐\n\n### 💡 What is Full-Stack Web Development?\nFull-Stack Development means building **both sides** of a web application:\n1. **Frontend**: Everything the user sees and clicks on in their browser.\n2. **Backend**: The server logic, API endpoints, authentication, and database connections running behind the scenes.\n\n---\n\n### 🎨 Layer 1: Frontend (Client-Side)\n- **HTML5 & CSS3**: Defines page structure, modern grid/flex layouts, colors, and responsive designs.\n- **JavaScript (ES6+)**: Handles interactivity, user events, dynamic updates, and fetching data from backend servers.\n- **React.js (React 19)**: The world's most popular UI library for building fast, single-page applications (like this VELLIFE AI OS app!).\n\n### ⚙️ Layer 2: Backend (Server-Side)\n- **Python (FastAPI / Django REST Framework)** or **Node.js (Express)**: Processes incoming HTTP requests, enforces security/passwords, and executes business logic.\n- **REST APIs**: The URL data endpoints (e.g., \`/api/login\`, \`/api/chat\`) that bridge Frontend and Backend.\n\n### 💾 Layer 3: Database (Data Persistence)\n- **Relational DBs (SQLite, PostgreSQL, MySQL)**: Store user records, messages, and project data safely in tables.\n- **ORMs (SQLAlchemy / Prisma)**: Allow backend developers to query databases using clean Python/JavaScript objects.\n\n---\n\n### 🚀 Why Full-Stack is ideal for Final-Year Students:\n1. **Maximum Job Volume**: Startups and tech companies love hiring freshers who understand how full end-to-end apps work.\n2. **Live Portfolio Projects**: You can build working web apps and showcase them live on GitHub and Vercel/Render for recruiters.\n3. **Multiple Job Roles**: You can apply for Frontend Developer, Backend Developer, or Full-Stack Engineer positions!\n\nWould you like me to create a **custom step-by-step 30-day learning roadmap** to master Full-Stack development from scratch?`;
     }
 
     // F. Transition / Learning Full Stack from Python ("i know python so want learn full stack", etc.)
@@ -159,17 +168,17 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
 
     // I. Pure Code Requests for React / Frontend
     if ((lower.includes("code") || lower.includes("write") || lower.includes("example") || lower.includes("build") || lower.includes("create")) && ["react", "component", "jsx", "frontend", "usestate", "useeffect"].some((k) => lower.includes(k))) {
-      return `### Modern React 19 Solution for **${userName}** 💻\n\nHere is a clean, modern React component tailored for your requirement:\n\n\`\`\`jsx\nimport React, { useState, useEffect } from 'react';\n\nexport default function VelfireComponent() {\n  const [data, setData] = useState([]);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    const loadData = async () => {\n      try {\n        setLoading(true);\n        const res = await fetch('/api/data');\n        const json = await res.json();\n        setData(json);\n      } catch (err) {\n        console.error("Fetch error:", err);\n      } finally {\n        setLoading(false);\n      }\n    };\n    loadData();\n  }, []);\n\n  return (\n    <div className="velfire-container">\n      <h3>VELFIRE Interactive Component</h3>\n      {loading ? (\n        <p>Loading data...</p>\n      ) : (\n        <ul>\n          {data.map((item, index) => (\n            <li key={index}>{item.name || item}</li>\n          ))}\n        </ul>\n      )}\n    </div>\n  );\n}\n\`\`\`\n\n### Key Highlights:\n- Modern React 19 Functional Hooks pattern.\n- Full async try/catch handling with loading indicators.\n- Zero external dependencies required.`;
+      return `### Modern React 19 Solution for **${userName}** 💻\n\nHere is a clean, modern React component tailored for your requirement:\n\n\`\`\`jsx\nimport React, { useState, useEffect } from 'react';\n\nexport default function VellifeComponent() {\n  const [data, setData] = useState([]);\n  const [loading, setLoading] = useState(true);\n\n  useEffect(() => {\n    const loadData = async () => {\n      try {\n        setLoading(true);\n        const res = await fetch('/api/data');\n        const json = await res.json();\n        setData(json);\n      } catch (err) {\n        console.error("Fetch error:", err);\n      } finally {\n        setLoading(false);\n      }\n    };\n    loadData();\n  }, []);\n\n  return (\n    <div className="vellife-container">\n      <h3>VELLIFE Interactive Component</h3>\n      {loading ? (\n        <p>Loading data...</p>\n      ) : (\n        <ul>\n          {data.map((item, index) => (\n            <li key={index}>{item.name || item}</li>\n          ))}\n        </ul>\n      )}\n    </div>\n  );\n}\n\`\`\`\n\n### Key Highlights:\n- Modern React 19 Functional Hooks pattern.\n- Full async try/catch handling with loading indicators.\n- Zero external dependencies required.`;
     }
 
     // J. Pure Code Requests for Python
     if ((lower.includes("code") || lower.includes("write") || lower.includes("example") || lower.includes("build") || lower.includes("create")) && ["fastapi", "backend", "api", "django", "flask"].some((k) => lower.includes(k))) {
-      return `### Asynchronous FastAPI Backend for **${userName}** 🐍\n\nHere is a clean, scalable FastAPI service architecture:\n\n\`\`\`python\nfrom fastapi import FastAPI, HTTPException, status\nfrom pydantic import BaseModel, EmailStr\nfrom typing import Optional\nimport uvicorn\n\napp = FastAPI(title="VELFIRE High-Performance Core", version="2.0.0")\n\nclass UserPayload(BaseModel):\n    name: str\n    email: str\n    role: Optional[str] = "Student"\n\n@app.get("/api/v1/health")\ndef health_check():\n    return {"status": "ok", "system": "VELFIRE Core API"}\n\n@app.post("/api/v1/user/process")\ndef process_user(data: UserPayload):\n    if not data.email:\n        raise HTTPException(status_code=400, detail="Email is required")\n    return {\n        "status": "success",\n        "message": f"Processed payload for {data.name}",\n        "data": data.dict()\n    }\n\nif __name__ == "__main__":\n    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)\n\`\`\`\n\n### Included Advantages:\n- Automatic Pydantic Schema Validation.\n- Interactive OpenAPI Swagger documentation served automatically at \`/docs\`.`;
+      return `### Asynchronous FastAPI Backend for **${userName}** 🐍\n\nHere is a clean, scalable FastAPI service architecture:\n\n\`\`\`python\nfrom fastapi import FastAPI, HTTPException, status\nfrom pydantic import BaseModel, EmailStr\nfrom typing import Optional\nimport uvicorn\n\napp = FastAPI(title="VELLIFE High-Performance Core", version="2.0.0")\n\nclass UserPayload(BaseModel):\n    name: str\n    email: str\n    role: Optional[str] = "Student"\n\n@app.get("/api/v1/health")\ndef health_check():\n    return {"status": "ok", "system": "VELLIFE Core API"}\n\n@app.post("/api/v1/user/process")\ndef process_user(data: UserPayload):\n    if not data.email:\n        raise HTTPException(status_code=400, detail="Email is required")\n    return {\n        "status": "success",\n        "message": f"Processed payload for {data.name}",\n        "data": data.dict()\n    }\n\nif __name__ == "__main__":\n    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)\n\`\`\`\n\n### Included Advantages:\n- Automatic Pydantic Schema Validation.\n- Interactive OpenAPI Swagger documentation served automatically at \`/docs\`.`;
     }
 
     // K. Identity / Who are you
     if (lower.includes("who are you") || lower.includes("what is your name") || lower.includes("tell me about yourself") || lower.includes("who created you")) {
-      return `Hello **${userName}**! I am **VELFIRE AI**, an intelligent conversational assistant modeled after ChatGPT.\n\n### What I can help you with:\n- 💻 **Software Engineering & Coding**: Writing, debugging, and refactoring React 19, Python, C++, Java, JavaScript, FastAPI, and SQL.\n- 📄 **ATS Resume & Career Guidance**: Tailoring resumes, writing cover letters, and technical interview preparation.\n- 🚀 **System Architecture & Cloud**: Microservices, REST APIs, Docker, and database schemas.\n- 🧮 **Math & Science Solutions**: Solving math equations, physics problems, and logic puzzles.\n- 📝 **Writing & Summaries**: Drafting emails, essays, articles, and code documentation.\n\nFeel free to ask me any question!`;
+      return `Hello **${userName}**! I am **VELLIFE AI**, an intelligent conversational assistant modeled after ChatGPT.\n\n### What I can help you with:\n- 💻 **Software Engineering & Coding**: Writing, debugging, and refactoring React 19, Python, C++, Java, JavaScript, FastAPI, and SQL.\n- 📄 **ATS Resume & Career Guidance**: Tailoring resumes, writing cover letters, and technical interview preparation.\n- 🚀 **System Architecture & Cloud**: Microservices, REST APIs, Docker, and database schemas.\n- 🧮 **Math & Science Solutions**: Solving math equations, physics problems, and logic puzzles.\n- 📝 **Writing & Summaries**: Drafting emails, essays, articles, and code documentation.\n\nFeel free to ask me any question!`;
     }
 
     // L. Thank you
@@ -217,8 +226,10 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
 
     // Try fetching response from backend /api/chat or fallback to clever generator
     let botText = "";
+    let usedModel = selectedModel;
+    let isFallback = false;
     try {
-      const displayName = user?.name || (user?.email ? user.email.split("@")[0] : "Poovarasan");
+      const displayName = user?.name || (user?.email ? user.email.split("@")[0] : "Student");
       const res = await fetch("http://127.0.0.1:8000/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -232,14 +243,18 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
         const data = await res.json();
         if (data && data.reply) {
           botText = data.reply;
+          usedModel = data.model_used || data.source || selectedModel;
+          isFallback = !!data.is_fallback;
         }
       }
     } catch (e) {
-      // Offline / Fallback
+      // Offline / Network Fallback
     }
 
     if (!botText) {
       botText = generateCleverResponse(query);
+      usedModel = "VELLIFE Student Mentor (Offline)";
+      isFallback = true;
     }
 
     setTimeout(() => {
@@ -249,12 +264,13 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
           id: `msg-bot-${Date.now()}`,
           sender: "bot",
           text: botText,
-          model: selectedModel,
+          model: usedModel,
+          isFallback: isFallback,
           time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         },
       ]);
       setIsTyping(false);
-    }, 700);
+    }, 450);
   };
 
   // Copy helper
@@ -424,7 +440,7 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
             )}
             <div className="user-sidebar-meta">
               <span className="user-name">{user?.name || "User Account"}</span>
-              <span className="user-plan">VELFIRE GPT-4o Pro</span>
+              <span className="user-plan">VELLIFE GPT-4o Pro</span>
             </div>
           </div>
         </div>
@@ -466,48 +482,100 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
               {isModelDropdownOpen && (
                 <div className="model-dropdown-menu">
                   <div
-                    className={`model-option ${selectedModel === "VELFIRE GPT-4o" ? "selected" : ""}`}
+                    className={`model-option ${selectedModel === "Google Gemini 2.0 Flash" ? "selected" : ""}`}
                     onClick={() => {
-                      setSelectedModel("VELFIRE GPT-4o");
+                      setSelectedModel("Google Gemini 2.0 Flash");
                       setIsModelDropdownOpen(false);
                     }}
                   >
                     <div className="model-opt-header">
-                      <span className="opt-title">VELFIRE GPT-4o</span>
-                      <span className="opt-badge">Smartest</span>
+                      <span className="opt-title">Google Gemini 2.0 Flash</span>
+                      <span className="opt-badge">Mentor Pro</span>
                     </div>
-                    <span className="opt-desc">Best for complex code generation, architecture & analysis.</span>
+                    <span className="opt-desc">Primary Student Mentor with high-speed coding, academic doubt solving & placements.</span>
                   </div>
 
                   <div
-                    className={`model-option ${selectedModel === "VELFIRE GPT-4o Mini" ? "selected" : ""}`}
+                    className={`model-option ${selectedModel === "Google Gemini 2.5 Flash" ? "selected" : ""}`}
                     onClick={() => {
-                      setSelectedModel("VELFIRE GPT-4o Mini");
+                      setSelectedModel("Google Gemini 2.5 Flash");
                       setIsModelDropdownOpen(false);
                     }}
                   >
                     <div className="model-opt-header">
-                      <span className="opt-title">VELFIRE GPT-4o Mini</span>
-                      <span className="opt-badge fast">Fastest</span>
+                      <span className="opt-title">Google Gemini 2.5 Flash</span>
+                      <span className="opt-badge fast">Next-Gen</span>
                     </div>
-                    <span className="opt-desc">Lightweight & high speed for everyday questions.</span>
+                    <span className="opt-desc">Next-generation Gemini model with enhanced technical problem solving.</span>
                   </div>
 
                   <div
-                    className={`model-option ${selectedModel === "VELFIRE Code Pro" ? "selected" : ""}`}
+                    className={`model-option ${selectedModel === "Google Gemini 1.5 Flash" ? "selected" : ""}`}
                     onClick={() => {
-                      setSelectedModel("VELFIRE Code Pro");
+                      setSelectedModel("Google Gemini 1.5 Flash");
                       setIsModelDropdownOpen(false);
                     }}
                   >
                     <div className="model-opt-header">
-                      <span className="opt-title">VELFIRE Code & System Pro</span>
-                      <span className="opt-badge pro">Dev Pro</span>
+                      <span className="opt-title">Google Gemini 1.5 Flash</span>
+                      <span className="opt-badge fast">1M Context</span>
                     </div>
-                    <span className="opt-desc">Deep technical debugging, FastAPI schemas & React 19.</span>
+                    <span className="opt-desc">High-throughput fallback model for long textbook units, roadmaps & syllabi.</span>
+                  </div>
+
+                  <div
+                    className={`model-option ${selectedModel === "Google Gemini 1.5 Pro" ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedModel("Google Gemini 1.5 Pro");
+                      setIsModelDropdownOpen(false);
+                    }}
+                  >
+                    <div className="model-opt-header">
+                      <span className="opt-title">Google Gemini 1.5 Pro</span>
+                      <span className="opt-badge pro">Deep Think</span>
+                    </div>
+                    <span className="opt-desc">Deep algorithmic analysis, complex architectural design & mathematics.</span>
+                  </div>
+
+                  <div
+                    className={`model-option ${selectedModel === "VELLIFE Mentor Core" ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedModel("VELLIFE Mentor Core");
+                      setIsModelDropdownOpen(false);
+                    }}
+                  >
+                    <div className="model-opt-header">
+                      <span className="opt-title">VELLIFE Mentor Core</span>
+                      <span className="opt-badge">Auto-Cascade</span>
+                    </div>
+                    <span className="opt-desc">Automatic multi-tier fallbacks across Gemini, Live LLM, and Offline Mentor Engine.</span>
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Gemini Key Status Pill */}
+            <div 
+              className={`gemini-status-pill ${aiStatus?.has_gemini_key ? "connected" : "fallback"}`}
+              onClick={() => setShowStatusModal(true)}
+              title="Click to view AI Mentor & Fallback Models Architecture"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "5px 12px",
+                borderRadius: "20px",
+                fontSize: "12px",
+                fontWeight: "600",
+                cursor: "pointer",
+                background: aiStatus?.has_gemini_key ? "rgba(16, 185, 129, 0.12)" : "rgba(234, 179, 8, 0.15)",
+                color: aiStatus?.has_gemini_key ? "#059669" : "#b45309",
+                border: aiStatus?.has_gemini_key ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(234, 179, 8, 0.35)",
+                marginLeft: "8px"
+              }}
+            >
+              <span style={{ fontSize: "8px" }}>●</span>
+              <span>{aiStatus?.has_gemini_key ? "Gemini Key: Active" : "Mentor Fallbacks Active"}</span>
             </div>
           </div>
 
@@ -541,59 +609,59 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
                 </svg>
               </div>
 
-              <h1 className="gpt-landing-heading">What can VELFIRE AI help with today?</h1>
+              <h1 className="gpt-landing-heading">What can your Student Mentor help you achieve today?</h1>
 
-              {/* 4 Interactive ChatGPT Prompt Cards */}
+              {/* 4 Interactive Student Mentor Prompt Cards */}
               <div className="gpt-prompt-cards-grid">
                 <div
                   className="prompt-card"
                   onClick={() =>
-                    handleSendMessage("Create a modern React 19 component with FastAPI backend connection")
-                  }
-                >
-                  <span className="card-icon">💻</span>
-                  <div className="card-text-group">
-                    <h4>React & FastAPI Code</h4>
-                    <p>Build a full-stack component with state & API fetch</p>
-                  </div>
-                </div>
-
-                <div
-                  className="prompt-card"
-                  onClick={() =>
-                    handleSendMessage("Optimize my resume ATS score for Senior Tech & Full Stack roles")
-                  }
-                >
-                  <span className="card-icon">📄</span>
-                  <div className="card-text-group">
-                    <h4>ATS Resume Optimization</h4>
-                    <p>Enhance bullet points and target tech keywords</p>
-                  </div>
-                </div>
-
-                <div
-                  className="prompt-card"
-                  onClick={() =>
-                    handleSendMessage("Explain FastAPI backend architecture with SQLite integration")
-                  }
-                >
-                  <span className="card-icon">🚀</span>
-                  <div className="card-text-group">
-                    <h4>Backend Architecture</h4>
-                    <p>Design a high-throughput Python API with SQLite</p>
-                  </div>
-                </div>
-
-                <div
-                  className="prompt-card"
-                  onClick={() =>
-                    handleSendMessage("Create a 30-day study roadmap to master AI engineering & LLMs")
+                    handleSendMessage("Hi mentor, how should I start preparing for campus placement coding rounds?")
                   }
                 >
                   <span className="card-icon">🎓</span>
                   <div className="card-text-group">
-                    <h4>AI Mastery Roadmap</h4>
-                    <p>Generate step-by-step milestones & course topics</p>
+                    <h4>Campus Placement Prep</h4>
+                    <p>Roadmap for coding tests, Aptitude, and technical rounds</p>
+                  </div>
+                </div>
+
+                <div
+                  className="prompt-card"
+                  onClick={() =>
+                    handleSendMessage("Explain Binary Search algorithm with intuitive real-world analogy, time complexity and clean Python code")
+                  }
+                >
+                  <span className="card-icon">🧠</span>
+                  <div className="card-text-group">
+                    <h4>DSA & Problem Solving</h4>
+                    <p>Intuitive concept breakdowns with clean runnable code</p>
+                  </div>
+                </div>
+
+                <div
+                  className="prompt-card"
+                  onClick={() =>
+                    handleSendMessage("Which domain is better for freshers in 2026: Full Stack Development vs Data Analytics vs AI/ML?")
+                  }
+                >
+                  <span className="card-icon">🚀</span>
+                  <div className="card-text-group">
+                    <h4>Career & Domain Guidance</h4>
+                    <p>Compare tech stacks, hiring volume, and salaries</p>
+                  </div>
+                </div>
+
+                <div
+                  className="prompt-card"
+                  onClick={() =>
+                    handleSendMessage("How to study university semester syllabus (like B.Tech R20) to score 9+ CGPA?")
+                  }
+                >
+                  <span className="card-icon">📚</span>
+                  <div className="card-text-group">
+                    <h4>Semester Exam Strategy</h4>
+                    <p>PYQs, architectural diagrams, and scoring techniques</p>
                   </div>
                 </div>
               </div>
@@ -622,8 +690,25 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
                     <div className="msg-body">
                       <div className="msg-author-row">
                         <span className="author-name">
-                          {msg.sender === "user" ? user?.name || "You" : "VELFIRE AI"}
+                          {msg.sender === "user" ? user?.name || "You" : "VELLIFE Student Mentor"}
                         </span>
+                        {msg.model && (
+                          <span 
+                            className={`msg-model-tag ${msg.isFallback ? "is-fallback" : ""}`}
+                            style={{
+                              fontSize: "11px",
+                              padding: "2px 8px",
+                              borderRadius: "10px",
+                              background: msg.isFallback ? "rgba(234, 179, 8, 0.15)" : "rgba(16, 185, 129, 0.12)",
+                              color: msg.isFallback ? "#b45309" : "#047857",
+                              border: msg.isFallback ? "1px solid rgba(234, 179, 8, 0.3)" : "1px solid rgba(16, 185, 129, 0.25)",
+                              fontWeight: "600",
+                              marginLeft: "8px"
+                            }}
+                          >
+                            {msg.model}
+                          </span>
+                        )}
                         <span className="msg-time">{msg.time}</span>
                       </div>
 
@@ -764,7 +849,7 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
                     handleSendMessage();
                   }
                 }}
-                placeholder="Message VELFIRE AI..."
+                placeholder="Message VELLIFE AI..."
                 rows={1}
               />
 
@@ -784,11 +869,107 @@ function Chatbot({ user, onBackToDashboard, onLogout }) {
           </div>
 
           <div className="gpt-footer-disclaimer">
-            VELFIRE AI can make mistakes. Verify important code & career information.
+            VELLIFE AI can make mistakes. Verify important code & career information.
           </div>
         </div>
 
       </main>
+
+      {/* AI Mentor & Fallbacks Architecture Modal */}
+      {showStatusModal && (
+        <div 
+          className="mentor-modal-overlay"
+          onClick={() => setShowStatusModal(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(4px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "20px"
+          }}
+        >
+          <div 
+            className="mentor-modal-card"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: isDarkMode ? "#064e3b" : "#fffdf5",
+              color: isDarkMode ? "#e2e8f0" : "#043325",
+              border: isDarkMode ? "1.5px solid #10b981" : "1.5px solid #fde047",
+              borderRadius: "16px",
+              padding: "24px 28px",
+              maxWidth: "520px",
+              width: "100%",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "24px" }}>🎓</span>
+                <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700" }}>VELLIFE Student Mentor Engine</h3>
+              </div>
+              <button 
+                onClick={() => setShowStatusModal(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  fontSize: "18px",
+                  cursor: "pointer",
+                  color: "inherit"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ marginBottom: "18px", padding: "12px 14px", borderRadius: "10px", background: aiStatus?.has_gemini_key ? "rgba(16,185,129,0.15)" : "rgba(234,179,8,0.15)", border: aiStatus?.has_gemini_key ? "1px solid rgba(16,185,129,0.3)" : "1px solid rgba(234,179,8,0.3)" }}>
+              <div style={{ fontWeight: "600", fontSize: "13px", marginBottom: "4px" }}>
+                {aiStatus?.has_gemini_key ? "✓ Google Gemini API Active" : "⚡ Multi-Tier Fallback Active"}
+              </div>
+              <div style={{ fontSize: "12px", opacity: 0.9 }}>
+                {aiStatus?.has_gemini_key 
+                  ? `Key: ${aiStatus.masked_gemini_key} (Ready to mentor with high-speed 2.0 Flash)` 
+                  : "To connect your free Gemini API key, add `GEMINI_API_KEY=AIzaSy...` in `backend/.env`!"}
+              </div>
+            </div>
+
+            <h4 style={{ margin: "0 0 10px 0", fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.5px", opacity: 0.8 }}>
+              Multi-Tier Fallback Hierarchy
+            </h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px", marginBottom: "20px" }}>
+              <div style={{ padding: "8px 12px", borderRadius: "8px", background: isDarkMode ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)" }}>
+                <strong>Tier 1 (Google Gemini Cascade):</strong> gemini-2.0-flash → gemini-2.5-flash → gemini-1.5-flash → gemini-2.0-flash-lite → gemini-1.5-pro
+              </div>
+              <div style={{ padding: "8px 12px", borderRadius: "8px", background: isDarkMode ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)" }}>
+                <strong>Tier 2 (Secondary Live LLM):</strong> Pollinations Multi-LLM with Student Mentor persona
+              </div>
+              <div style={{ padding: "8px 12px", borderRadius: "8px", background: isDarkMode ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)" }}>
+                <strong>Tier 3 (Offline Engine):</strong> Built-in DSA, Web Dev, SQL, and University Exam Knowledge Core
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowStatusModal(false)}
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "10px",
+                border: "none",
+                background: "#047857",
+                color: "#ffffff",
+                fontWeight: "600",
+                cursor: "pointer",
+                fontSize: "13px"
+              }}
+            >
+              Close & Start Mentoring
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

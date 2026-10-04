@@ -1,4 +1,4 @@
-.velfire-footer {
+.vellife-footer {
   margin-top: auto;
   width: 100%;
   background: linear-gradient(135deg, #042f2e 0%, #064e3b 60%, #062319 100%);
@@ -9,17 +9,17 @@
   overflow: hidden;
 }
 
-.light-mode .velfire-footer {
+.light-mode .vellife-footer {
   background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
   color: #fefce8;
 }
 
-.dark-mode .velfire-footer {
+.dark-mode .vellife-footer {
   background: linear-gradient(135deg, #042f2e 0%, #062319 100%);
   border-top-color: #fde047;
 }
 
-.velfire-footer-container {
+.vellife-footer-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 40px 24px 40px;
@@ -184,7 +184,7 @@
 }
 
 @media (max-width: 900px) {
-  .velfire-footer-container {
+  .vellife-footer-container {
     grid-template-columns: 1fr;
     gap: 28px;
     padding: 32px 24px 20px 24px;

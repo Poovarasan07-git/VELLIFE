@@ -17,7 +17,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
     {
       id: 1,
       sender: "bot",
-      text: "Hello! 👋 I am your **VELFIRE In-App Assistant**.\n\nWhat would you like to know or do? Ask me anything about our **AI Roadmaps**, **Courses (Text/Recorded/Live)**, **Job Portal**, **ATS Resume Tools**, or **Support Contact**, and I will answer you in real time!",
+      text: "Hello! 👋 I am your **VELLIFE In-App Assistant**.\n\nWhat would you like to know or do? Ask me anything about our **AI Roadmaps**, **Courses (Text/Recorded/Live)**, **Job Portal**, **ATS Resume Tools**, or **Support Contact**, and I will answer you in real time!",
       time: "Just now",
       actionType: null,
       actionLabel: null
@@ -38,7 +38,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
 
   const handleCopyEmail = () => {
     if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText("velfire07@gmail.com");
+      navigator.clipboard.writeText("vellife07@gmail.com");
     }
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2200);
@@ -72,7 +72,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
   
   // Get Started / Continue state persistence
   const [hasStarted, setHasStarted] = useState(() => {
-    return localStorage.getItem("velfire_has_started") === "true";
+    return localStorage.getItem("vellife_has_started") === "true";
   });
 
   // Profile edit state inside Settings
@@ -114,11 +114,11 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
 
   // Theme state with localStorage persistence
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem("velfire_theme") === "dark";
+    return localStorage.getItem("vellife_theme") === "dark";
   });
 
   useEffect(() => {
-    localStorage.setItem("velfire_theme", isDarkMode ? "dark" : "light");
+    localStorage.setItem("vellife_theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
   const toggleTheme = () => {
@@ -180,7 +180,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       question: "How do I study domain courses (Text, Recorded & Live)?",
       icon: "📚",
       badge: "Domain Courses",
-      answer: "In the Learning Platform under 'VELFIRE Courses', you will find 3 learning sections: 1. Text Lessons (structured reading modules with code snippets & practice), 2. Recorded Classes (HD video masterclasses with chapter notes), and 3. Live Sessions (interactive workshops with direct instructor Q&A).",
+      answer: "In the Learning Platform under 'VELLIFE Courses', you will find 3 learning sections: 1. Text Lessons (structured reading modules with code snippets & practice), 2. Recorded Classes (HD video masterclasses with chapter notes), and 3. Live Sessions (interactive workshops with direct instructor Q&A).",
       actionLabel: "Explore Courses",
       actionType: "workspace"
     },
@@ -189,17 +189,17 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       question: "How do I use the Resume Builder and Resume Analyzer?",
       icon: "📄",
       badge: "Career Tools",
-      answer: "Open the 'VELFIRE Courses' hub and scroll down to 'Career Tools'. The Resume Builder lets you build ATS-compliant resumes with real-time live preview and instant PDF export. The Resume Analyzer lets you upload your CV/resume to evaluate your ATS compatibility score and missing keywords.",
+      answer: "Open the 'VELLIFE Courses' hub and scroll down to 'Career Tools'. The Resume Builder lets you build ATS-compliant resumes with real-time live preview and instant PDF export. The Resume Analyzer lets you upload your CV/resume to evaluate your ATS compatibility score and missing keywords.",
       actionLabel: "Open Career Tools",
       actionType: "workspace"
     },
     {
       id: 4,
-      question: "How do I access and apply for jobs in VELFIRE Jobs?",
+      question: "How do I access and apply for jobs in VELLIFE Jobs?",
       icon: "💼",
       badge: "Job Portal",
-      answer: "The VELFIRE Job Portal connects learners directly with hiring tech companies. Progress through your domain roadmap and complete the Mock Interview with an 80%+ score to unlock verified job postings, salary benchmarks, and 1-click applications.",
-      actionLabel: "View VELFIRE Jobs",
+      answer: "The VELLIFE Job Portal connects learners directly with hiring tech companies. Progress through your domain roadmap and complete the Mock Interview with an 80%+ score to unlock verified job postings, salary benchmarks, and 1-click applications.",
+      actionLabel: "View VELLIFE Jobs",
       actionType: "workspace"
     }
   ];
@@ -221,22 +221,22 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
 
     const lower = text.toLowerCase();
 
-    // 1. COMPREHENSIVE VELFIRE APP KNOWLEDGE BASE
+    // 1. COMPREHENSIVE VELLIFE APP KNOWLEDGE BASE
     let reply = "";
     let actionType = null;
     let actionLabel = null;
 
     if (
-      lower.includes("what is velfire") || 
+      lower.includes("what is vellife") || 
       lower.includes("what is veli-cha") || 
       lower.includes("what is this app") || 
-      lower.includes("about velfire") ||
-      lower.includes("tell me about velfire") ||
+      lower.includes("about vellife") ||
+      lower.includes("tell me about vellife") ||
       lower.includes("tell me about the app") ||
       lower.includes("overview") ||
       lower.includes("purpose")
     ) {
-      reply = "🌟 **VELFIRE (VELI-CHA)** is an AI-powered Career Acceleration & Tech Learning Platform.\n\nIt is built for students, graduates, and professionals to master high-demand tech skills and land dream jobs through 5 integrated systems:\n• 🗺️ **Personalized AI Roadmaps**: Custom-generated curriculum tailored to your domain and target timeline.\n• 📚 **3-in-1 Courses**: Interactive Text modules, Recorded video masterclasses, and Live mentor sessions.\n• 💼 **VELFIRE Jobs**: Curated tech openings with fast 1-click applications.\n• 🤖 **24/7 AI Mentor**: Live code debugging, concept breakdowns, and simulated mock interviews.\n• 📄 **ATS Career Tools**: Professional Resume Builder with PDF export & Resume ATS Analyzer.";
+      reply = "🌟 **VELLIFE (VELI-CHA)** is an AI-powered Career Acceleration & Tech Learning Platform.\n\nIt is built for students, graduates, and professionals to master high-demand tech skills and land dream jobs through 5 integrated systems:\n• 🗺️ **Personalized AI Roadmaps**: Custom-generated curriculum tailored to your domain and target timeline.\n• 📚 **3-in-1 Courses**: Interactive Text modules, Recorded video masterclasses, and Live mentor sessions.\n• 💼 **VELLIFE Jobs**: Curated tech openings with fast 1-click applications.\n• 🤖 **24/7 AI Mentor**: Live code debugging, concept breakdowns, and simulated mock interviews.\n• 📄 **ATS Career Tools**: Professional Resume Builder with PDF export & Resume ATS Analyzer.";
       actionType = "workspace";
       actionLabel = "🚀 Open Learning Workspace";
     } else if (
@@ -248,7 +248,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("how to start") ||
       lower.includes("start learning")
     ) {
-      reply = "🗺️ **Open VELFIRE Roadmap** generates an interactive, week-by-week learning pathway tailored specifically to you:\n\n1. Select your target domain (Full Stack Web Dev, AI & Machine Learning, Data Analytics, Cloud DevOps, Cybersecurity, etc.).\n2. Set your duration (1 Month Sprint, 3 Months Mastery, or 6 Months Deep Dive) and your skill level.\n3. The platform generates actionable milestones, weekly checklists, conceptual deep-dives, and hands-on capstone projects!\n\nYou can track your progress visually right from the dashboard.";
+      reply = "🗺️ **Open VELLIFE Roadmap** generates an interactive, week-by-week learning pathway tailored specifically to you:\n\n1. Select your target domain (Full Stack Web Dev, AI & Machine Learning, Data Analytics, Cloud DevOps, Cybersecurity, etc.).\n2. Set your duration (1 Month Sprint, 3 Months Mastery, or 6 Months Deep Dive) and your skill level.\n3. The platform generates actionable milestones, weekly checklists, conceptual deep-dives, and hands-on capstone projects!\n\nYou can track your progress visually right from the dashboard.";
       actionType = "workspace";
       actionLabel = "🗺️ Open Roadmap Generator";
     } else if (
@@ -262,9 +262,9 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("video") ||
       lower.includes("study")
     ) {
-      reply = "📚 **Open VELFIRE Courses** delivers learning across 3 rich formats:\n\n• 📖 **TEXT**: In-depth theoretical modules, architecture diagrams, best practices, and code syntax snippets.\n• 🎥 **RECORDED**: High-definition video masterclasses organized by module with chapter breakdowns and playback controls.\n• 🔴 **LIVE**: Real-time interactive coaching sessions with industry experts, live Q&A, and live project build-alongs!";
+      reply = "📚 **Open VELLIFE Courses** delivers learning across 3 rich formats:\n\n• 📖 **TEXT**: In-depth theoretical modules, architecture diagrams, best practices, and code syntax snippets.\n• 🎥 **RECORDED**: High-definition video masterclasses organized by module with chapter breakdowns and playback controls.\n• 🔴 **LIVE**: Real-time interactive coaching sessions with industry experts, live Q&A, and live project build-alongs!";
       actionType = "workspace";
-      actionLabel = "📚 Open VELFIRE Courses";
+      actionLabel = "📚 Open VELLIFE Courses";
     } else if (
       lower.includes("job") || 
       lower.includes("portal") || 
@@ -276,9 +276,9 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("vacancy") ||
       lower.includes("career opportunity")
     ) {
-      reply = "💼 **VELFIRE Jobs** is our verified tech job portal designed with a butter-and-green aesthetic:\n\n• Browse verified openings for Full-Stack Developers, AI Engineers, Frontend Specialists, and Data Analysts.\n• Filter by role, salary package, and work mode (Remote / Onsite / Hybrid).\n• Fast 1-Click Application directly using your saved profile and resume!\n• Pro tip: Complete roadmap milestones and achieve 80%+ on our AI Mock Interview to earn a verified candidate badge.";
+      reply = "💼 **VELLIFE Jobs** is our verified tech job portal designed with a butter-and-green aesthetic:\n\n• Browse verified openings for Full-Stack Developers, AI Engineers, Frontend Specialists, and Data Analysts.\n• Filter by role, salary package, and work mode (Remote / Onsite / Hybrid).\n• Fast 1-Click Application directly using your saved profile and resume!\n• Pro tip: Complete roadmap milestones and achieve 80%+ on our AI Mock Interview to earn a verified candidate badge.";
       actionType = "workspace";
-      actionLabel = "💼 View VELFIRE Jobs";
+      actionLabel = "💼 View VELLIFE Jobs";
     } else if (
       lower.includes("ai mentor") || 
       lower.includes("mentor") || 
@@ -288,7 +288,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("interview") ||
       lower.includes("mock")
     ) {
-      reply = "🤖 **VELFIRE AI Mentor** is your 24/7 personal tech companion:\n\n• Ask any technical question, request architecture explanations, or get line-by-line code debugging.\n• Practice simulated Technical & HR Mock Interviews with real-time scoring and personalized improvement tips.\n• Receive targeted career roadmaps, salary negotiation insights, and industry advice.";
+      reply = "🤖 **VELLIFE AI Mentor** is your 24/7 personal tech companion:\n\n• Ask any technical question, request architecture explanations, or get line-by-line code debugging.\n• Practice simulated Technical & HR Mock Interviews with real-time scoring and personalized improvement tips.\n• Receive targeted career roadmaps, salary negotiation insights, and industry advice.";
       actionType = "chatbot";
       actionLabel = "🤖 Launch AI Mentor";
     } else if (
@@ -298,7 +298,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("analyzer") || 
       lower.includes("builder")
     ) {
-      reply = "📄 **VELFIRE Career Tools** includes two essential tools for landing interviews:\n\n• 📝 **ATS Resume Builder**: Create modern, ATS-friendly resumes with live preview, customizable templates, and instant 1-click PDF download.\n• 🔍 **ATS Resume Analyzer**: Upload or paste your CV to get an instant ATS compatibility score (0–100%), keyword optimization suggestions, and formatting critiques.";
+      reply = "📄 **VELLIFE Career Tools** includes two essential tools for landing interviews:\n\n• 📝 **ATS Resume Builder**: Create modern, ATS-friendly resumes with live preview, customizable templates, and instant 1-click PDF download.\n• 🔍 **ATS Resume Analyzer**: Upload or paste your CV to get an instant ATS compatibility score (0–100%), keyword optimization suggestions, and formatting critiques.";
       actionType = "workspace";
       actionLabel = "📄 Open Resume Builder & Tools";
     } else if (
@@ -310,7 +310,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("subscription") || 
       lower.includes("pay")
     ) {
-      reply = "🎉 **VELFIRE is 100% Free!**\n\nYou do not need to pay anything to access our AI Roadmaps, Text & Recorded Courses, the ATS Resume Builder, the Job Portal, or the AI Mentor. Our mission is to make elite tech education and career placement accessible to all.";
+      reply = "🎉 **VELLIFE is 100% Free!**\n\nYou do not need to pay anything to access our AI Roadmaps, Text & Recorded Courses, the ATS Resume Builder, the Job Portal, or the AI Mentor. Our mission is to make elite tech education and career placement accessible to all.";
       actionType = "workspace";
       actionLabel = "🚀 Start Learning Free";
     } else if (
@@ -318,7 +318,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("certification") || 
       lower.includes("degree")
     ) {
-      reply = "🏆 **VELFIRE Certificates**:\n\nWhen you complete your chosen course modules, submit hands-on milestone projects, and pass the domain assessment, you can download a verified VELFIRE Certificate of Completion to highlight on your LinkedIn profile and resume!";
+      reply = "🏆 **VELLIFE Certificates**:\n\nWhen you complete your chosen course modules, submit hands-on milestone projects, and pass the domain assessment, you can download a verified VELLIFE Certificate of Completion to highlight on your LinkedIn profile and resume!";
       actionType = "workspace";
       actionLabel = "📚 View Course Modules";
     } else if (
@@ -327,7 +327,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("theme") || 
       lower.includes("color")
     ) {
-      reply = "🎨 **Theme Customization**:\n\nVELFIRE features a bespoke **Emerald & Butter design system**. You can toggle between Dark Mode and Light Mode anytime by clicking the Theme Switch button at the top header or in Settings.";
+      reply = "🎨 **Theme Customization**:\n\nVELLIFE features a bespoke **Emerald & Butter design system**. You can toggle between Dark Mode and Light Mode anytime by clicking the Theme Switch button at the top header or in Settings.";
       actionType = "settings";
       actionLabel = "⚙️ Open Settings";
     } else if (
@@ -340,7 +340,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("address") ||
       lower.includes("chennai")
     ) {
-      reply = "📞 **Contact the VELFIRE Team**:\n\n• 📧 **Email**: velfire07@gmail.com\n• 📍 **Headquarters**: Chennai, Tamil Nadu, India\n• ⏰ **Support Hours**: Mon – Sat • 9:00 AM – 7:00 PM IST\n• 💬 You can also switch to the **Contact & Website Info** tab in this modal to send a direct message!";
+      reply = "📞 **Contact the VELLIFE Team**:\n\n• 📧 **Email**: vellife07@gmail.com\n• 📍 **Headquarters**: Chennai, Tamil Nadu, India\n• ⏰ **Support Hours**: Mon – Sat • 9:00 AM – 7:00 PM IST\n• 💬 You can also switch to the **Contact & Website Info** tab in this modal to send a direct message!";
       actionType = "contact_tab";
       actionLabel = "📞 Go to Contact Tab";
     } else if (
@@ -351,7 +351,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.includes("founder") ||
       lower.includes("poova")
     ) {
-      reply = "💡 **About VELFIRE (VELI-CHA)**:\n\nVELFIRE was crafted by an ambitious engineering team based in Chennai, Tamil Nadu, dedicated to bridging the gap between collegiate education and high-impact software careers with state-of-the-art AI tooling.";
+      reply = "💡 **About VELLIFE (VELI-CHA)**:\n\nVELLIFE was crafted by an ambitious engineering team based in Chennai, Tamil Nadu, dedicated to bridging the gap between collegiate education and high-impact software careers with state-of-the-art AI tooling.";
       actionType = "about";
       actionLabel = "ℹ️ View About Platform";
     } else if (
@@ -362,7 +362,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       lower.startsWith("hello ") || 
       lower.startsWith("hey ")
     ) {
-      reply = `Hello! 👋 What would you like to know about VELFIRE today?\n\nYou can ask me anything about our **AI Roadmaps**, **Courses (Text/Recorded/Live)**, **Job Portal**, **ATS Resume Tools**, or **Support Contact**!`;
+      reply = `Hello! 👋 What would you like to know about VELLIFE today?\n\nYou can ask me anything about our **AI Roadmaps**, **Courses (Text/Recorded/Live)**, **Job Portal**, **ATS Resume Tools**, or **Support Contact**!`;
     }
 
     // 2. Return Instant Knowledge Match if Found
@@ -390,14 +390,14 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: `[Context: You are the friendly, intelligent in-app assistant for the VELFIRE (VELI-CHA) career acceleration and learning platform. Answer clearly, warmly, and concisely in English. If relevant to VELFIRE features like Roadmaps, Courses, Job Portal, AI Mentor, or Resume Tools, highlight them.] Question: ${text}`,
+          message: `[Context: You are the friendly, intelligent in-app assistant for the VELLIFE (VELI-CHA) career acceleration and learning platform. Answer clearly, warmly, and concisely in English. If relevant to VELLIFE features like Roadmaps, Courses, Job Portal, AI Mentor, or Resume Tools, highlight them.] Question: ${text}`,
           user_name: user?.name || "Learner"
         })
       });
 
       if (response.ok) {
         const data = await response.json();
-        const aiReply = data.reply || "I am here to help you succeed on VELFIRE! Please let me know what domain or feature you want to explore.";
+        const aiReply = data.reply || "I am here to help you succeed on VELLIFE! Please let me know what domain or feature you want to explore.";
         setIsHelpChatTyping(false);
         setHelpChatMessages(prev => [
           ...prev,
@@ -423,7 +423,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       {
         id: Date.now() + 1,
         sender: "bot",
-        text: `Here is how VELFIRE can help with "${text}":\n\nYou can explore our **AI Roadmaps** for structured learning milestones, view **VELFIRE Courses** for text & recorded video lessons, or test your skills on the **Job Portal**. If you have a specific question, email our engineering team directly at **velfire07@gmail.com**!`,
+        text: `Here is how VELLIFE can help with "${text}":\n\nYou can explore our **AI Roadmaps** for structured learning milestones, view **VELLIFE Courses** for text & recorded video lessons, or test your skills on the **Job Portal**. If you have a specific question, email our engineering team directly at **vellife07@gmail.com**!`,
         time: "Just now",
         actionType: "workspace",
         actionLabel: "🚀 Explore Learning Workspace"
@@ -452,13 +452,13 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
     } else if (actionType === "about") {
       setShowAboutModal(true);
     } else if (actionType === "email") {
-      window.location.href = "mailto:velfire07@gmail.com";
+      window.location.href = "mailto:vellife07@gmail.com";
     }
   };
 
   const handleContinueClick = () => {
     setHasStarted(true);
-    localStorage.setItem("velfire_has_started", "true");
+    localStorage.setItem("vellife_has_started", "true");
     if (onOpenDashboard) {
       onOpenDashboard();
     }
@@ -553,7 +553,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
       <header className="home-header">
         <div className="header-left">
           <h1 className="brand-logo" onClick={handleHomeClick}>
-            VELFIRE
+            VELLIFE
           </h1>
 
           {/* Nav links */}
@@ -693,11 +693,11 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                       {word}{" "}
                     </span>
                   ))}
-                  <span className="text-highlight-animated">with VELFIRE OS</span>
+                  <span className="text-highlight-animated">with VELLIFE OS</span>
                 </h2>
 
                 <p className="hero-subtext">
-                  VELFIRE is an advanced <strong>AI Career Operating System</strong> designed to streamline your learning roadmap, track skill milestones, and empower your professional growth toward tech excellence.
+                  VELLIFE is an advanced <strong>AI Career Operating System</strong> designed to streamline your learning roadmap, track skill milestones, and empower your professional growth toward tech excellence.
                 </p>
 
                 {/* Quick Feature Pills */}
@@ -798,9 +798,9 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
 
               <div className="section-header">
                 <span className="section-tag">TAILORED FOR EVERY CAREER STAGE</span>
-                <h2 className="section-title">How VELFIRE Empowers You</h2>
+                <h2 className="section-title">How VELLIFE Empowers You</h2>
                 <p className="section-subtitle">
-                  Discover how VELFIRE accelerates growth for Students, Recent Graduates, and Working Employees.
+                  Discover how VELLIFE accelerates growth for Students, Recent Graduates, and Working Employees.
                 </p>
               </div>
 
@@ -967,7 +967,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                 <div className="notification-item">
                   <span className="notification-icon">🚀</span>
                   <div className="notification-content">
-                    <h5>Welcome to VELFIRE AI Career OS</h5>
+                    <h5>Welcome to VELLIFE AI Career OS</h5>
                     <p>Your session is active and connected to SQLite database.</p>
                     <span className="notification-time">Just now</span>
                   </div>
@@ -1129,7 +1129,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                   </svg>
                 </div>
                 <div>
-                  <h3 className="about-title">About VELFIRE OS</h3>
+                  <h3 className="about-title">About VELLIFE OS</h3>
                   <p className="about-header-subtitle">AI Career Operating System & Skill Mastery Platform</p>
                 </div>
               </div>
@@ -1151,7 +1151,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                 </div>
                 <h4 className="about-hero-title">Empowering Builders. Accelerating Careers.</h4>
                 <p className="about-hero-desc">
-                  <strong>VELFIRE</strong> is an all-in-one AI Career Operating System engineered to bridge the gap between classroom theory and real-world software engineering. Whether you are a student building your foundation, a graduate aiming for high-impact tech roles, or a developer upskilling, VELFIRE delivers intelligent roadmaps, hands-on coding practice, and career acceleration tools.
+                  <strong>VELLIFE</strong> is an all-in-one AI Career Operating System engineered to bridge the gap between classroom theory and real-world software engineering. Whether you are a student building your foundation, a graduate aiming for high-impact tech roles, or a developer upskilling, VELLIFE delivers intelligent roadmaps, hands-on coding practice, and career acceleration tools.
                 </p>
               </div>
 
@@ -1177,7 +1177,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
 
               {/* Core Pillars / Features Section */}
               <div className="about-section-heading">
-                <h5>What Drives VELFIRE</h5>
+                <h5>What Drives VELLIFE</h5>
                 <p>Engineered with everything you need to break into tech and thrive.</p>
               </div>
 
@@ -1295,8 +1295,8 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                   </div>
                 </div>
                 <div className="about-origin-contact">
-                  <a href="mailto:velfire07@gmail.com" className="about-contact-chip">
-                    ✉️ velfire07@gmail.com
+                  <a href="mailto:vellife07@gmail.com" className="about-contact-chip">
+                    ✉️ vellife07@gmail.com
                   </a>
                   <span className="about-status-chip">🟢 Status: Operational</span>
                 </div>
@@ -1338,7 +1338,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                 </div>
                 <div>
                   <div className="help-header-title-row">
-                    <h3>VELFIRE Help & Support</h3>
+                    <h3>VELLIFE Help & Support</h3>
                     <span className="help-status-badge">🟢 Helper Online 24/7</span>
                   </div>
                   <p className="help-header-subtitle">
@@ -1392,17 +1392,17 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
 
                   {/* Suggestion Chips for Real-Time App Answers */}
                   <div className="help-quick-chips">
-                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("What is VELFIRE?")}>
-                      ✨ What is VELFIRE?
+                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("What is VELLIFE?")}>
+                      ✨ What is VELLIFE?
                     </button>
                     <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("How do I generate an AI roadmap?")}>
                       🗺️ AI Roadmaps
                     </button>
-                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("Tell me about VELFIRE Courses (Text, Recorded, Live)")}>
+                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("Tell me about VELLIFE Courses (Text, Recorded, Live)")}>
                       📚 Courses & Formats
                     </button>
-                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("How do I apply for jobs in VELFIRE Jobs?")}>
-                      💼 VELFIRE Jobs
+                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("How do I apply for jobs in VELLIFE Jobs?")}>
+                      💼 VELLIFE Jobs
                     </button>
                     <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("How can the AI Mentor help me?")}>
                       🤖 AI Mentor
@@ -1410,10 +1410,10 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                     <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("How do I use the ATS Resume Builder and Analyzer?")}>
                       📄 Resume Tools
                     </button>
-                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("Is VELFIRE free to use?")}>
+                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("Is VELLIFE free to use?")}>
                       💰 Is it Free?
                     </button>
-                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("How can I contact the VELFIRE team?")}>
+                    <button type="button" className="help-chip-btn" onClick={() => handleSendHelpChat("How can I contact the VELLIFE team?")}>
                       ✉️ Contact Team
                     </button>
                   </div>
@@ -1423,14 +1423,14 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                     {helpChatMessages.map((msg) => (
                       <div key={msg.id} className={`help-msg-row ${msg.sender === 'user' ? 'user' : 'bot'}`}>
                         {msg.sender === 'bot' ? (
-                          <div className="help-bot-avatar" title="VELFIRE AI Helper">🤖</div>
+                          <div className="help-bot-avatar" title="VELLIFE AI Helper">🤖</div>
                         ) : (
                           <div className="help-user-avatar" title="You">🧑‍💻</div>
                         )}
                         <div className={`help-msg-bubble ${msg.sender === 'user' ? 'user' : 'bot'}`}>
                           <div className="help-msg-bubble-header">
                             <span className="help-msg-sender-name">
-                              {msg.sender === 'bot' ? 'VELFIRE Assistant' : (user?.name || 'You')}
+                              {msg.sender === 'bot' ? 'VELLIFE Assistant' : (user?.name || 'You')}
                             </span>
                             <span className="help-msg-time">{msg.time}</span>
                           </div>
@@ -1461,7 +1461,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                             <span></span>
                             <span></span>
                           </div>
-                          <span className="typing-label">VELFIRE Assistant is thinking...</span>
+                          <span className="typing-label">VELLIFE Assistant is thinking...</span>
                         </div>
                       </div>
                     )}
@@ -1481,7 +1481,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                       <input
                         type="text"
                         className="help-chat-text-input"
-                        placeholder="Ask anything about VELFIRE (e.g. roadmaps, jobs, courses, resume, free?)..."
+                        placeholder="Ask anything about VELLIFE (e.g. roadmaps, jobs, courses, resume, free?)..."
                         value={helpChatInput}
                         onChange={(e) => setHelpChatInput(e.target.value)}
                         disabled={isHelpChatTyping}
@@ -1504,7 +1504,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                     </div>
                   </form>
                   <div className="help-chat-footer-note">
-                    ⚡ Instant answers powered by VELFIRE Knowledge & Real-Time Intelligence
+                    ⚡ Instant answers powered by VELLIFE Knowledge & Real-Time Intelligence
                   </div>
                 </div>
               )}
@@ -1518,7 +1518,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                       <div className="brand-logo-gem">🔥</div>
                       <div className="brand-meta-info">
                         <div className="brand-title-badge-row">
-                          <h4>VELFIRE • VELI-CHA</h4>
+                          <h4>VELLIFE • VELI-CHA</h4>
                           <span className="platform-verified-badge">✓ Official Platform</span>
                           <span className="platform-release-badge">v2.4 Active</span>
                         </div>
@@ -1533,7 +1533,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                         <span className="meta-badge-icon">🌐</span>
                         <div className="meta-badge-text">
                           <span className="meta-badge-title">Official Portal</span>
-                          <span className="meta-badge-val">velfire.app</span>
+                          <span className="meta-badge-val">vellife.app</span>
                         </div>
                       </div>
                       <div className="meta-badge-item">
@@ -1568,8 +1568,8 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                         <h5>Official Email Support</h5>
                         <p>Direct learner queries, tech escalations & placement support</p>
                         <div className="contact-action-group">
-                          <a href="mailto:velfire07@gmail.com" className="contact-highlight-link">
-                            velfire07@gmail.com ↗
+                          <a href="mailto:vellife07@gmail.com" className="contact-highlight-link">
+                            vellife07@gmail.com ↗
                           </a>
                           <button 
                             type="button" 
@@ -1608,7 +1608,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                   <div className="help-direct-form-card">
                     <div className="form-header-group">
                       <div className="form-header-title-row">
-                        <h5>✉️ Send a Direct Message to the VELFIRE Team</h5>
+                        <h5>✉️ Send a Direct Message to the VELLIFE Team</h5>
                         <span className="form-sla-badge">⏱️ Avg reply: under 24 hours</span>
                       </div>
                       <p>Have questions, feedback, or need mentorship advice? Write to our team and we'll reply directly to your inbox.</p>
@@ -1659,9 +1659,9 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                             onChange={(e) => setContactForm({ ...contactForm, topic: e.target.value })}
                           >
                             <option value="General Platform Inquiry">🌐 General Platform Inquiry</option>
-                            <option value="Open VELFIRE Roadmaps Support">🗺️ Open VELFIRE Roadmaps Support</option>
+                            <option value="Open VELLIFE Roadmaps Support">🗺️ Open VELLIFE Roadmaps Support</option>
                             <option value="Course Content (Text, Recorded, Live)">📚 Course Content (Text, Recorded, Live)</option>
-                            <option value="VELFIRE Jobs & Placement Assistance">💼 VELFIRE Jobs & Placement Assistance</option>
+                            <option value="VELLIFE Jobs & Placement Assistance">💼 VELLIFE Jobs & Placement Assistance</option>
                             <option value="ATS Resume Tools & Feedback">📄 ATS Resume Tools & Feedback</option>
                             <option value="Technical Bug or Account Issue">🐞 Technical Bug or Account Issue</option>
                           </select>
@@ -1683,7 +1683,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
                             <span>Send Priority Message</span>
                             <span className="btn-send-icon">🚀</span>
                           </button>
-                          <span className="form-guarantee-note">🔒 Your data is protected by VELFIRE Privacy Policy</span>
+                          <span className="form-guarantee-note">🔒 Your data is protected by VELLIFE Privacy Policy</span>
                         </div>
                       </form>
                     )}
@@ -1747,7 +1747,7 @@ function Home({ user, onLogout, onUpdateUser, onOpenDashboard, onOpenChatbot }) 
             <div className="modal-footer help-modal-footer">
               <div className="help-footer-contact-info">
                 <span className="contact-bullet">📍</span>
-                <span>Chennai, India • Direct Email: <strong>velfire07@gmail.com</strong></span>
+                <span>Chennai, India • Direct Email: <strong>vellife07@gmail.com</strong></span>
               </div>
               <div className="help-footer-actions">
                 <button

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./VelfireRoadmapGenerator.css";
+import "./VellifeRoadmapGenerator.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
@@ -16,7 +16,7 @@ const QUICK_SUGGESTIONS = [
   { label: "📈 Business Analyst", query: "Business Analyst" },
 ];
 
-export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack Development", onSwitchToCourse }) {
+export default function VellifeRoadmapGenerator({ initialCourse = "Full Stack Development", onSwitchToCourse }) {
   const [courseInput, setCourseInput] = useState(initialCourse);
   const [skillLevel, setSkillLevel] = useState("Intermediate");
   const [duration, setDuration] = useState("3 Months Mastery");
@@ -29,7 +29,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
   // Persistent topic completion state (e.g. "Phase1_Topic0": true)
   const [checkedTopics, setCheckedTopics] = useState(() => {
     try {
-      const saved = localStorage.getItem("velfire_roadmap_progress");
+      const saved = localStorage.getItem("vellife_roadmap_progress");
       return saved ? JSON.parse(saved) : {};
     } catch {
       return {};
@@ -39,7 +39,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
   // Saved roadmaps collection in localStorage
   const [savedRoadmaps, setSavedRoadmaps] = useState(() => {
     try {
-      const saved = localStorage.getItem("velfire_saved_roadmaps");
+      const saved = localStorage.getItem("vellife_saved_roadmaps");
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -121,7 +121,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
     setCheckedTopics((prev) => {
       const updated = { ...prev, [topicKey]: !prev[topicKey] };
       try {
-        localStorage.setItem("velfire_roadmap_progress", JSON.stringify(updated));
+        localStorage.setItem("vellife_roadmap_progress", JSON.stringify(updated));
       } catch (e) {}
       return updated;
     });
@@ -159,7 +159,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
     }
     setSavedRoadmaps(updated);
     try {
-      localStorage.setItem("velfire_saved_roadmaps", JSON.stringify(updated));
+      localStorage.setItem("vellife_saved_roadmaps", JSON.stringify(updated));
     } catch (e) {}
   };
 
@@ -193,7 +193,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
   const progressStats = calculateProgress();
 
   return (
-    <div className="velfire-roadmap-root">
+    <div className="vellife-roadmap-root">
       <div className="roadmap-ambient-glow" />
 
       {/* --- 1. SEARCH & COMMAND CONSOLE --- */}
@@ -202,7 +202,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
           <div className="console-branding">
             <div className="console-beacon">⚡</div>
             <div className="console-title-group">
-              <h3>VELFIRE AI Roadmap Architect</h3>
+              <h3>VELLIFE AI Roadmap Architect</h3>
               <p>Type any course, tech stack, or career goal to synthesize a real-time production roadmap</p>
             </div>
           </div>
@@ -214,7 +214,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
                 className="btn-switch-courses"
                 onClick={onSwitchToCourse}
               >
-                🎓 Switch to VELFIRE Courses →
+                🎓 Switch to VELLIFE Courses →
               </button>
             </div>
           )}
@@ -522,7 +522,7 @@ export default function VelfireRoadmapGenerator({ initialCourse = "Full Stack De
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="velfire-toast">
+        <div className="vellife-toast">
           {toastMessage}
         </div>
       )}

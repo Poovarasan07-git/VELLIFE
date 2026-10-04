@@ -24,7 +24,7 @@ function CurriculumHub({
   // Load progress state from localStorage
   const [userProgress, setUserProgress] = useState(() => {
     try {
-      const saved = localStorage.getItem('velfire_textbook_progress');
+      const saved = localStorage.getItem('vellife_textbook_progress');
       return saved ? JSON.parse(saved) : {};
     } catch (e) {
       return {};
@@ -34,7 +34,7 @@ function CurriculumHub({
   // Save progress to localStorage whenever updated
   useEffect(() => {
     try {
-      localStorage.setItem('velfire_textbook_progress', JSON.stringify(userProgress));
+      localStorage.setItem('vellife_textbook_progress', JSON.stringify(userProgress));
     } catch (e) {
       console.error('Failed to save progress to localStorage', e);
     }

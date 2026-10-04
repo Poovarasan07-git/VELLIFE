@@ -3,19 +3,19 @@ import "./Footer.css";
 
 function Footer({ onAboutClick }) {
   return (
-    <footer className="velfire-footer">
-      <div className="velfire-footer-container">
+    <footer className="vellife-footer">
+      <div className="vellife-footer-container">
         
         {/* BRAND & ABOUT COLUMN */}
         <div className="footer-col footer-brand-col">
-          <h3 className="footer-brand">VELFIRE</h3>
+          <h3 className="footer-brand">VELLIFE</h3>
           <p className="footer-tagline">AI Career Operating System & Skill Mastery Platform</p>
           {onAboutClick && (
             <button 
               type="button" 
               className="footer-about-action-btn"
               onClick={onAboutClick}
-              title="Learn more about VELFIRE OS"
+              title="Learn more about VELLIFE OS"
             >
               <span>Explore Platform Story</span>
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -36,8 +36,8 @@ function Footer({ onAboutClick }) {
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
-            <a href="mailto:velfire07@gmail.com" className="footer-link">
-              velfire07@gmail.com
+            <a href="mailto:vellife07@gmail.com" className="footer-link">
+              vellife07@gmail.com
             </a>
           </div>
 
@@ -57,12 +57,12 @@ function Footer({ onAboutClick }) {
           <div className="footer-social-logos">
             {/* Instagram Logo */}
             <a 
-              href="https://instagram.com/velfire.official" 
+              href="https://instagram.com/vellife.official" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="social-icon-btn instagram"
-              title="Instagram (@velfire.official)"
-              aria-label="Instagram (@velfire.official)"
+              title="Instagram (@vellife.official)"
+              aria-label="Instagram (@vellife.official)"
             >
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -108,7 +108,7 @@ function Footer({ onAboutClick }) {
 
       {/* BOTTOM COPYRIGHT BAR */}
       <div className="footer-bottom-bar">
-        <p>© {new Date().getFullYear()} VELFIRE. All rights reserved. | chennai ,tamilnadu</p>
+        <p>© {new Date().getFullYear()} VELLIFE. All rights reserved. | chennai ,tamilnadu</p>
       </div>
     </footer>
   );

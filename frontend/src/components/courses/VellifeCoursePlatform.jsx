@@ -1,12 +1,12 @@
-// src/components/courses/VelfireCoursePlatform.jsx
+// src/components/courses/VellifeCoursePlatform.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { COURSES_DATA, CAREER_COURSE_RECOMMENDATIONS } from '../../data/coursesData';
 import ResumeBuilderView from '../career/ResumeBuilderView';
 import ResumeAnalyzerView from '../career/ResumeAnalyzerView';
 import CourseLessonView from './CourseLessonView';
-import './VelfireCoursePlatform.css';
+import './VellifeCoursePlatform.css';
 
-export default function VelfireCoursePlatform({
+export default function VellifeCoursePlatform({
   selectedDomain = "Full Stack Development",
   onSwitchToRoadmap,
   onBackToChoice
@@ -31,7 +31,7 @@ export default function VelfireCoursePlatform({
   // User progress persisted in localStorage
   const [userProgress, setUserProgress] = useState(() => {
     try {
-      const saved = localStorage.getItem('velfire_course_progress');
+      const saved = localStorage.getItem('vellife_course_progress');
       return saved ? JSON.parse(saved) : {};
     } catch (e) {
       return {};
@@ -41,7 +41,7 @@ export default function VelfireCoursePlatform({
   // Recorded video completion state
   const [watchedVideos, setWatchedVideos] = useState(() => {
     try {
-      const saved = localStorage.getItem('velfire_watched_videos');
+      const saved = localStorage.getItem('vellife_watched_videos');
       return saved ? JSON.parse(saved) : { 1: 40, 2: 70 };
     } catch (e) {
       return { 1: 40, 2: 70 };
@@ -50,7 +50,7 @@ export default function VelfireCoursePlatform({
 
   useEffect(() => {
     try {
-      localStorage.setItem('velfire_course_progress', JSON.stringify(userProgress));
+      localStorage.setItem('vellife_course_progress', JSON.stringify(userProgress));
     } catch (e) {
       console.error(e);
     }
@@ -58,7 +58,7 @@ export default function VelfireCoursePlatform({
 
   useEffect(() => {
     try {
-      localStorage.setItem('velfire_watched_videos', JSON.stringify(watchedVideos));
+      localStorage.setItem('vellife_watched_videos', JSON.stringify(watchedVideos));
     } catch (e) {
       console.error(e);
     }
@@ -289,12 +289,12 @@ export default function VelfireCoursePlatform({
   }
 
   return (
-    <div className="velfire-course-platform-root">
+    <div className="vellife-course-platform-root">
       {/* 1. TOP PLATFORM HEADER */}
       <div className="platform-hero-header">
         <div className="hero-text-block">
-          <div className="hero-badge-pill">🎓 VELFIRE LEARNING PORTAL</div>
-          <h1 className="hero-heading">VELFIRE COURSES</h1>
+          <div className="hero-badge-pill">🎓 VELLIFE LEARNING PORTAL</div>
+          <h1 className="hero-heading">VELLIFE COURSES</h1>
           <p className="hero-subheading">
             Master <strong>{selectedDomain}</strong> through interactive Text Lessons, on-demand Recorded Masterclasses, and interactive Live Sessions.
           </p>
@@ -664,7 +664,7 @@ export default function VelfireCoursePlatform({
       {/* ============================================================== */}
       <div className="career-tools-section">
         <div className="career-tools-header">
-          <div className="tools-badge">💼 VELFIRE CAREER TOOLS</div>
+          <div className="tools-badge">💼 VELLIFE CAREER TOOLS</div>
           <h2 className="career-tools-title">Resume Builder & Resume Analyzer</h2>
           <p className="career-tools-subtitle">
             Industry-grade tools designed to elevate your software engineering portfolio and maximize ATS resume performance.
@@ -807,7 +807,7 @@ export default function VelfireCoursePlatform({
         <div className="video-player-modal-backdrop" onClick={() => setActiveSubView('hub')}>
           <div className="live-staging-modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="staging-header">
-              <span className="staging-badge">🔴 VELFIRE Live Classroom Gateway</span>
+              <span className="staging-badge">🔴 VELLIFE Live Classroom Gateway</span>
               <h2>{activeLiveClass.title}</h2>
               <p className="staging-sub">Hosted by {activeLiveClass.instructor}</p>
               <button className="btn-close-modal staging-close" onClick={() => setActiveSubView('hub')}>✕</button>

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
-import VelfireRoadmapGenerator from "../components/roadmap/VelfireRoadmapGenerator";
-import VelfireCoursePlatform from "../components/courses/VelfireCoursePlatform";
+import VellifeRoadmapGenerator from "../components/roadmap/VellifeRoadmapGenerator";
+import VellifeCoursePlatform from "../components/courses/VellifeCoursePlatform";
 
 function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem("velfire_theme") === "dark";
+    return localStorage.getItem("vellife_theme") === "dark";
   });
 
   // Active portal modal: 'chatbot' | 'learning' | 'jobs' | null
@@ -18,7 +18,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
   // Selected Career Domain
   const [selectedDomain, setSelectedDomain] = useState("Data Analyst");
 
-  // Learning Portal Mode: 'choice' (2 buttons choice) | 'roadmap' (VELFIRE Roadmap Generator) | 'course' (VELFIRE Course Hub)
+  // Learning Portal Mode: 'choice' (2 buttons choice) | 'roadmap' (VELLIFE Roadmap Generator) | 'course' (VELLIFE Course Hub)
   const [learningMode, setLearningMode] = useState("choice");
 
   // Roadmap Generator State
@@ -115,8 +115,8 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
 
   // 4. Live Classes Schedule State
   const liveClassesList = [
-    { id: 1, title: `Live Workshop: ${selectedDomain} System Architecture`, instructor: "Dr. Aris Thorne", date: "Today", time: "7:00 PM IST", status: "UPCOMING", meetUrl: "https://meet.google.com/demo-velfire-live" },
-    { id: 2, title: `Live Code Review & Portfolio Audit`, instructor: "Sarah Jenkins (Lead Engineer)", date: "Tomorrow", time: "6:30 PM IST", status: "SCHEDULED", meetUrl: "https://meet.google.com/demo-velfire-live" },
+    { id: 1, title: `Live Workshop: ${selectedDomain} System Architecture`, instructor: "Dr. Aris Thorne", date: "Today", time: "7:00 PM IST", status: "UPCOMING", meetUrl: "https://meet.google.com/demo-vellife-live" },
+    { id: 2, title: `Live Code Review & Portfolio Audit`, instructor: "Sarah Jenkins (Lead Engineer)", date: "Tomorrow", time: "6:30 PM IST", status: "SCHEDULED", meetUrl: "https://meet.google.com/demo-vellife-live" },
   ];
 
   // 5. Assessment Test State
@@ -178,12 +178,12 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
   // 6. Resume Builder Form State
   const [resumeData, setResumeData] = useState({
     name: user?.name || "Poovarasan",
-    email: user?.email || "velfire07@gmail.com",
+    email: user?.email || "vellife07@gmail.com",
     phone: "+91 98765 43210",
     location: "Chennai, Tamil Nadu",
     summary: `Motivated technical candidate specializing in ${selectedDomain}. Passionate about building scalable, high-performance systems and data solutions.`,
     skills: "Python, SQL, React, FastAPI, Git, Data Analysis, System Design",
-    experience: "Technical Intern at Velfire Labs (6 months) - Built automated data pipelines and responsive dashboards.",
+    experience: "Technical Intern at Vellife Labs (6 months) - Built automated data pipelines and responsive dashboards.",
     education: "B.E. Computer Science & Engineering (Graduating 2026)",
     projects: "WILDFIRE AI Platform - Built end-to-end career guidance dashboard with React and Python.",
   });
@@ -294,7 +294,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
     {
       id: "j2",
       title: "Full Stack Software Engineer",
-      company: "Velfire Systems Inc.",
+      company: "Vellife Systems Inc.",
       location: "Chennai, TN",
       workMode: "Remote",
       experience: "0–1 yrs",
@@ -337,7 +337,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
   };
 
   useEffect(() => {
-    localStorage.setItem("velfire_theme", isDarkMode ? "dark" : "light");
+    localStorage.setItem("vellife_theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
   const toggleTheme = () => {
@@ -396,7 +396,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
             ← Home
           </button>
           <h1 className="dash-logo" onClick={onBackToHome}>
-            VELFIRE <span className="dash-badge">CAREER PLATFORM</span>
+            VELLIFE <span className="dash-badge">CAREER PLATFORM</span>
           </h1>
         </div>
 
@@ -511,7 +511,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
               </svg>
             </div>
 
-            <h2 className="portal-title">3. VELFIRE Jobs</h2>
+            <h2 className="portal-title">3. VELLIFE Jobs</h2>
             <p className="portal-description">
               Targeted tech job postings unlocked after passing your domain Mock Interview (80%+ required). Search, filter by domain/location, and apply in one click.
             </p>
@@ -621,7 +621,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                     setLearningTab("roadmap");
                   }}
                 >
-                  🗺️ VELFIRE Roadmap
+                  🗺️ VELLIFE Roadmap
                 </button>
                 <button 
                   className={`mode-switch-btn ${learningMode === "course" ? "active" : ""}`}
@@ -630,7 +630,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                     setLearningTab("full_curriculum");
                   }}
                 >
-                  🎓 VELFIRE Courses
+                  🎓 VELLIFE Courses
                 </button>
               </div>
 
@@ -658,16 +658,16 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
             {learningMode === "choice" && (
               <div className="learning-choice-container">
                 <div className="choice-hero-heading">
-                  <h2>🎓 VELFIRE Learning Hub</h2>
+                  <h2>🎓 VELLIFE Learning Hub</h2>
                   <p>Choose your pathway: Generate a custom AI Career Roadmap or enter the Course Learning Portal.</p>
                 </div>
 
                 <div className="choice-cards-grid">
-                  {/* CARD 1: VELFIRE ROADMAP */}
+                  {/* CARD 1: VELLIFE ROADMAP */}
                   <div className="choice-card card-roadmap-choice" onClick={() => { setLearningMode("roadmap"); setLearningTab("roadmap"); }}>
                     <div className="choice-badge badge-roadmap">🗺️ AI Pathway</div>
                     <div className="choice-icon-hero">🗺️</div>
-                    <h3>1. VELFIRE Roadmap</h3>
+                    <h3>1. VELLIFE Roadmap</h3>
                     <p>
                       Generate custom AI-powered step-by-step roadmaps for <strong>{selectedDomain}</strong>, analyze skill gaps, select milestone durations, and track structured career goals.
                     </p>
@@ -679,7 +679,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                     </div>
 
                     <button className="btn-choice-action btn-roadmap-choice">
-                      <span>Open VELFIRE Roadmap</span>
+                      <span>Open VELLIFE Roadmap</span>
                       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -687,11 +687,11 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                     </button>
                   </div>
 
-                  {/* CARD 2: VELFIRE COURSE */}
+                  {/* CARD 2: VELLIFE COURSE */}
                   <div className="choice-card card-course-choice" onClick={() => { setLearningMode("course"); }}>
                     <div className="choice-badge badge-course">🎓 Interactive Courses</div>
                     <div className="choice-icon-hero">📚</div>
-                    <h3>2. VELFIRE Course</h3>
+                    <h3>2. VELLIFE Course</h3>
                     <p>
                       Master <strong>{selectedDomain}</strong> with structured Text Lessons, Recorded Masterclasses, Live Sessions, and Career Tools.
                     </p>
@@ -704,7 +704,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
                     </div>
 
                     <button className="btn-choice-action btn-course-choice">
-                      <span>Open VELFIRE Course</span>
+                      <span>Open VELLIFE Course</span>
                       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -718,7 +718,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
             {/* ROADMAP GENERATOR VIEW */}
             {learningMode === "roadmap" && (
               <div className="learning-tab-content">
-                <VelfireRoadmapGenerator
+                <VellifeRoadmapGenerator
                   initialCourse={selectedDomain}
                   onSwitchToCourse={() => {
                     setLearningMode("course");
@@ -728,10 +728,10 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
               </div>
             )}
 
-            {/* VELFIRE COURSES - FULL INTERACTIVE LEARNING PLATFORM */}
+            {/* VELLIFE COURSES - FULL INTERACTIVE LEARNING PLATFORM */}
             {learningMode === "course" && (
               <div className="learning-tab-content">
-                <VelfireCoursePlatform
+                <VellifeCoursePlatform
                   selectedDomain={selectedDomain}
                   onSwitchToRoadmap={() => {
                     setLearningMode("roadmap");
@@ -769,7 +769,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
               <div className="modal-header-info">
                 <span className="modal-header-icon">💼</span>
                 <div>
-                  <h3>VELFIRE JOBS</h3>
+                  <h3>VELLIFE JOBS</h3>
                   <span className="modal-subtitle">Direct Tech Hiring & Application Management</span>
                 </div>
               </div>
