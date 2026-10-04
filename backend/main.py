@@ -4,11 +4,26 @@ import re
 import bcrypt
 import json
 import urllib.request
+import random
+import time
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
+
+# Load environment variables from .env
+load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+
+SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_EMAIL = os.getenv("SMTP_EMAIL", "").strip()
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").strip()
+SMTP_FROM_NAME = os.getenv("SMTP_FROM_NAME", "VELFIRE Security")
 
 # Database file path
 DB_PATH = os.path.join(os.path.dirname(__file__), "vellife.db")
@@ -57,6 +72,10 @@ def init_db():
         cursor.execute("ALTER TABLE users ADD COLUMN phone_number TEXT DEFAULT ''")
     if "profile_image" not in existing_cols:
         cursor.execute("ALTER TABLE users ADD COLUMN profile_image TEXT DEFAULT ''")
+    if "otp_code" not in existing_cols:
+        cursor.execute("ALTER TABLE users ADD COLUMN otp_code TEXT")
+    if "otp_expires_at" not in existing_cols:
+        cursor.execute("ALTER TABLE users ADD COLUMN otp_expires_at INTEGER")
     conn.commit()
     conn.close()
 
@@ -73,6 +92,19 @@ class SignupRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class SendOtpRequest(BaseModel):
+    email: str
+
+class VerifyOtpRequest(BaseModel):
+    email: str
+    otp: str
+
+class ResetPasswordRequest(BaseModel):
+    email: str
+    otp: str
+    new_password: str
+    confirm_password: str
 
 class UpdateProfileRequest(BaseModel):
     user_id: int
@@ -205,6 +237,284 @@ def login(data: LoginRequest):
             "phone_number": user["phone_number"] if user["phone_number"] else "",
             "profile_image": user["profile_image"] if user["profile_image"] else ""
         }
+    }
+
+def send_email_otp(to_email: str, otp: str) -> tuple[bool, str]:
+    """Dispatches a real verification OTP email using configured SMTP credentials."""
+    # Re-read environment variables in case .env was edited while running
+    smtp_email = os.getenv("SMTP_EMAIL", "").strip()
+    smtp_password = os.getenv("SMTP_PASSWORD", "").strip()
+    smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com").strip()
+    smtp_port = int(os.getenv("SMTP_PORT", "587"))
+    smtp_from_name = os.getenv("SMTP_FROM_NAME", "VELFIRE Security").strip()
+
+    if not smtp_email or not smtp_password:
+        return False, "SMTP credentials (SMTP_EMAIL & SMTP_PASSWORD) not configured in backend/.env"
+
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"{otp} is your VELFIRE Verification Code"
+        msg["From"] = f"{smtp_from_name} <{smtp_email}>"
+        msg["To"] = to_email
+
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body {{
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+              background-color: #070a12;
+              color: #f8fafc;
+              margin: 0;
+              padding: 24px;
+            }}
+            .card {{
+              max-width: 500px;
+              margin: 0 auto;
+              background: #111827;
+              border: 1px solid #1e293b;
+              border-radius: 20px;
+              padding: 36px 30px;
+              box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            }}
+            .brand {{
+              text-align: center;
+              font-size: 28px;
+              font-weight: 900;
+              letter-spacing: 5px;
+              color: #34d399;
+              margin-bottom: 20px;
+            }}
+            h2 {{
+              color: #ffffff;
+              font-size: 20px;
+              text-align: center;
+              margin-top: 0;
+              margin-bottom: 12px;
+            }}
+            p {{
+              color: #94a3b8;
+              font-size: 14.5px;
+              line-height: 1.6;
+              margin: 10px 0;
+            }}
+            .otp-container {{
+              background: #0b0f19;
+              border: 2px dashed #10b981;
+              border-radius: 14px;
+              text-align: center;
+              padding: 20px 16px;
+              margin: 26px 0;
+            }}
+            .otp-code {{
+              font-family: 'Courier New', Courier, monospace;
+              font-size: 38px;
+              font-weight: 800;
+              letter-spacing: 10px;
+              color: #38bdf8;
+            }}
+            .expiry-note {{
+              font-size: 12.5px;
+              color: #64748b;
+              margin-top: 8px;
+            }}
+            .warning {{
+              background: rgba(239, 68, 68, 0.1);
+              border-left: 3px solid #ef4444;
+              padding: 10px 14px;
+              border-radius: 6px;
+              font-size: 13px;
+              color: #fca5a5;
+              margin-top: 20px;
+            }}
+            .footer {{
+              text-align: center;
+              font-size: 12px;
+              color: #475569;
+              border-top: 1px solid #1e293b;
+              margin-top: 28px;
+              padding-top: 16px;
+            }}
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <div class="brand">VELFIRE</div>
+            <h2>Password Reset Verification</h2>
+            <p>Hello,</p>
+            <p>You requested to reset your password. Use the verification code below to verify your account and set a new password:</p>
+            
+            <div class="otp-container">
+              <div class="otp-code">{otp}</div>
+              <div class="expiry-note">⏱ This code will expire in <strong>10 minutes</strong>.</div>
+            </div>
+
+            <div class="warning">
+              Security notice: If you did not make this request, please disregard this email. Never share this OTP with anyone.
+            </div>
+
+            <div class="footer">
+              &copy; {datetime.now().year} VELFIRE. All rights reserved.
+            </div>
+          </div>
+        </body>
+        </html>
+        """
+
+        plain_text = f"Your VELFIRE password reset OTP is: {otp}\nThis code is valid for 10 minutes.\nDo not share this code with anyone."
+
+        msg.attach(MIMEText(plain_text, "plain"))
+        msg.attach(MIMEText(html_body, "html"))
+
+        if smtp_port == 465:
+            with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=12) as server:
+                server.login(smtp_email, smtp_password)
+                server.sendmail(smtp_email, [to_email], msg.as_string())
+        else:
+            with smtplib.SMTP(smtp_host, smtp_port, timeout=12) as server:
+                server.starttls()
+                server.login(smtp_email, smtp_password)
+                server.sendmail(smtp_email, [to_email], msg.as_string())
+
+        return True, "Email delivered successfully"
+    except Exception as e:
+        return False, str(e)
+
+@app.post("/api/forgot-password/send-otp")
+def send_forgot_password_otp(data: SendOtpRequest):
+    email = data.email.strip().lower()
+    if not email:
+        raise HTTPException(status_code=400, detail="Please enter your email address.")
+
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        raise HTTPException(status_code=400, detail="Please enter a valid email address.")
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name FROM users WHERE LOWER(email) = ?", (email,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        raise HTTPException(status_code=404, detail="No registered account found with this email. Please check the spelling or sign up.")
+
+    # Generate 6-digit numeric OTP
+    otp = f"{random.randint(100000, 999999):06d}"
+    expires_at = int(time.time()) + 600  # valid for 10 minutes
+
+    cursor.execute(
+        "UPDATE users SET otp_code = ?, otp_expires_at = ? WHERE id = ?",
+        (otp, expires_at, user["id"])
+    )
+    conn.commit()
+    conn.close()
+
+    # Attempt real email dispatch via SMTP
+    sent_real, email_msg = send_email_otp(email, otp)
+
+    if sent_real:
+        return {
+            "status": "success",
+            "message": f"Verification OTP has been sent to your email inbox ({email}). Please check your inbox and spam folder.",
+            "real_email_sent": True,
+            "expires_in": 600
+        }
+    else:
+        # Fallback with informative message and demo OTP if SMTP is not configured yet
+        return {
+            "status": "success",
+            "message": f"OTP generated! (Notice: {email_msg})",
+            "real_email_sent": False,
+            "otp": otp,  # returned for testing/fallback
+            "expires_in": 600
+        }
+
+@app.post("/api/forgot-password/verify-otp")
+def verify_forgot_password_otp(data: VerifyOtpRequest):
+    email = data.email.strip().lower()
+    otp = data.otp.strip()
+
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required.")
+    if not otp:
+        raise HTTPException(status_code=400, detail="Please enter the 6-digit OTP.")
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, otp_code, otp_expires_at FROM users WHERE LOWER(email) = ?", (email,))
+    user = cursor.fetchone()
+    conn.close()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="No account found with this email.")
+
+    if not user["otp_code"]:
+        raise HTTPException(status_code=400, detail="No OTP requested for this email. Please click 'Send OTP' first.")
+
+    if int(time.time()) > (user["otp_expires_at"] or 0):
+        raise HTTPException(status_code=400, detail="OTP has expired. Please request a new OTP.")
+
+    if str(user["otp_code"]).strip() != otp:
+        raise HTTPException(status_code=400, detail="Invalid OTP code. Please enter the correct 6-digit code.")
+
+    return {
+        "status": "success",
+        "message": "OTP verified successfully. You may now create your new password."
+    }
+
+@app.post("/api/forgot-password/reset")
+def reset_forgot_password(data: ResetPasswordRequest):
+    email = data.email.strip().lower()
+    otp = data.otp.strip()
+    new_password = data.new_password.strip()
+    confirm_password = data.confirm_password.strip()
+
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required.")
+    if not otp:
+        raise HTTPException(status_code=400, detail="OTP is required.")
+    if not new_password:
+        raise HTTPException(status_code=400, detail="New password is required.")
+    if len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long.")
+    if new_password != confirm_password:
+        raise HTTPException(status_code=400, detail="New password and confirm password do not match.")
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, otp_code, otp_expires_at FROM users WHERE LOWER(email) = ?", (email,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        raise HTTPException(status_code=404, detail="No account found with this email.")
+
+    if not user["otp_code"]:
+        conn.close()
+        raise HTTPException(status_code=400, detail="No active OTP found. Please request a new OTP.")
+
+    if int(time.time()) > (user["otp_expires_at"] or 0):
+        conn.close()
+        raise HTTPException(status_code=400, detail="OTP has expired. Please request a new OTP.")
+
+    if str(user["otp_code"]).strip() != otp:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Invalid OTP code.")
+
+    hashed_pw = hash_password(new_password)
+    cursor.execute(
+        "UPDATE users SET password_hash = ?, otp_code = NULL, otp_expires_at = NULL WHERE id = ?",
+        (hashed_pw, user["id"])
+    )
+    conn.commit()
+    conn.close()
+
+    return {
+        "status": "success",
+        "message": "Password reset successfully! You can now log in with your new password."
     }
 
 @app.post("/api/profile/update")
