@@ -511,7 +511,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
               </svg>
             </div>
 
-            <h2 className="portal-title">3. WILDFIRE Jobs</h2>
+            <h2 className="portal-title">3. VELFIRE Jobs</h2>
             <p className="portal-description">
               Targeted tech job postings unlocked after passing your domain Mock Interview (80%+ required). Search, filter by domain/location, and apply in one click.
             </p>
@@ -769,7 +769,7 @@ function Dashboard({ user, onLogout, onBackToHome, onOpenChatbot }) {
               <div className="modal-header-info">
                 <span className="modal-header-icon">💼</span>
                 <div>
-                  <h3>WILDFIRE JOBS</h3>
+                  <h3>VELFIRE JOBS</h3>
                   <span className="modal-subtitle">Direct Tech Hiring & Application Management</span>
                 </div>
               </div>
